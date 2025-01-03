@@ -1,5 +1,5 @@
 import gif from "./assets/analitics-hungover.gif";
-import alatheia_logo from "./assets/alatheia-logo.svg";
+import alatheia_logo from "./assets/alatheia-logo-dark.svg";
 
 function Login() {
   return (
@@ -10,7 +10,7 @@ function Login() {
           <div className="m-5 bg-green-200 rounded-3xl overflow-hidden w-full h-full">
             <img
               className="w-full h-full object-cover"
-              src={gif}
+              src={"https://media.licdn.com/dms/image/v2/D4E12AQGol4XUKq9SJg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1685051336719?e=2147483647&v=beta&t=QpZNi_zhte97PbWShQkU1PAOiJRm-k4jiGuHJ1SkfxA"}
               alt="Statistics"
             />
           </div>
