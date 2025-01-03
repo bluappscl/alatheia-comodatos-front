@@ -1,5 +1,7 @@
 import InstrumentosChart from "../components/Dashboard/Instrumentos";
 import PagosChart from "../components/Dashboard/Pagos";
+import PagosBarChart from "../components/Dashboard/PagosBarChart";
+import PagosDoughnutChart from "../components/Dashboard/PagosDoughnutChart";
 import VigentesChart from "../components/Dashboard/Vigente";
 
 const Dashboard = () => {
@@ -11,7 +13,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 w-full md:w-7/12 gap-6 p-6">
           <InstrumentosChart />
-          <PagosChart />
+          <PagosBarChart />
         </div>
       </div>
     </>

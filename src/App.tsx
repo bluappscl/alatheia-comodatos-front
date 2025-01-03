@@ -15,8 +15,8 @@ const theme = {
   },
   components: {
     Menu: {
-      colorItemText: "white", // Menu item text color
-      colorItemTextHover: "white", // Text color on hover
+      itemColor: "white", // Menu item text color
+      itemHoverColor: "white", // Text color on hover
     },
   },
 };

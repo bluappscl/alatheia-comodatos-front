@@ -52,7 +52,7 @@ const CustomerTables: React.FC<ContactTableProps> = ({ data, loading }) => {
       render: (_, record) => <>{record.comodatos.length}</>,
     },
     {
-      title: "Action",
+      title: "Detalle",
       dataIndex: "",
       key: "x",
       render: (_, record) => (

@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Form, Input, Button, DatePicker, message, Checkbox } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  DatePicker,
+  message,
+  Checkbox,
+  InputNumber,
+  Select,
+} from "antd";
 import axios from "axios";
 import InsumoSelector from "../components/NuevoComodato/InsumoSelector";
 import InstrumentoSelector from "../components/NuevoComodato/InstrumentoSelector";
@@ -13,6 +22,8 @@ interface CrearComodatoValues {
   insumos: Array<{ id: number; cantidad: number }>;
   instrumentos: Array<{ id: number; cantidad: number }>;
   client_id: number;
+  objetivoReactivosCantidad?: number;
+  objetivoDineroCantidad?: number;
 }
 
 const CrearComodato: React.FC = () => {
@@ -20,6 +31,9 @@ const CrearComodato: React.FC = () => {
   const [isRenovable, setIsRenovable] = useState(false);
   const [autoRenew, setAutoRenew] = useState(false);
   const [clientId, setClientId] = useState<number>(0);
+  const [enableReactivos, setEnableReactivos] = useState(false);
+  const [enableDinero, setEnableDinero] = useState(false);
+
   const onFinish = async (values: CrearComodatoValues) => {
     setLoading(true);
     try {
@@ -33,6 +47,12 @@ const CrearComodato: React.FC = () => {
         insumos: values.insumos || [],
         instrumentos: values.instrumentos || [],
         client_id: clientId,
+        objetivoReactivosCantidad: enableReactivos
+          ? values.objetivoReactivosCantidad
+          : undefined,
+        objetivoDineroCantidad: enableDinero
+          ? values.objetivoDineroCantidad
+          : undefined,
       };
 
       const response = await axios.post("/api/comodatos", data);
@@ -55,24 +75,19 @@ const CrearComodato: React.FC = () => {
     message.error("Por favor, complete todos los campos obligatorios");
   };
 
-  const handleIsRenovableChange = (e: {
-    target: { checked: boolean | ((prevState: boolean) => boolean) };
-  }) => {
+  const handleIsRenovableChange = (e: { target: { checked: boolean } }) => {
     setIsRenovable(e.target.checked);
     if (!e.target.checked) {
       setAutoRenew(false);
     }
   };
 
-  const handleAutoRenewChange = (e: {
-    target: { checked: boolean | ((prevState: boolean) => boolean) };
-  }) => {
+  const handleAutoRenewChange = (e: { target: { checked: boolean } }) => {
     setAutoRenew(e.target.checked);
   };
 
   const handleSelectClient = (id: number) => {
     setClientId(id);
-    console.log(clientId);
   };
 
   return (
@@ -142,31 +157,95 @@ const CrearComodato: React.FC = () => {
                 <Checkbox
                   checked={autoRenew}
                   onChange={handleAutoRenewChange}
-                  disabled={!isRenovable} // Disable when not renewable
+                  disabled={!isRenovable}
                 >
                   ¿Se renueva automáticamente?
                 </Checkbox>
               </div>
-              <Form.Item className="hidden lg:block">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  className="w-full bg-blue-500 hover:bg-blue-600"
-                >
-                  Crear Comodato
-                </Button>
+            </Form.Item>
+
+            <div className="flex flex-col">
+              <Form.Item label="Objetivos">
+                {/* Reactivos Objective */}
+                <div className="flex flex-col gap-2 mb-4">
+                  <Checkbox
+                    checked={enableReactivos}
+                    onChange={(e) => setEnableReactivos(e.target.checked)}
+                  >
+                    Objetivo de Reactivos (Cantidad)
+                  </Checkbox>
+                  {enableReactivos && (
+                    <Form.Item
+                      name="objetivoReactivosCantidad"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Ingrese la cantidad de reactivos",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        min={1}
+                        className="w-full"
+                        placeholder="Cantidad de Reactivos"
+                      />
+                    </Form.Item>
+                  )}
+                </div>
+
+                {/* Dinero Objective */}
+                <div className="flex flex-col gap-2">
+                  <Checkbox
+                    checked={enableDinero}
+                    onChange={(e) => setEnableDinero(e.target.checked)}
+                  >
+                    Objetivo de Dinero
+                  </Checkbox>
+                  {enableDinero && (
+                    <Form.Item
+                      name="objetivoDineroCantidad"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Ingrese la cantidad de dinero",
+                        },
+                      ]}
+                    >
+                      <div className="flex flex-wrap md:flex-nowrap items-center gap-4">
+                        <div className="w-28">
+                          <Select placeholder="Moneda" className="w-full">
+                            <Select.Option value="CLP">CLP</Select.Option>
+                            <Select.Option value="UF">UF</Select.Option>
+                          </Select>
+                        </div>
+                        <InputNumber
+                          min={1}
+                          className="w-full"
+                          placeholder="Cantidad de Dinero"
+                        />
+                      </div>
+                    </Form.Item>
+                  )}
+                </div>
               </Form.Item>
+            </div>
+
+            <Form.Item className="hidden lg:block">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                className="w-full bg-blue-500 hover:bg-blue-600"
+              >
+                Crear Comodato
+              </Button>
             </Form.Item>
           </div>
           <div>
             <Form.Item
               label="Cliente"
               rules={[
-                {
-                  required: true,
-                  message: "Por favor seleccione un cliente",
-                },
+                { required: true, message: "Por favor seleccione un cliente" },
               ]}
             >
               <ClientSelectionModal

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Card, Typography, Spin, message, Input } from "antd";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import { Cliente as ClienteInterface } from "../../interfaces/Cliente";
 
 const { Search } = Input;
@@ -17,6 +17,8 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   onAddClient,
   showSelectedClient = true, // Default to true
 }) => {
+  const navigate = useNavigate()
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clientes, setClientes] = useState<ClienteInterface[]>([]);
   const [filteredClientes, setFilteredClientes] = useState<ClienteInterface[]>(
@@ -96,7 +98,7 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
                 Dirección: {selectedClient.direccion}
               </Typography.Text>
               <Typography.Text>
-                Cantidad de Comodatos: {selectedClient.comodatos.length}
+                Cantidad de Comodatos Activos: {selectedClient.comodatos.length}
               </Typography.Text>
             </div>
           </Card>
@@ -122,7 +124,8 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
           />
           <Button
             type="primary"
-            onClick={onAddClient}
+            // onClick={onAddClient}
+            onClick={() => navigate("/clientes")}
             className="w-full md:w-auto"
           >
             Nuevo Cliente
@@ -156,7 +159,7 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
                     Dirección: {cliente.direccion}
                   </Typography.Text>
                   <Typography.Text>
-                    Cantidad de Comodatos: {cliente.comodatos.length}
+                    Cantidad de Comodatos Activos: {cliente.comodatos.length}
                   </Typography.Text>
                 </div>
               </Card>

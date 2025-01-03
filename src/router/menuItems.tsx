@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 import {
     LaptopOutlined,
-    NotificationOutlined,
     UserOutlined,
   } from "@ant-design/icons";
   
@@ -16,7 +15,7 @@ export const items: MenuProps["items"] = [
     {
       key: "2",
       icon: <LaptopOutlined />,
-      label: <Link to="/clientes">Contactos</Link>,
+      label: <Link to="/clientes">Clientes</Link>,
     },
     {
       key: "3",
@@ -26,11 +25,11 @@ export const items: MenuProps["items"] = [
     {
       key: "4",
       icon: <LaptopOutlined />,
-      label: <Link to="/nuevo-comodato">Insumos</Link>,
+      label: <Link to="/insumos">Insumos</Link>,
     },
     {
       key: "5",
       icon: <LaptopOutlined />,
-      label: <Link to="/nuevo-comodato">Instrumentos</Link>,
+      label: <Link to="/instrumentos">Instrumentos</Link>,
     },
   ];

@@ -1,4 +1,4 @@
-import { Button, Form, InputNumber, message, Select } from "antd";
+import { Button, Checkbox, Form, InputNumber, message, Select } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -29,55 +29,87 @@ const InsumoSelector: React.FC = () => {
   return (
     <Form.List name="insumos">
       {(fields, { add, remove }) => (
-        <div>
-          {fields.map(({ key, name }) => (
-            <div key={key} className="flex items-center gap-4 mb-4">
-              <Form.Item
-                name={[name, "id"]}
-                rules={[{ required: true, message: "Seleccione un insumo" }]}
-                className="flex-1"
+        <>
+          <div>
+            {fields.map(({ key, name }) => (
+              <div
+                key={key}
+                className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-4"
               >
-                <Select
-                  showSearch
-                  placeholder="Seleccione un insumo"
-                  optionFilterProp="children"
-                  className="w-full"
+                {/* Insumo Selector */}
+                <Form.Item
+                  name={[name, "id"]}
+                  rules={[{ required: true, message: "Seleccione un insumo" }]}
+                  className="flex-1 min-w-[200px]"
                 >
-                  {insumos.map((insumo) => (
-                    <Select.Option key={insumo.id} value={insumo.id}>
-                      {`${insumo.codigo} - ${insumo.producto} - $${insumo.precio_neto}`}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
+                  <Select
+                    showSearch
+                    placeholder="Seleccione un insumo"
+                    optionFilterProp="children"
+                    className="w-full"
+                  >
+                    {insumos.map((insumo) => (
+                      <Select.Option key={insumo.id} value={insumo.id}>
+                        {`${insumo.codigo} - ${insumo.producto} - $${insumo.precio_neto}`}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
 
-              {/* Cantidad Input */}
-              <Form.Item
-                name={[name, "cantidad"]}
-                rules={[
-                  { required: true, message: "Ingrese la cantidad" },
-                  {
-                    type: "number",
-                    min: 1,
-                    message: "La cantidad debe ser mayor a 0",
-                  },
-                ]}
-              >
-                <InputNumber min={1} placeholder="Cantidad" className="w-20" />
-              </Form.Item>
-              <Form.Item>
-                <Button type="default" onClick={() => remove(name)}>
-                  Eliminar
-                </Button>
-              </Form.Item>
-            </div>
-          ))}
+                {/* Cantidad Input */}
+                <Form.Item
+                  name={[name, "cantidad"]}
+                  rules={[
+                    { required: true, message: "Ingrese la cantidad" },
+                    {
+                      type: "number",
+                      min: 1,
+                      message: "La cantidad debe ser mayor a 0",
+                    },
+                  ]}
+                  className="w-24"
+                >
+                  <InputNumber
+                    min={1}
+                    placeholder="Cantidad"
+                    className="w-full"
+                  />
+                </Form.Item>
 
-          {/* Add Insumo Button */}
-          <Button type="dashed" onClick={() => add()} className="w-full">
-            Agregar Insumo
-          </Button>
-        </div>
+                {/* Checkbox */}
+                <Form.Item
+                  name={[name, "is_reactivo"]}
+                  valuePropName="checked"
+                  initialValue={false} // Default to false
+                  className="flex items-center"
+                >
+                  <Checkbox>Es reactivo?</Checkbox>
+                </Form.Item>
+
+                {/* Remove Button */}
+                <Form.Item>
+                  <Button
+                    type="default"
+                    danger
+                    onClick={() => remove(name)}
+                    className="flex-shrink-0"
+                  >
+                    Quitar
+                  </Button>
+                </Form.Item>
+              </div>
+            ))}
+
+            {/* Add Insumo Button */}
+            <Button
+              type="dashed"
+              onClick={() => add({ is_reactivo: false })} // Set default value on add
+              className="w-full"
+            >
+              Agregar Insumo
+            </Button>
+          </div>
+        </>
       )}
     </Form.List>
   );
