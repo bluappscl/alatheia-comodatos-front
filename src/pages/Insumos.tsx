@@ -138,6 +138,7 @@ const InsumoPage: React.FC = () => {
         rowKey="id"
         loading={loading}
         scroll={{ x: 1000 }}
+        className="bg-primary-400 rounded-xl"
       />
 
       {/* Create/Edit Modal */}
