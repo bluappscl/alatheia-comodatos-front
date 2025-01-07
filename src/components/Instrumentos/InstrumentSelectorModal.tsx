@@ -17,7 +17,11 @@ const InstrumentSelectorModal: React.FC<Props> = ({
   const columns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
     { title: "Producto", dataIndex: "producto", key: "producto" },
-    { title: "Número de Serie", dataIndex: "numero_serie", key: "numero_serie" },
+    {
+      title: "Número de Serie",
+      dataIndex: "numero_serie",
+      key: "numero_serie",
+    },
     { title: "Cantidad", dataIndex: "cantidad", key: "cantidad" },
     { title: "Valor Neto", dataIndex: "valor_neto", key: "valor_neto" },
     { title: "Moneda", dataIndex: "moneda", key: "moneda" },
@@ -25,7 +29,7 @@ const InstrumentSelectorModal: React.FC<Props> = ({
       title: "Acciones",
       key: "acciones",
       render: (_: any, record: InstrumentoInterface) => (
-        <Button type="link" onClick={() => onAddInstrumento(record)}>
+        <Button onClick={() => onAddInstrumento(record)}>
           Añadir
         </Button>
       ),
@@ -38,7 +42,7 @@ const InstrumentSelectorModal: React.FC<Props> = ({
       open={visible}
       onCancel={onClose}
       footer={null}
-      width={800}
+      width={1200}
     >
       <Table
         dataSource={instrumentos}

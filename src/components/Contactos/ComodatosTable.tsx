@@ -2,13 +2,14 @@ import React from "react";
 import { Button, Table, Typography } from "antd";
 import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
 import { ComodatoInterface } from "../../interfaces/Comodato";
+import type { ColumnsType } from "antd/es/table";
 
 interface ComodatosTableProps {
   comodatos: ComodatoInterface[];
 }
 
 const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
-  const columns = [
+  const columns: ColumnsType = [
     {
       title: "Fecha de Inicio",
       dataIndex: "fecha_inicio",
@@ -63,7 +64,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       dataIndex: "detalle",
       key: "detalle",
       align: "center",
-      render: (url: string) => (
+      render: (_url: string) => (
         <Button>
           <ZoomInOutlined />
         </Button>

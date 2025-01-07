@@ -28,10 +28,6 @@ const CreateClienteModal: React.FC<CreateClienteModalProps> = ({
     }
   };
 
-  const handleLogoUploadSuccess = (url: string) => {
-    form.setFieldsValue({ logo: url }); // Update the logo field with the uploaded file URL
-  };
-
   return (
     <Modal
       title="Crear Cliente"
@@ -70,7 +66,7 @@ const CreateClienteModal: React.FC<CreateClienteModalProps> = ({
         >
           <Input placeholder="Dirección del cliente" />
         </Form.Item>
-        <FileUploadDrawable onUploadSuccess={handleLogoUploadSuccess} />
+        <FileUploadDrawable />
       </Form>
     </Modal>
   );

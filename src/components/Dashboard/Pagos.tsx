@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import { Button } from "antd";

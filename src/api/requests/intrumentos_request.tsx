@@ -1,9 +1,9 @@
-import axios from "axios";
+// import axios from "axios";
 import { message } from "antd";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 import { instrumentos_json } from "../json_examples/instrumentos_json"; 
 
-const API_BASE_URL = "http://localhost:3001";
+// const API_BASE_URL = "http://localhost:3001";
 
 export const fetchInstrumentos = async (): Promise<InstrumentoInterface[]> => {
   try {

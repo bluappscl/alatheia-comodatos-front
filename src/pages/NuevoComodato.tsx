@@ -90,10 +90,6 @@ const CrearComodato: React.FC = () => {
     setClientId(id);
   };
 
-  const handleLogoUploadSuccess = (url: string) => {
-    console.log("Logo uploaded successfully:", url);
-  };
-
   return (
     <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
       <h1 className="text-2xl font-bold mb-4 text-center">Crear Comodato</h1>
@@ -113,7 +109,7 @@ const CrearComodato: React.FC = () => {
                 },
               ]}
             >
-              <FileUploadDrawable onUploadSuccess={handleLogoUploadSuccess} />
+              <FileUploadDrawable />
             </Form.Item>
             <Form.Item
               label="Cliente"

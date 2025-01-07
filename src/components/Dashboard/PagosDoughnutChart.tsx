@@ -1,10 +1,8 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { DownOutlined, UpOutlined } from "@ant-design/icons";
-import { Button } from "antd";
 
 const PagosDoughnutChart = () => {
-  const [showBarChart, setShowBarChart] = useState(false);
+  // const [showBarChart, setShowBarChart] = useState(false);
 
   const doughnutData = {
     labels: ["Pago Objetivo", "Pagos Recibidos"],

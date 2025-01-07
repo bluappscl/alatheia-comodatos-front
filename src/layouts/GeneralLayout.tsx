@@ -1,5 +1,4 @@
 import alatheia_logo from "../assets/alatheia-logo.svg";
-import alatheia_logo_no_logo from "../assets/alatheia-logo-no-text.svg";
 import React, { useState } from "react";
 import { Layout, Menu, Tooltip } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -26,17 +25,17 @@ const GeneralLayout: React.FC = () => {
   const breadCrumItems = useBreadcrumbContext((state) => state.items);
   console.log(breadCrumItems);
   // Map route paths to menu keys
-  const pathToKeyMap: Record<string, string> = {
-    "/": "1",
-    "/clientes": "2",
-    "/mypage": "3",
-    "/nuevo-comodato": "4",
-  };
+  // const pathToKeyMap: Record<string, string> = {
+  //   "/": "1",
+  //   "/clientes": "2",
+  //   "/mypage": "3",
+  //   "/nuevo-comodato": "4",
+  // };
 
   // Find the last breadcrumb's path and map it to a key
-  const activeKey = breadCrumItems.length
-    ? pathToKeyMap[breadCrumItems[breadCrumItems.length - 1]?.path ?? "/"]
-    : "1"; // Default to home if no breadcrumbs
+  // const activeKey = breadCrumItems.length
+  //   ? pathToKeyMap[breadCrumItems[breadCrumItems.length - 1]?.path ?? "/"]
+  //   : "1"; // Default to home if no breadcrumbs
 
   return (
     <Layout style={{ minHeight: "100vh" }}>

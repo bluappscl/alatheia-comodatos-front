@@ -13,6 +13,7 @@ import CrearComodato from "../pages/NuevoComodato";
 import InsumoPage from "../pages/Insumos";
 import InstrumentoPage from "../pages/Instrumentos";
 import ComodatosPage from "../pages/Comodatos";
+import ComodatoDetalle from "../pages/ComodatoDetalle";
 
 const routes = createRoutesFromElements(
   <>
@@ -26,6 +27,7 @@ const routes = createRoutesFromElements(
       <Route path="clientes/:id" element={<HospitalDetails />} />
       <Route path="insumos" element={<InsumoPage />} />
       <Route path="instrumentos" element={<InstrumentoPage />} />
+      <Route path="aaa/d" element={<ComodatoDetalle />} />
     </Route>
   </>
 );

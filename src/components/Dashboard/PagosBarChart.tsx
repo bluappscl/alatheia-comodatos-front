@@ -6,6 +6,7 @@ import {
 } from "@ant-design/icons";
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import { ChartOptions } from "chart.js";
 
 const PagosSummaryCards: React.FC = () => {
   const summaryData = [
@@ -107,7 +108,7 @@ const PagosBarChart: React.FC = () => {
     ],
   };
 
-  const options = {
+  const options : ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
       legend: {

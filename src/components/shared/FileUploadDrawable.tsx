@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Upload, message, Button, Typography } from "antd";
-import { UploadOutlined, CheckOutlined, DeleteOutlined } from "@ant-design/icons";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 
-interface FileUploaderProps {
-  onUploadSuccess: (url: string) => void; // Callback to return the uploaded file URL
-}
+// interface FileUploaderProps {
+//   onUploadSuccess: (url: string) => void; // Callback to return the uploaded file URL
+// }
 
-const FileUploadDrawable: React.FC<FileUploaderProps> = ({ onUploadSuccess }) => {
+const FileUploadDrawable: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
+  // const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (info: any) => {
     const file = info.file;
@@ -20,37 +20,37 @@ const FileUploadDrawable: React.FC<FileUploaderProps> = ({ onUploadSuccess }) =>
     }
   };
 
-  const handleConfirmUpload = async () => {
-    if (!selectedFile) {
-      message.error("No hay archivo seleccionado.");
-      return;
-    }
+  // const handleConfirmUpload = async () => {
+  //   if (!selectedFile) {
+  //     message.error("No hay archivo seleccionado.");
+  //     return;
+  //   }
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
+  //   const formData = new FormData();
+  //   formData.append("file", selectedFile);
 
-    try {
-      setUploading(true);
-      const response = await fetch("http://localhost:3001/upload/logo", {
-        method: "POST",
-        body: formData,
-      });
+  //   try {
+  //     setUploading(true);
+  //     const response = await fetch("http://localhost:3001/upload/logo", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
 
-      if (response.ok) {
-        const result = await response.json();
-        message.success("Archivo subido exitosamente.");
-        onUploadSuccess(result.url); // Return the uploaded file URL
-        setSelectedFile(null); // Reset file selection
-      } else {
-        message.error("Error al subir el archivo.");
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      message.error("Error al subir el archivo.");
-    } finally {
-      setUploading(false);
-    }
-  };
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       message.success("Archivo subido exitosamente.");
+  //       onUploadSuccess(result.url); // Return the uploaded file URL
+  //       setSelectedFile(null); // Reset file selection
+  //     } else {
+  //       message.error("Error al subir el archivo.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error uploading file:", error);
+  //     message.error("Error al subir el archivo.");
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
 
   const handleRemoveFile = () => {
     setSelectedFile(null);

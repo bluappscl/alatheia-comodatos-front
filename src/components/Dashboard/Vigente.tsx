@@ -1,5 +1,6 @@
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import { Bar } from "react-chartjs-2";
+import { ChartOptions } from "chart.js";
 
 const VigentesChart = () => {
   const data = {
@@ -35,7 +36,7 @@ const VigentesChart = () => {
     ],
   };
 
-  const options = {
+  const options : ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
       legend: {

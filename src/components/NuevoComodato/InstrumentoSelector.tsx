@@ -1,5 +1,4 @@
 import { Button, Form, Input, InputNumber, message, Select } from "antd";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { instrumentos_json } from "../../api/json_examples/instrumentos_json"; 
 

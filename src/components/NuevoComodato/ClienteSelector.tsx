@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Card, Typography, Spin, message, Input } from "antd";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Cliente as ClienteInterface } from "../../interfaces/Cliente";
 import { clientes_json } from "../../api/json_examples/clientes";
 
