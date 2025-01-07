@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "codigo": "03P85-25",
+    "producto": "CO4+CARTRIDGE",
+    "descripcion": "Test in vitro para la medición de Lactato, pH, pCO2, pO2, SO2, HCO3, BE en sangre total",
+    "presentacion": "25 cartuchos/caja",
+    "precio_neto": 181803
+  },
+  {
+    "id": 2,
+    "codigo": "04G10-50",
+    "producto": "BIOCHEM REAGENT",
+    "descripcion": "Reactivo para pruebas bioquímicas de Glucosa y Colesterol en suero",
+    "presentacion": "50 frascos/caja",
+    "precio_neto": 255600
+  },
+  {
+    "id": 3,
+    "codigo": "07A12-10",
+    "producto": "HEMATOLOGY KIT",
+    "descripcion": "Kit para pruebas de hematología incluyendo Hemoglobina y Hematocrito",
+    "presentacion": "10 kits/caja",
+    "precio_neto": 312450
+  },
+  {
+    "id": 4,
+    "codigo": "09D32-20",
+    "producto": "URINE STRIPS",
+    "descripcion": "Tiras reactivas para el análisis de orina, incluyendo Glucosa, Proteína y pH",
+    "presentacion": "20 tiras/caja",
+    "precio_neto": 76500
+  },
+  {
+    "id": 5,
+    "codigo": "12X45-15",
+    "producto": "IMMUNOASSAY REAGENT",
+    "descripcion": "Reactivo para pruebas inmunoensayo de alta sensibilidad",
+    "presentacion": "15 frascos/caja",
+    "precio_neto": 423780
+  }
+]

@@ -1,4 +1,3 @@
-import gif from "./assets/analitics-hungover.gif";
 import alatheia_logo from "./assets/alatheia-logo-dark.svg";
 
 function Login() {

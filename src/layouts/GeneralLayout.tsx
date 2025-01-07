@@ -89,7 +89,7 @@ const GeneralLayout: React.FC = () => {
         </div>
         {/* {collapsed && (  */}
         <Content
-          className={`bg-blue-50 rounded-lg h-max`}
+          className={`bg-blue-50 rounded-lg h-max p-6`}
           style={{ paddingTop: 64 }}
         >
           <div className="-mt-12">

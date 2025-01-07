@@ -8,11 +8,11 @@ const Dashboard = () => {
   return (
     <>
       <div className="flex flex-wrap center">
-        <div className="grid grid-cols-1 w-full md:w-5/12 gap-6 p-6">
+        <div className="grid grid-cols-1 w-full md:w-5/12 gap-6">
           <VigentesChart />
-        </div>
-        <div className="grid grid-cols-1 w-full md:w-7/12 gap-6 p-6">
           <InstrumentosChart />
+        </div>
+        <div className="grid grid-cols-1 w-full md:w-7/12 gap-6">
           <PagosBarChart />
         </div>
       </div>

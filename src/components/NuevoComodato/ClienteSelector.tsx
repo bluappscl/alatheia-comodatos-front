@@ -3,6 +3,7 @@ import { Button, Modal, Card, Typography, Spin, message, Input } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Cliente as ClienteInterface } from "../../interfaces/Cliente";
+import { clientes_json } from "../../api/json_examples/clientes";
 
 const { Search } = Input;
 
@@ -14,10 +15,8 @@ interface ClientSelectionModalProps {
 
 const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   onSelectClient,
-  onAddClient,
   showSelectedClient = true, // Default to true
 }) => {
-  const navigate = useNavigate()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clientes, setClientes] = useState<ClienteInterface[]>([]);
@@ -31,9 +30,12 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   const fetchClientes = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3001/clientes");
-      setClientes(response.data);
-      setFilteredClientes(response.data);
+      // const response = await axios.get("http://localhost:3001/clientes");
+      // setClientes(response.data);
+      // setFilteredClientes(response.data);
+
+      setClientes(clientes_json);
+      setFilteredClientes(clientes_json);
     } catch (error) {
       console.error("Error fetching clients:", error);
       message.error("Error al cargar los clientes");
@@ -75,7 +77,7 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
       {showSelectedClient && selectedClient && (
         <div className="flex justify-center items-center mt-4">
           <Card className="mt-4 flex w-fit flex-col items-center px-10 bg-gray-50">
-            <img
+            {/* <img
               src={
                 selectedClient.logo ||
                 "https://static.vecteezy.com/system/resources/previews/005/720/408/non_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg"
@@ -84,7 +86,7 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
               // https://static.vecteezy.com/system/resources/previews/005/720/408/non_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg
               alt={selectedClient.nombre}
               className="w-20 h-20 object-cover rounded-3xl mb-4 bg-white"
-            />
+            /> */}
 
             <div className="flex flex-col">
               <Typography.Title level={5}>
@@ -122,14 +124,6 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
             onChange={(e) => handleSearch(e.target.value)}
             className="w-full md:w-2/3"
           />
-          <Button
-            type="primary"
-            // onClick={onAddClient}
-            onClick={() => navigate("/clientes")}
-            className="w-full md:w-auto"
-          >
-            Nuevo Cliente
-          </Button>
         </div>
         {loading ? (
           <Spin className="w-full flex justify-center items-center" />
@@ -142,11 +136,11 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
                 className="mt-4 flex flex-col items-center p-4 bg-gray-50"
                 onClick={() => handleCardClick(cliente)}
               >
-                <img
+                {/* <img
                   src={cliente.logo || "https://via.placeholder.com/100"}
                   alt={cliente.nombre}
                   className="w-20 h-20 object-cover rounded-3xl mb-4 bg-white"
-                />
+                /> */}
                 <div className="flex flex-col">
                   <Typography.Title level={5}>
                     {cliente.nombre}

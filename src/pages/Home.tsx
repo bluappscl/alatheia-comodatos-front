@@ -11,8 +11,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {/* <div>Home</div> */}
-      {/* <Link to="/contactos">Redireccion</Link> */}
+      {/* <BannerPage title="Home Dashboard"/> */}
       <Dashboard />
     </>
   );

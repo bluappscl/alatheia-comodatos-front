@@ -20,7 +20,7 @@ interface Comodato {
   id: number;
   contrato: string;
   compra_minima_mensual_dinero: number;
-  compra_minima_anual_dinero: number;
+  compra_minima_mensual_reactivo: number;
   fecha_inicio: string;
   fecha_fin: string;
   estado: string;
@@ -51,22 +51,28 @@ const HospitalDetails: React.FC = () => {
   }, [id]);
 
   return (
-    <div className="m-4 grid grid-cols-1 md:grid-cols-12 gap-6">
+    <div className="mx-4 grid grid-cols-1 md:grid-cols-12 gap-6">
       {loading && <p>Cargando...</p>}
       {!loading && cliente && (
         <>
           {/* Client Details */}
-          <div className="md:col-span-12 p-6 bg-white rounded-lg flex items-center gap-4">
-            <img
+          <div className="md:col-span-12 p-6 bg-blue-300 rounded-lg flex items-center gap-4">
+            {/* <img
               src={cliente.logo}
               alt={cliente.nombre}
               className="w-20 h-20 object-cover rounded-full"
-            />
+            /> */}
             <div>
-              <Typography.Title level={3}>{cliente.nombre}</Typography.Title>
-              <Typography.Text>RUT: {cliente.rut}</Typography.Text>
+              <h1 className="text-white text-3xl font-semibold">
+                {cliente.nombre}
+              </h1>
+              <Typography.Text className="text-white font-semibold">
+                RUT: {cliente.rut}
+              </Typography.Text>
               <br />
-              <Typography.Text>Dirección: {cliente.direccion}</Typography.Text>
+              <Typography.Text className="text-white font-semibold">
+                Dirección: {cliente.direccion}
+              </Typography.Text>
             </div>
           </div>
 

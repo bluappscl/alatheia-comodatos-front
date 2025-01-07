@@ -1,6 +1,7 @@
-import { Button, Form, InputNumber, message, Select } from "antd";
+import { Button, Form, Input, InputNumber, message, Select } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { instrumentos_json } from "../../api/json_examples/instrumentos_json"; 
 
 interface Instrumento {
   id: number;
@@ -8,7 +9,7 @@ interface Instrumento {
   producto: string;
   numero_serie: string;
   cantidad: number;
-  valor_neto_uf: number;
+  valor_neto: number;
 }
 
 const InstrumentoSelector: React.FC = () => {
@@ -17,8 +18,9 @@ const InstrumentoSelector: React.FC = () => {
   useEffect(() => {
     const fetchInstrumentos = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/instrumentos");
-        setInstrumentos(response.data);
+        // const response = await axios.get("http://localhost:3001/instrumentos");
+        // setInstrumentos(response.data);
+        setInstrumentos(instrumentos_json);
       } catch (error) {
         console.error("Error fetching instrumentos:", error);
         message.error("Error al cargar los instrumentos");
@@ -40,8 +42,10 @@ const InstrumentoSelector: React.FC = () => {
               {/* Instrumento Selector */}
               <Form.Item
                 name={[name, "id"]}
-                rules={[{ required: true, message: "Seleccione un instrumento" }]}
-                className="flex-1 min-w-[200px]"
+                rules={[
+                  { required: true, message: "Seleccione un instrumento" },
+                ]}
+                className="flex-1"
               >
                 <Select
                   showSearch
@@ -51,13 +55,32 @@ const InstrumentoSelector: React.FC = () => {
                 >
                   {instrumentos.map((instrumento) => (
                     <Select.Option key={instrumento.id} value={instrumento.id}>
-                      {`${instrumento.codigo} - ${instrumento.producto} - UF ${instrumento.valor_neto_uf}`}
+                      {`${instrumento.producto} - ${instrumento.codigo}`}
                     </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
 
-              {/* Cantidad Input */}
+              <Form.Item
+                name="valorInstrumentoNeto"
+                rules={[
+                  {
+                    required: true,
+                    message: "Ingrese la cantidad de dinero",
+                  },
+                ]}
+              >
+                <div className="flex flex-wrap md:flex-nowrap items-center gap-4">
+                  <div className="w-full">
+                    <Select placeholder="Moneda" className="w-fit">
+                      <Select.Option value="CLP">CLP</Select.Option>
+                      <Select.Option value="UF">UF</Select.Option>
+                    </Select>
+                  </div>
+                  <Input min={1} className="w-full" placeholder="Valor Neto" />
+                </div>
+              </Form.Item>
+
               <Form.Item
                 name={[name, "cantidad"]}
                 rules={[
@@ -68,7 +91,7 @@ const InstrumentoSelector: React.FC = () => {
                     message: "La cantidad debe ser mayor a 0",
                   },
                 ]}
-                className="w-24"
+                className="w-full"
               >
                 <InputNumber
                   min={1}
@@ -77,7 +100,6 @@ const InstrumentoSelector: React.FC = () => {
                 />
               </Form.Item>
 
-              {/* Remove Button */}
               <Form.Item>
                 <Button
                   type="default"
@@ -92,11 +114,7 @@ const InstrumentoSelector: React.FC = () => {
           ))}
 
           {/* Add Instrumento Button */}
-          <Button
-            type="dashed"
-            onClick={() => add()}
-            className="w-full md:w-auto"
-          >
+          <Button type="dashed" onClick={() => add()} className="w-full">
             Agregar Instrumento
           </Button>
         </div>

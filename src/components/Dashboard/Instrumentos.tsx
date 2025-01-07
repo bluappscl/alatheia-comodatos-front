@@ -1,5 +1,4 @@
 import { Doughnut } from "react-chartjs-2";
-import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
 const InstrumentosChart = () => {
   const data = {

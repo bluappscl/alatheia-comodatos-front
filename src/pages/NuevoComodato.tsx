@@ -10,17 +10,17 @@ import {
   Select,
 } from "antd";
 import axios from "axios";
-import InsumoSelector from "../components/NuevoComodato/InsumoSelector";
-import InstrumentoSelector from "../components/NuevoComodato/InstrumentoSelector";
 import ClientSelectionModal from "../components/NuevoComodato/ClienteSelector";
+import FileUploadDrawable from "../components/shared/FileUploadDrawable";
+import InstrumentSelectorTable from "../components/Instrumentos/InstrumentSelectorTable";
 
 interface CrearComodatoValues {
   nombre: string;
   descripcion: string;
   fechaInicio: { format: (format: string) => string };
   fechaFin: { format: (format: string) => string };
-  insumos: Array<{ id: number; cantidad: number }>;
-  instrumentos: Array<{ id: number; cantidad: number }>;
+  insumos?: Array<{ id: number; cantidad: number }>;
+  instrumentos?: Array<{ id: number; cantidad: number }>;
   client_id: number;
   objetivoReactivosCantidad?: number;
   objetivoDineroCantidad?: number;
@@ -33,13 +33,13 @@ const CrearComodato: React.FC = () => {
   const [clientId, setClientId] = useState<number>(0);
   const [enableReactivos, setEnableReactivos] = useState(false);
   const [enableDinero, setEnableDinero] = useState(false);
+  const [enableGraceTime, setEnableGraceTime] = useState(false);
 
   const onFinish = async (values: CrearComodatoValues) => {
     setLoading(true);
     try {
       const data = {
         nombre: values.nombre,
-        descripcion: values.descripcion,
         fechaInicio: values.fechaInicio.format("YYYY-MM-DD"),
         fechaFin: values.fechaFin.format("YYYY-MM-DD"),
         esRenovable: isRenovable,
@@ -90,8 +90,12 @@ const CrearComodato: React.FC = () => {
     setClientId(id);
   };
 
+  const handleLogoUploadSuccess = (url: string) => {
+    console.log("Logo uploaded successfully:", url);
+  };
+
   return (
-    <div className="p-6 w-11/12 h-full mx-auto bg-white rounded-md">
+    <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
       <h1 className="text-2xl font-bold mb-4 text-center">Crear Comodato</h1>
       <Form
         layout="vertical"
@@ -101,25 +105,83 @@ const CrearComodato: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <Form.Item
-              label="Nombre"
-              name="nombre"
+              label="Contrato"
               rules={[
-                { required: true, message: "Por favor ingrese el nombre" },
+                {
+                  required: true,
+                  message: "Por favor ingrese el nombre del cliente",
+                },
               ]}
             >
-              <Input placeholder="Ingrese el nombre del comodato" />
+              <FileUploadDrawable onUploadSuccess={handleLogoUploadSuccess} />
+            </Form.Item>
+            <Form.Item
+              label="Cliente"
+              rules={[
+                { required: true, message: "Por favor seleccione un cliente" },
+              ]}
+            >
+              <ClientSelectionModal
+                onSelectClient={handleSelectClient}
+                showSelectedClient={true}
+              />
             </Form.Item>
 
             <Form.Item
-              label="Descripción"
-              name="descripcion"
+              label="Nombre Cliente Representante"
+              name="nombre"
               rules={[
-                { required: true, message: "Por favor ingrese la descripción" },
+                {
+                  required: true,
+                  message: "Por favor ingrese el nombre del cliente",
+                },
               ]}
             >
-              <Input.TextArea placeholder="Ingrese la descripción del comodato" />
+              <Input placeholder="Ingrese el nombre del cliente" />
+            </Form.Item>
+            <Form.Item
+              label="Rut Cliente Representante"
+              name="rut"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingrese el rut del cliente",
+                },
+              ]}
+            >
+              <Input placeholder="Ingrese el rut del cliente" />
+            </Form.Item>
+            <Form.Item
+              label="Direccion de Sucursal"
+              name="sucursal"
+              rules={[
+                {
+                  required: true,
+                  message: "Porfavor ingrese la direccion de la sucursal",
+                },
+              ]}
+            >
+              <Input placeholder="Ingrese la direccion de la sucursal" />
             </Form.Item>
 
+            <Form.Item
+              label="Tipo de sucursal"
+              name="sucursal_tipo"
+              rules={[
+                {
+                  required: true,
+                  message: "Porfavor seleccione un tipo de sucursal",
+                },
+              ]}
+            >
+              <Select placeholder="Tipo de sucursal" className="w-full">
+                <Select.Option value="Hematologia">Hematologia</Select.Option>
+                <Select.Option value="Cardiología">Cardiología</Select.Option>
+                <Select.Option value="Cardiología">...</Select.Option>
+              </Select>
+            </Form.Item>
+          </div>
+          <div>
             <Form.Item
               label="Fecha de Inicio"
               name="fechaInicio"
@@ -145,9 +207,60 @@ const CrearComodato: React.FC = () => {
             >
               <DatePicker className="w-full" />
             </Form.Item>
+            <Form.Item
+              label="Plazo para pago de facturas"
+              name="plazoPagoFacturas"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingrese el plazo de días para pagar",
+                },
+              ]}
+            >
+              <InputNumber
+                placeholder="Ingrese la cantidad de días para pagar la factura despues de emitida"
+                className="w-full"
+              />
+            </Form.Item>
+
+            <Form.Item label="Tiempo de Gracia">
+              <div className="flex flex-col gap-2">
+                <Checkbox
+                  checked={enableGraceTime}
+                  onChange={(e) => setEnableGraceTime(e.target.checked)}
+                >
+                  Tiene tiempo de gracia?
+                </Checkbox>
+                {enableGraceTime && (
+                  <Form.Item
+                    name="tiempoDeGracia"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Ingrese la cantidad de dinero",
+                      },
+                    ]}
+                  >
+                    <div className="flex flex-row items-center gap-4">
+                      <InputNumber
+                        min={1}
+                        className="w-full"
+                        placeholder="Meses de gracia"
+                      />
+                      <InputNumber
+                        min={1}
+                        className="w-full"
+                        placeholder="Porcentaje de descuento"
+                        suffix="%"
+                      />
+                    </div>
+                  </Form.Item>
+                )}
+              </div>
+            </Form.Item>
 
             <Form.Item label="Opciones de renovación">
-              <div className="flex items-center gap-4 lg:mb-6">
+              <div className="flex items-center gap-4 ">
                 <Checkbox
                   checked={isRenovable}
                   onChange={handleIsRenovableChange}
@@ -228,42 +341,18 @@ const CrearComodato: React.FC = () => {
                   )}
                 </div>
               </Form.Item>
+              {/* <Form.Item label="Agregar Instrumento" className="w-full">
+                <InstrumentoSelector />
+              </Form.Item> */}
             </div>
-
-            <Form.Item className="hidden lg:block">
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                className="w-full bg-blue-500 hover:bg-blue-600"
-              >
-                Crear Comodato
-              </Button>
-            </Form.Item>
-          </div>
-          <div>
-            <Form.Item
-              label="Cliente"
-              rules={[
-                { required: true, message: "Por favor seleccione un cliente" },
-              ]}
-            >
-              <ClientSelectionModal
-                onSelectClient={handleSelectClient}
-                showSelectedClient={true}
-              />
-            </Form.Item>
-
-            <Form.Item label="Agregar Insumo" className="w-full">
-              <InsumoSelector />
-            </Form.Item>
-
-            <Form.Item label="Agregar Instrumento">
-              <InstrumentoSelector />
-            </Form.Item>
           </div>
         </div>
-        <Form.Item className="block lg:hidden">
+
+        <div className="flex flex-col mb-10">
+          <InstrumentSelectorTable />
+        </div>
+
+        <Form.Item>
           <Button
             type="primary"
             htmlType="submit"

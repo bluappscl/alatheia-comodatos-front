@@ -1,19 +1,10 @@
 import React from "react";
 import { Button, Table, Typography } from "antd";
 import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
-
-interface Comodato {
-  id: number;
-  contrato: string;
-  compra_minima_mensual_dinero: number;
-  compra_minima_anual_dinero: number;
-  fecha_inicio: string;
-  fecha_fin: string;
-  estado: string;
-}
+import { ComodatoInterface } from "../../interfaces/Comodato";
 
 interface ComodatosTableProps {
-  comodatos: Comodato[];
+  comodatos: ComodatoInterface[];
 }
 
 const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
@@ -36,11 +27,11 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       render: (value: number) => `$${value.toLocaleString()}`,
     },
     {
-      title: "Compra Mínima Anual (CLP)",
-      dataIndex: "compra_minima_anual_dinero",
-      key: "compra_minima_anual_dinero",
+      title: "Compra Mínima Reactivos",
+      dataIndex: "compra_minima_mensual_reactivo",
+      key: "compra_minima_mensual_reactivo",
       align: "center",
-      render: (value: number) => `$${value.toLocaleString()}`,
+      render: (value: number) => `${value.toLocaleString()}`,
     },
     {
       title: "Estado",
@@ -58,7 +49,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       title: "Contrato",
       dataIndex: "contrato",
       key: "contrato",
-      align:"center",
+      align: "center",
       render: (url: string) => (
         <a href={url} target="_blank" rel="noopener noreferrer">
           <Button>
@@ -71,7 +62,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       title: "Detalle",
       dataIndex: "detalle",
       key: "detalle",
-      align:"center",
+      align: "center",
       render: (url: string) => (
         <Button>
           <ZoomInOutlined />
@@ -85,6 +76,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       dataSource={comodatos}
       columns={columns}
       rowKey="id"
+      className="bg-primary-400 rounded-xl"
       pagination={{ pageSize: 5 }}
     />
   );

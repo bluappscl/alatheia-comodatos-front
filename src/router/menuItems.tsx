@@ -15,21 +15,26 @@ export const items: MenuProps["items"] = [
     {
       key: "2",
       icon: <LaptopOutlined />,
-      label: <Link to="/clientes">Clientes</Link>,
+      label: <Link to="/comodatos">Comodatos</Link>,
     },
     {
       key: "3",
       icon: <LaptopOutlined />,
-      label: <Link to="/nuevo-comodato">Nuevo Comodato</Link>,
+      label: <Link to="/clientes">Clientes</Link>,
     },
     {
       key: "4",
       icon: <LaptopOutlined />,
-      label: <Link to="/insumos">Insumos</Link>,
+      label: <Link to="/nuevo-comodato">Nuevo Comodato</Link>,
     },
-    {
-      key: "5",
-      icon: <LaptopOutlined />,
-      label: <Link to="/instrumentos">Instrumentos</Link>,
-    },
+    // {
+    //   key: "5",
+    //   icon: <LaptopOutlined />,
+    //   label: <Link to="/insumos">Insumos</Link>,
+    // },
+    // {
+    //   key: "6",
+    //   icon: <LaptopOutlined />,
+    //   label: <Link to="/instrumentos">Instrumentos</Link>,
+    // },
   ];

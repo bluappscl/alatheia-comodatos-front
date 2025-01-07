@@ -5,6 +5,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
 import ContactTable, { DataType } from "../components/Contactos/ClientesTable";
 import CreateClienteModal from "../components/Contactos/CreateClienteModal";
+import { clientes_json } from "../api/json_examples/clientes";
 
 const Contactos: React.FC = () => {
   const setBreadcrumbs = useBreadcrumbContext((state) => state.setBreadcrumbs);
@@ -19,8 +20,9 @@ const Contactos: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3001/clientes");
-      const transformedData: DataType[] = response.data.map((cliente: any) => ({
+      // const response = await axios.get("http://localhost:3001/clientes");
+      // const transformedData: DataType[] = response.data.map((cliente: any) => ({
+      const transformedData: DataType[] = clientes_json.map((cliente: any) => ({
         key: cliente.id,
         id: cliente.id,
         logo: cliente.logo,
@@ -48,7 +50,7 @@ const Contactos: React.FC = () => {
   };
 
   return (
-    <div className="m-4">
+    <div>
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-semibold">Contactos</h1>
         <Button
