@@ -3,13 +3,20 @@ import { Button, Table, Typography } from "antd";
 import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
 import { ComodatoInterface } from "../../interfaces/Comodato";
 import type { ColumnsType } from "antd/es/table";
+import { useNavigate } from "react-router-dom";
 
 interface ComodatosTableProps {
   comodatos: ComodatoInterface[];
 }
 
 const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
-  const columns: ColumnsType = [
+  const navigate = useNavigate();
+
+  const handleNavigateToDetalle = (id: number) => {
+    navigate(`/comodatos/${id}`);
+  };
+
+  const columns: ColumnsType<ComodatoInterface> = [
     {
       title: "Fecha de Inicio",
       dataIndex: "fecha_inicio",
@@ -61,11 +68,10 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
     },
     {
       title: "Detalle",
-      dataIndex: "detalle",
       key: "detalle",
       align: "center",
-      render: (_url: string) => (
-        <Button>
+      render: (_: any, record: ComodatoInterface) => (
+        <Button onClick={() => handleNavigateToDetalle(record.id)}>
           <ZoomInOutlined />
         </Button>
       ),

@@ -23,11 +23,11 @@ const routes = createRoutesFromElements(
       <Route path="nuevo-comodato" element={<CrearComodato />} />
       <Route path="mypage" element={<MyPage />} />
       <Route path="comodatos" element={<ComodatosPage />} />
+      <Route path="comodatos/:id" element={<ComodatoDetalle />} />
       <Route path="clientes" element={<Contactos />} />
       <Route path="clientes/:id" element={<HospitalDetails />} />
       <Route path="insumos" element={<InsumoPage />} />
       <Route path="instrumentos" element={<InstrumentoPage />} />
-      <Route path="aaa/d" element={<ComodatoDetalle />} />
     </Route>
   </>
 );

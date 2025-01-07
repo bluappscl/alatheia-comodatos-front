@@ -163,6 +163,7 @@ const ComodatoDetalle: React.FC = () => {
             </div>
           </div>
         </div>
+        <hr className="my-6 border-2"/>
         <div className="flex-col w-full">
           <h2 className="text-lg font-semibold mt-6">
             Instrumentos en comodato
