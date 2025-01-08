@@ -3,9 +3,10 @@ import { useParams } from "react-router-dom";
 import { Button, Input } from "antd";
 import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
 import { InstrumentoInterface } from "../interfaces/InstrumentoInterface";
-import comodato_photo from "../media/temporal/comodato_photo.png";
 import { comodatos_id_json } from "../api/json_examples/comodatos_id_json";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
+
+import comodato_photo from "../media/temporal/comodato_photo.png";
 
 interface ComodatoData {
   id: number;

@@ -83,7 +83,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       dataSource={comodatos}
       columns={columns}
       rowKey="id"
-      className="bg-blue-400 rounded-xl"
+      className="bg-dark-100 rounded-xl"
       pagination={{ pageSize: 5 }}
     />
   );
