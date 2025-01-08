@@ -3,7 +3,7 @@ import { message } from "antd";
 import { fetchInstrumentos } from "../requests/http_get_intrumentos";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 
-const useFetchInstrumentos = () => {
+export const useFetchInstrumentos = () => {
   const [instrumentos, setInstrumentos] = useState<InstrumentoInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,4 +28,3 @@ const useFetchInstrumentos = () => {
   return { instrumentos, loading, error };
 };
 
-export default useFetchInstrumentos;

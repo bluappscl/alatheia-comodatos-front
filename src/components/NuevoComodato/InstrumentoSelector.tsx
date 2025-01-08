@@ -1,33 +1,8 @@
 import { Button, Form, Input, InputNumber, message, Select } from "antd";
-import { useEffect, useState } from "react";
-import { instrumentos_json } from "../../api/json_examples/instrumentos_json"; 
-
-interface Instrumento {
-  id: number;
-  codigo: string;
-  producto: string;
-  numero_serie: string;
-  cantidad: number;
-  valor_neto: number;
-}
+import { useFetchInstrumentos } from "../../api/hooks/get_instrumentos";
 
 const InstrumentoSelector: React.FC = () => {
-  const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
-
-  useEffect(() => {
-    const fetchInstrumentos = async () => {
-      try {
-        // const response = await axios.get("http://localhost:3001/instrumentos");
-        // setInstrumentos(response.data);
-        setInstrumentos(instrumentos_json);
-      } catch (error) {
-        console.error("Error fetching instrumentos:", error);
-        message.error("Error al cargar los instrumentos");
-      }
-    };
-
-    fetchInstrumentos();
-  }, []);
+  const { instrumentos } = useFetchInstrumentos();
 
   return (
     <Form.List name="instrumentos">

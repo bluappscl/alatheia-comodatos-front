@@ -4,7 +4,7 @@ import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
 import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
-import useFetchClientes from "../../api/hooks/get_clientes";
+import { useFetchClientes } from "../../api/hooks/get_clientes";
 import ClientesFilter from "./ComodatosTable/ClientesFilter";
 
 interface ComodatosTableProps {

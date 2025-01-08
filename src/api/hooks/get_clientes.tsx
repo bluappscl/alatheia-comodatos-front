@@ -3,7 +3,7 @@ import { message } from "antd";
 import { fetchClientes } from "../requests/http_get_clientes";
 import { ClienteInterface } from "../../interfaces/ClienteInterface";
 
-const useFetchClientes = () => {
+export const useFetchClientes = () => {
   const [clientes, setClientes] = useState<ClienteInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,4 +28,3 @@ const useFetchClientes = () => {
   return { clientes, loading, error };
 };
 
-export default useFetchClientes;

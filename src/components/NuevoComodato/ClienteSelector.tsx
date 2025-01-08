@@ -1,50 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Card, Typography, Spin, message, Input } from "antd";
+import { Button, Modal, Card, Typography, Spin, Input } from "antd";
 import { ClienteInterface } from "../../interfaces/ClienteInterface";
-import { clientes_json } from "../../api/json_examples/clientes";
+import { useFetchClientes } from "../../api/hooks/get_clientes";
 
 const { Search } = Input;
 
 interface ClientSelectionModalProps {
   onSelectClient: (id: number) => void;
-  onAddClient?: () => void; // Optional callback for adding a new client
-  showSelectedClient?: boolean; // Prop to control showing the selected client card
+  onAddClient?: () => void;
+  showSelectedClient?: boolean;
 }
 
 const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   onSelectClient,
-  showSelectedClient = true, // Default to true
+  showSelectedClient = true,
 }) => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [clientes, setClientes] = useState<ClienteInterface[]>([]);
   const [filteredClientes, setFilteredClientes] = useState<ClienteInterface[]>(
     []
   );
-  const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedClient, setSelectedClient] = useState<ClienteInterface>();
 
-  const fetchClientes = async () => {
-    setLoading(true);
-    try {
-      // const response = await axios.get("http://localhost:3001/clientes");
-      // setClientes(response.data);
-      // setFilteredClientes(response.data);
-
-      setClientes(clientes_json);
-      setFilteredClientes(clientes_json);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-      message.error("Error al cargar los clientes");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { clientes, loading } = useFetchClientes();
 
   useEffect(() => {
     if (isModalOpen) {
-      fetchClientes();
+      setFilteredClientes(clientes);
     }
   }, [isModalOpen]);
 

@@ -12,11 +12,10 @@ export const fetchClientes = async (): Promise<ClienteInterface[]> => {
     // return response.data.map((item: ClienteInterface) => ({
     //   ...item
     // }));
-    
-    return clientes_json.map((item: ClienteInterface) => ({
-      ...item
-    }));
 
+    return clientes_json.map((item: ClienteInterface) => ({
+      ...item,
+    }));
   } catch (error) {
     console.error("Error fetching instrumentos:", error);
     message.error("Error al cargar los instrumentos");
