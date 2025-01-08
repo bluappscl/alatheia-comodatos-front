@@ -1,4 +1,4 @@
-import { Card, message } from "antd";
+import { message } from "antd";
 import { useEffect, useState } from "react";
 import ComodatosTable from "../components/Contactos/ComodatosTable";
 import { ComodatoInterface } from "../interfaces/ComodatoInterface";
