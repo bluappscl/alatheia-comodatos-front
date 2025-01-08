@@ -5,6 +5,7 @@ import VigentesChart from "../components/Dashboard/Vigente";
 import PagosBarChart from "../components/Dashboard/PagosBarChart";
 import ComodatosTable from "../components/Contactos/ComodatosTable";
 import axios from "axios";
+import { ComodatoInterface } from "../interfaces/ComodatoInterface";
 
 interface Cliente {
   id: number;
@@ -13,17 +14,7 @@ interface Cliente {
   codigo_comuna: string;
   direccion: string;
   logo: string;
-  comodatos: Comodato[];
-}
-
-interface Comodato {
-  id: number;
-  contrato: string;
-  compra_minima_mensual_dinero: number;
-  compra_minima_mensual_reactivo: number;
-  fecha_inicio: string;
-  fecha_fin: string;
-  estado: string;
+  comodatos: ComodatoInterface[];
 }
 
 const HospitalDetails: React.FC = () => {

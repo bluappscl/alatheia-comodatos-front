@@ -22,7 +22,7 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   const [searchText, setSearchText] = useState("");
   const [selectedClient, setSelectedClient] = useState<ClienteInterface>();
 
-  const { clientes, loading } = useFetchClientes();
+  const { clientes, loadingClientes } = useFetchClientes();
 
   useEffect(() => {
     if (isModalOpen) {
@@ -105,7 +105,7 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
             className="w-full md:w-2/3"
           />
         </div>
-        {loading ? (
+        {loadingClientes ? (
           <Spin className="w-full flex justify-center items-center" />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, message, Select } from "antd";
+import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useFetchInstrumentos } from "../../api/hooks/get_instrumentos";
 
 const InstrumentoSelector: React.FC = () => {

@@ -1,4 +1,3 @@
-// import axios from "axios";
 import { message } from "antd";
 import { clientes_json } from "../json_examples/clientes";
 import { ClienteInterface } from "../../interfaces/ClienteInterface";

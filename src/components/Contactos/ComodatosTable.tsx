@@ -14,7 +14,7 @@ interface ComodatosTableProps {
 const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
   const [filteredClients, setFilteredClients] = useState<string[]>([]);
 
-  const { clientes, loading } = useFetchClientes();
+  const { clientes, loadingClientes } = useFetchClientes();
   const navigate = useNavigate();
 
   const handleNavigateToDetalle = (id: number) => {
@@ -94,7 +94,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
     <>
       <ClientesFilter
         clientes={clientes}
-        loading={loading}
+        loading={loadingClientes}
         setFilteredClients={setFilteredClients}
       />
       <Table

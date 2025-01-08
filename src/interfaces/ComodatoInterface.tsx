@@ -1,3 +1,5 @@
+import { InstrumentoInterface } from "./InstrumentoInterface";
+
 export interface ComodatoInterface {
   id: number;
   contrato: string;
@@ -5,6 +7,16 @@ export interface ComodatoInterface {
   compra_minima_mensual_reactivo: number;
   fecha_inicio: string;
   fecha_fin: string;
-  cliente_id:number;
   estado: string;
+  cliente_id: number;
+  nombre_cliente_representante: string;
+  rut_cliente_representante: string;
+  plazo_pago_facturas: number;
+  tiempo_de_gracia: number;
+  porcentaje_tiempo_de_gracia: number;
+  es_renovable: boolean;
+  renovable_automatico: boolean;
+  instrumentos: InstrumentoInterface[];
+  created_at: string;
+  updated_at: string;
 }

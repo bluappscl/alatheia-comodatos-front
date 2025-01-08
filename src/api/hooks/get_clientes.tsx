@@ -5,7 +5,7 @@ import { ClienteInterface } from "../../interfaces/ClienteInterface";
 
 export const useFetchClientes = () => {
   const [clientes, setClientes] = useState<ClienteInterface[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingClientes, setLoadingClientes] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,13 +18,12 @@ export const useFetchClientes = () => {
         message.error("Error al cargar los clientes");
         setError("Failed to fetch clientes");
       } finally {
-        setLoading(false);
+        setLoadingClientes(false);
       }
     };
 
     fetchData();
   }, []);
 
-  return { clientes, loading, error };
+  return { clientes, loadingClientes, error };
 };
-

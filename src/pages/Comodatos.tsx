@@ -1,28 +1,11 @@
-import { message } from "antd";
-import { useEffect, useState } from "react";
 import ComodatosTable from "../components/Contactos/ComodatosTable";
-import { ComodatoInterface } from "../interfaces/ComodatoInterface";
-import { comodatos_json } from "../api/json_examples/comodatos_json";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
+import { useFetchComodatos } from "../api/hooks/get_comodatos";
 
 import comodato_photo from "../media/temporal/comodato_photo.png";
 
 const ComodatosPage = () => {
-  const [comodatos, setComodatos] = useState<ComodatoInterface[]>([]);
-  useEffect(() => {
-    const fetchComodato = async () => {
-      try {
-        // const response = await axios.get(`http://localhost:3001/comodatos`);
-        // setComodatos(response.data); // Pass data directly to the state
-        setComodatos(comodatos_json);
-      } catch (error) {
-        console.error("Error fetching client data:", error);
-        message.error("Error al cargar la información del cliente.");
-      }
-    };
-
-    fetchComodato();
-  }, []);
+  const { comodatos } = useFetchComodatos();
 
   return (
     <>
