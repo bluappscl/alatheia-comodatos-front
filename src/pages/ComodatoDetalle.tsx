@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Input } from "antd";
-import axios from "axios";
 import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
 import { InstrumentoInterface } from "../interfaces/InstrumentoInterface";
 import BannerPage from "../components/shared/BannerPage";
