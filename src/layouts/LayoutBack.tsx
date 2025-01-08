@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import { Layout, Menu, MenuProps, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import { Outlet } from "react-router-dom";
-import logo_blanco from "../assets/alatheia-logo.svg"
+import logo_blanco from "../media/logos/alatheia-logo-blanco.svg"
 import { items } from "../router/menuItems";
 
 const { Content, Sider } = Layout;

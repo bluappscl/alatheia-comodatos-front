@@ -2,7 +2,7 @@ import { Button, Input, message, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
-import { fetchInstrumentos } from "../../api/requests/intrumentos_request";
+import { fetchInstrumentos } from "../../api/requests/http_get_intrumentos";
 
 const { Option } = Select;
 

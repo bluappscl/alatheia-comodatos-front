@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { Button, Input } from "antd";
 import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
 import { InstrumentoInterface } from "../interfaces/InstrumentoInterface";
-import BannerPage from "../components/shared/BannerPage";
-import comodato_photo from "../assets/comodato_photo.png";
+import comodato_photo from "../media/temporal/comodato_photo.png";
 import { comodatos_id_json } from "../api/json_examples/comodatos_id_json";
+import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 
 interface ComodatoData {
   id: number;
@@ -58,14 +58,14 @@ const ComodatoDetalle: React.FC = () => {
 
   return (
     <>
-      <BannerPage
+      <HeaderDescripcion
         photo_path={comodato_photo}
         title="Comodato - XXD663D"
         rounded={false}
       />
       <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
         <div
-          className={`inline-block px-4 py-2 text-sm font-semibold text-white rounded-full bg-green-500`}
+          className={`inline-block px-4 py-2 text-sm font-semibold text-white rounded-full bg-success-700`}
         >
           {comodatoData.estado}
         </div>
@@ -146,25 +146,24 @@ const ComodatoDetalle: React.FC = () => {
               />
             </div>
           </div>
-          <div>
-            <div className="border-2 border-blue-50 rounded-lg bg-blue-50">
-              <div className="flex flex-row p-4">
-                <div className="text-lg font-semibold">Contrato</div>
-                <div className="ml-auto">
-                  <Button type="primary" size="large">
-                    Descargar
-                  </Button>
-                </div>
+
+          <div className="border-2  rounded-lg bg-dark-700">
+            <div className="flex flex-row p-4">
+              <div className="text-lg text-white font-semibold">Contrato</div>
+              <div className="ml-auto">
+                <Button type="primary" size="middle" className="rounded-full">
+                  Descargar
+                </Button>
               </div>
-              <iframe
-                src={comodatoData.contrato}
-                className="w-full h-[600px] border rounded-md"
-                title="Contrato PDF"
-              />
             </div>
+            <iframe
+              src={comodatoData.contrato}
+              className="w-full h-[600px]"
+              title="Contrato PDF"
+            />
           </div>
         </div>
-        <hr className="my-6 border-2"/>
+        <hr className="my-6 border-2" />
         <div className="flex-col w-full">
           <h2 className="text-lg font-semibold mt-6">
             Instrumentos en comodato

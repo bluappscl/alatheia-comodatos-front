@@ -1,4 +1,6 @@
-import alatheia_logo from "./assets/alatheia-logo-dark.svg";
+import { Button } from "antd";
+import alatheia_logo from "../media/logos/alatheia-logo-blanco.svg";
+import left_gif from "../media/temporal/anlitics-purple.gif";
 
 function Login() {
   return (
@@ -9,7 +11,7 @@ function Login() {
           <div className="m-5 bg-green-200 rounded-3xl overflow-hidden w-full h-full">
             <img
               className="w-full h-full object-cover"
-              src={"https://media.licdn.com/dms/image/v2/D4E12AQGol4XUKq9SJg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1685051336719?e=2147483647&v=beta&t=QpZNi_zhte97PbWShQkU1PAOiJRm-k4jiGuHJ1SkfxA"}
+              src={left_gif}
               alt="Statistics"
             />
           </div>
@@ -60,18 +62,15 @@ function Login() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
-                >
-                  Login
-                </button>
+                <Button type="primary" className="w-full border-0">
+                  Loign
+                </Button>
               </form>
 
               {/* Footer Section */}
               <p className="text-center text-sm text-gray-500 mt-6">
                 Don't have an account?{" "}
-                <a href="#" className="text-green-500 hover:underline">
+                <a href="#" className="text-primary-500 hover:underline">
                   Sign up
                 </a>
               </p>

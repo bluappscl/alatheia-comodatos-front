@@ -79,7 +79,7 @@ const CustomerTables: React.FC<ContactTableProps> = ({ data, loading }) => {
         columns={columns}
         dataSource={filteredData}
         loading={loading}
-        className="bg-primary-400 rounded-xl"
+        className="bg-blue-400 rounded-xl"
         scroll={{ x: 1000 }}
       />
     </div>

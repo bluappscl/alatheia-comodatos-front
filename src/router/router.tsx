@@ -3,8 +3,7 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-import Login from "../Login";
-import GeneralLayout from "../layouts/GeneralLayout";
+
 import Home from "../pages/Home";
 import MyPage from "../pages/MyPage";
 import Contactos from "../pages/Contactos";
@@ -15,6 +14,7 @@ import InstrumentoPage from "../pages/Instrumentos";
 import ComodatosPage from "../pages/Comodatos";
 import ComodatoDetalle from "../pages/ComodatoDetalle";
 import LayoutBack from "../layouts/LayoutBack";
+import Login from "../pages/Login";
 
 const routes = createRoutesFromElements(
   <>

@@ -4,13 +4,13 @@ interface BannerPageProps {
   rounded?: boolean;
 }
 
-const BannerPage: React.FC<BannerPageProps> = ({
+const HeaderDescripcion: React.FC<BannerPageProps> = ({
   photo_path,
   title,
   rounded,
 }) => {
   return (
-    <div className="mb-6 md:col-span-12 p-4 bg-dark-700 rounded-lg flex items-center gap-4">
+    <div className="mb-6 md:col-span-12 p-4 border-b-2 flex items-end gap-4">
       {photo_path && (
         <img
           src={photo_path}
@@ -19,13 +19,11 @@ const BannerPage: React.FC<BannerPageProps> = ({
         />
       )}
       <div>
-        <h1 className="text-white text-lg font-semibold">{title}</h1>
-        <h6 className="text-white">
-          Aqui puedes ver el detalle de tus comodatos
-        </h6>
+        <h1 className="text-dark-700 text-lg font-semibold">{title}</h1>
+        <h6>Aqui puedes ver el detalle de tus comodatos</h6>
       </div>
     </div>
   );
 };
 
-export default BannerPage;
+export default HeaderDescripcion;
