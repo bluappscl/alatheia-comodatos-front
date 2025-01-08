@@ -6,6 +6,7 @@ import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
 import { InstrumentoInterface } from "../interfaces/InstrumentoInterface";
 import BannerPage from "../components/shared/BannerPage";
 import comodato_photo from "../assets/comodato_photo.png";
+import { comodatos_id_json } from "../api/json_examples/comodatos_id_json";
 
 interface ComodatoData {
   id: number;
@@ -37,10 +38,11 @@ const ComodatoDetalle: React.FC = () => {
     setLoading(true);
     const fetchComodato = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3001/comodatos/${id}`
-        );
-        setComodatoData(response.data);
+        // const response = await axios.get(
+        //   `http://localhost:3001/comodatos/${id}`
+        // );
+        // setComodatoData(response.data);
+        setComodatoData(comodatos_id_json);
       } catch (error) {
         console.error("Error fetching comodato details:", error);
       } finally {
