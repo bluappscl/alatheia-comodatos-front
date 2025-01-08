@@ -61,7 +61,7 @@ const ComodatoDetalle: React.FC = () => {
       <HeaderDescripcion
         photo_path={comodato_photo}
         title="Comodato - XXD663D"
-        rounded={false}
+        description="Aqui puedes ver el detalle del comodato"
       />
       <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
         <div

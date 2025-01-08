@@ -1,13 +1,13 @@
 interface BannerPageProps {
   photo_path?: string;
   title: string;
-  rounded?: boolean;
+  description?: string;
 }
 
 const HeaderDescripcion: React.FC<BannerPageProps> = ({
   photo_path,
   title,
-  rounded,
+  description,
 }) => {
   return (
     <div className="mb-6 md:col-span-12 p-4 border-b-2 flex items-end gap-4">
@@ -15,12 +15,12 @@ const HeaderDescripcion: React.FC<BannerPageProps> = ({
         <img
           src={photo_path}
           alt="Banner"
-          className={`w-12 h-12 object-cover ${rounded ? "rounded-full" : ""}`}
+          className={`w-12 h-12 object-cover`}
         />
       )}
       <div>
         <h1 className="text-dark-700 text-lg font-semibold">{title}</h1>
-        <h6>Aqui puedes ver el detalle de tus comodatos</h6>
+        <h6>{description}</h6>
       </div>
     </div>
   );

@@ -13,7 +13,9 @@ import axios from "axios";
 import ClientSelectionModal from "../components/NuevoComodato/ClienteSelector";
 import FileUploadDrawable from "../components/shared/FileUploadDrawable";
 import InstrumentSelectorTable from "../components/Instrumentos/InstrumentSelectorTable";
-import BannerPage from "../components/shared/BannerPage";
+import HeaderDescripcion from "../components/shared/HeaderDescripcion";
+
+import comodato_photo from "../media/temporal/comodato_photo.png"
 
 interface CrearComodatoValues {
   nombre: string;
@@ -93,7 +95,11 @@ const CrearComodato: React.FC = () => {
 
   return (
     <>
-      <BannerPage title="ASDS"/>
+      <HeaderDescripcion
+        title="Nuevo Comodato"
+        description="Aqui puedes crear un nuevo comodato"
+        photo_path={comodato_photo}
+      />
       <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
         <Form
           layout="vertical"

@@ -12,24 +12,24 @@ const PagosSummaryCards: React.FC = () => {
   const summaryData = [
     {
       title: "Objetivo",
-      icon: <DollarOutlined style={{ fontSize: 24, color: "#1D4ED8" }} />,
+      icon: <DollarOutlined className="text-primary-900 text-2xl" />,
       amount: "$250,000",
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-700",
+      bgColor: "bg-primary-50",
+      textColor: "text-primary-900",
     },
     {
       title: "Realizados",
-      icon: <CheckCircleOutlined style={{ fontSize: 24, color: "#10B981" }} />,
+      icon: <CheckCircleOutlined className="text-success-900 text-2xl" />,
       amount: "$240,000",
-      bgColor: "bg-green-50",
-      textColor: "text-green-700",
+      bgColor: "bg-success-50",
+      textColor: "text-success-900",
     },
     {
       title: "No Pagado",
-      icon: <CloseCircleOutlined style={{ fontSize: 24, color: "#EF4444" }} />,
+      icon: <CloseCircleOutlined className="text-error-900 text-2xl" />,
       amount: "$10,000",
-      bgColor: "bg-red-50",
-      textColor: "text-red-700",
+      bgColor: "bg-error-50",
+      textColor: "text-error-900",
     },
   ];
 
@@ -81,7 +81,7 @@ const PagosBarChart: React.FC = () => {
           150000, 160000, 140000, 170000, 180000, 190000, 200000, 210000,
           220000, 230000, 240000, 250000,
         ],
-        backgroundColor: "rgba(54, 162, 235, 0.6)", // Blue
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
@@ -108,7 +108,7 @@ const PagosBarChart: React.FC = () => {
     ],
   };
 
-  const options : ChartOptions<"bar"> = {
+  const options: ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
       legend: {
@@ -152,7 +152,7 @@ const PagosBarChart: React.FC = () => {
         </div>
         <p className="text-sm text-gray-500 mt-8">
           Pagos atrasados:{" "}
-          <span className="text-red-600 font-semibold">
+          <span className="text-error-500 font-semibold">
             3 <DownOutlined />
           </span>
         </p>
