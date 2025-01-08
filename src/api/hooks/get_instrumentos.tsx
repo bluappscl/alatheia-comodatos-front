@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { message } from "antd";
-import { fetchInstrumentos } from "../requests/intrumentos_request";
+import { fetchInstrumentos } from "../requests/http_get_intrumentos";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 
 const useFetchInstrumentos = () => {
