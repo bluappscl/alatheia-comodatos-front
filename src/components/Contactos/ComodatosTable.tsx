@@ -1,21 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Table, Typography } from "antd";
 import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
-import { ComodatoInterface } from "../../interfaces/Comodato";
+import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
+import useFetchClientes from "../../api/hooks/get_clientes";
+import ClientesFilter from "./ComodatosTable/ClientesFilter";
 
 interface ComodatosTableProps {
   comodatos: ComodatoInterface[];
 }
 
 const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
+  const [filteredClients, setFilteredClients] = useState<string[]>([]);
+
+  const { clientes, loading } = useFetchClientes();
   const navigate = useNavigate();
 
   const handleNavigateToDetalle = (id: number) => {
     navigate(`/comodatos/${id}`);
   };
 
+  // Table columns
   const columns: ColumnsType<ComodatoInterface> = [
     {
       title: "Fecha de Inicio",
@@ -78,14 +84,27 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
     },
   ];
 
+  const filteredData = filteredClients.length
+    ? comodatos.filter((comodato) =>
+        filteredClients.includes(comodato.cliente_id.toString())
+      )
+    : comodatos;
+
   return (
-    <Table
-      dataSource={comodatos}
-      columns={columns}
-      rowKey="id"
-      className="bg-dark-100 rounded-xl"
-      pagination={{ pageSize: 5 }}
-    />
+    <>
+      <ClientesFilter
+        clientes={clientes}
+        loading={loading}
+        setFilteredClients={setFilteredClients}
+      />
+      <Table
+        dataSource={filteredData}
+        columns={columns}
+        rowKey="id"
+        className="bg-dark-100 rounded-xl"
+        pagination={{ pageSize: 5 }}
+      />
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Card, Typography, Spin, message, Input } from "antd";
-import { Cliente as ClienteInterface } from "../../interfaces/Cliente";
+import { ClienteInterface } from "../../interfaces/ClienteInterface";
 import { clientes_json } from "../../api/json_examples/clientes";
 
 const { Search } = Input;

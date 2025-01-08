@@ -5,5 +5,6 @@ export interface ComodatoInterface {
   compra_minima_mensual_reactivo: number;
   fecha_inicio: string;
   fecha_fin: string;
+  cliente_id:number;
   estado: string;
 }

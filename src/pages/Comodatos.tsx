@@ -1,7 +1,7 @@
 import { Card, message } from "antd";
 import { useEffect, useState } from "react";
 import ComodatosTable from "../components/Contactos/ComodatosTable";
-import { ComodatoInterface } from "../interfaces/Comodato";
+import { ComodatoInterface } from "../interfaces/ComodatoInterface";
 import { comodatos_json } from "../api/json_examples/comodatos_json";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 
