@@ -3,21 +3,40 @@ import { RouterProvider } from "react-router-dom";
 import esES from "antd/es/locale/es_ES";
 import { router } from "./router/router";
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+
 const theme = {
   token: {
-    colorSuccess: "#34a448",
-    colorPrimary: "#4f8ec6",
-    colorInfo: "#fa8c16",
-    colorWarning: "#f4d912",
-    borderRadius: 8,
-    sizeStep: 4,
-    colorError: "#f5222d",
-  },
-  components: {
-    Menu: {
-      itemColor: "white", // Menu item text color
-      itemHoverColor: "white", // Text color on hover
-    },
+    colorPrimary: "#934f8c",
+    colorInfo: "#934f8c",
+    colorSuccess: "#2c9942",
+    colorWarning: "#ffd600",
+    colorError: "#d63641",
+    colorLink: "#c180b6",
   },
 };
 

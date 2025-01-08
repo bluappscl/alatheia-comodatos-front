@@ -14,11 +14,12 @@ import InsumoPage from "../pages/Insumos";
 import InstrumentoPage from "../pages/Instrumentos";
 import ComodatosPage from "../pages/Comodatos";
 import ComodatoDetalle from "../pages/ComodatoDetalle";
+import LayoutBack from "../layouts/LayoutBack";
 
 const routes = createRoutesFromElements(
   <>
     <Route path="/login" element={<Login />} />
-    <Route path="/" element={<GeneralLayout />}>
+    <Route path="/" element={<LayoutBack />}>
       <Route index element={<Home />} />
       <Route path="nuevo-comodato" element={<CrearComodato />} />
       <Route path="mypage" element={<MyPage />} />
