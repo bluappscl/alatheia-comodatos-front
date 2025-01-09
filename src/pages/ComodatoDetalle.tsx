@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Spin } from "antd";
 import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 
@@ -18,7 +18,11 @@ const ComodatoDetalle: React.FC = () => {
   const { comodato, loading } = useFetchRetrieveComodato(id || "");
 
   if (!comodato) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spin size="large" tip="cargando..." />
+      </div>
+    );
   }
 
   return (

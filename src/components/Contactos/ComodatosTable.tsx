@@ -1,11 +1,20 @@
 import React, { useState } from "react";
-import { Button, Table, Typography } from "antd";
-import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Table, Typography } from "antd";
+import {
+  FilePdfOutlined,
+  ZoomInOutlined,
+} from "@ant-design/icons";
 import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { useFetchClientes } from "../../api/hooks/get_clientes";
 import ClientesFilter from "./ComodatosTable/ClientesFilter";
+import dayjs, { Dayjs } from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+
+dayjs.extend(isBetween);
+
+const { RangePicker } = DatePicker;
 
 interface ComodatosTableProps {
   comodatos: ComodatoInterface[];
@@ -13,6 +22,7 @@ interface ComodatosTableProps {
 
 const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
   const [filteredClients, setFilteredClients] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
 
   const { clientes, loadingClientes } = useFetchClientes();
   const navigate = useNavigate();
@@ -84,25 +94,43 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
     },
   ];
 
-  const filteredData = filteredClients.length
-    ? comodatos.filter((comodato) =>
-        filteredClients.includes(comodato.cliente.id.toString())
-      )
-    : comodatos;
+  const handleDateRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    setDateRange(dates);
+  };
+
+  const filteredData = comodatos.filter((comodato) => {
+    const matchesClient = filteredClients.length
+      ? filteredClients.includes(comodato.cliente.id.toString())
+      : true;
+
+    const matchesDateRange =
+      dateRange && dateRange[0] && dateRange[1]
+        ? dayjs(comodato.fecha_fin).isBetween(dateRange[0], dateRange[1], "day", "[]")
+        : true;
+
+    return matchesClient && matchesDateRange;
+  });
 
   return (
     <>
-      <ClientesFilter
-        clientes={clientes}
-        loading={loadingClientes}
-        setFilteredClients={setFilteredClients}
-      />
+      <div className="flex sm:flex-col lg:flex-row gap-4 w-full mb-4">
+        <ClientesFilter
+          clientes={clientes}
+          loading={loadingClientes}
+          setFilteredClients={setFilteredClients}
+        />
+
+        <div className="flex flex-row w-full gap-2 items-center">
+          <RangePicker className="w-full" onChange={handleDateRangeChange} />
+        </div>
+      </div>
       <Table
         dataSource={filteredData}
         columns={columns}
         rowKey="id"
         className="bg-dark-100 rounded-xl"
         pagination={{ pageSize: 5 }}
+        scroll={{ x: 1500 }}
       />
     </>
   );
