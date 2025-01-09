@@ -10,6 +10,7 @@ import DateProgress from "../components/ComodatoDetalle/DateProgress";
 
 import { motion } from "motion/react";
 import CardTitleNumber from "../components/ComodatoDetalle/CardTitleNumber";
+import ProgresoContrato from "../components/ComodatoDetalle/ProgresoContrato";
 
 const ComodatoDetalle: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,19 +32,14 @@ const ComodatoDetalle: React.FC = () => {
         description="Aqui puedes ver el detalle del comodato"
       />
       <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
-        <div
-          className={`inline-block px-4 py-2 text-sm font-semibold text-white rounded-full bg-success-700`}
-        >
-          {comodato.estado}
-        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
           <div>
-            <div className="mb-2">
-              <DateProgress
-                startDate={comodato.fecha_inicio}
-                endDate={comodato.fecha_fin}
-              />
+            <div
+              className={`inline-block px-4 py-2 text-sm font-semibold text-white rounded-full bg-success-700 mb-4`}
+            >
+              {comodato.estado}
             </div>
+
             <div className="mb-4">
               <label className="font-semibold">Representante</label>
               <Input value={comodato.nombre_cliente_representante} readOnly />
@@ -99,6 +95,10 @@ const ComodatoDetalle: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
+            <ProgresoContrato
+              startDate={comodato.fecha_inicio}
+              endDate={comodato.fecha_fin}
+            />
             <div className="border-2  rounded-lg bg-dark-700">
               <div className="flex flex-row p-4">
                 <div className="text-lg text-white font-semibold">Contrato</div>

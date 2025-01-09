@@ -6,7 +6,7 @@ export const comodatos_json = [
     compra_minima_mensual_dinero: 1000,
     compra_minima_mensual_reactivo: 12000,
     fecha_inicio: "2025-01-01",
-    fecha_fin: "2025-01-04",
+    fecha_fin: "2025-03-04",
     estado: "Activo",
     cliente_id: 1,
     nombre_cliente_representante: "Cliente 1",
