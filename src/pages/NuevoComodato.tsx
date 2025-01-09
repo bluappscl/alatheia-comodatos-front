@@ -15,7 +15,9 @@ import FileUploadDrawable from "../components/shared/FileUploadDrawable";
 import InstrumentSelectorTable from "../components/Instrumentos/InstrumentSelectorTable";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 
-import comodato_photo from "../media/temporal/comodato_photo.png"
+import comodato_photo from "../media/temporal/comodato_photo.png";
+
+import { motion } from "motion/react";
 
 interface CrearComodatoValues {
   nombre: string;
@@ -94,7 +96,11 @@ const CrearComodato: React.FC = () => {
   };
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <HeaderDescripcion
         title="Nuevo Comodato"
         description="Aqui puedes crear un nuevo comodato"
@@ -371,7 +377,7 @@ const CrearComodato: React.FC = () => {
           </Form.Item>
         </Form>
       </div>
-    </>
+    </motion.div>
   );
 };
 

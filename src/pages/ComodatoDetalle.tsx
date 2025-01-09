@@ -6,7 +6,10 @@ import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 
 import comodato_photo from "../media/temporal/comodato_photo.png";
 import { useFetchRetrieveComodato } from "../api/hooks/retrieve_comodatos";
-import DateProgress from "../components/asd";
+import DateProgress from "../components/ComodatoDetalle/DateProgress";
+
+import { motion } from "motion/react";
+import CardTitleNumber from "../components/ComodatoDetalle/CardTitleNumber";
 
 const ComodatoDetalle: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +20,11 @@ const ComodatoDetalle: React.FC = () => {
   }
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <HeaderDescripcion
         photo_path={comodato_photo}
         title="Comodato - XXD663D"
@@ -45,23 +52,36 @@ const ComodatoDetalle: React.FC = () => {
               <label className="font-semibold">RUT Representante</label>
               <Input value={comodato.rut_cliente_representante} readOnly />
             </div>
-            <div className="mb-4">
-              <label className="font-semibold">Plazo de Pago (días)</label>
-              <Input value={comodato.plazo_pago_facturas.toString()} readOnly />
-            </div>
-            <div className="mb-4">
-              <label className="font-semibold">Tiempo de Gracia (meses)</label>
-              <Input value={comodato.tiempo_de_gracia.toString()} readOnly />
-            </div>
-            <div className="mb-4">
-              <label className="font-semibold">
-                Porcentaje Tiempo de Gracia
-              </label>
-              <Input
-                value={`${comodato.porcentaje_tiempo_de_gracia}%`}
-                readOnly
+
+            <label className="font-semibold">Detalles de pagos</label>
+            <div className="flex flex-row gap-4 mb-4 mt-1">
+              <CardTitleNumber
+                title="Plazo de Pago (días)"
+                content={comodato.plazo_pago_facturas.toString()}
+              />
+              <CardTitleNumber
+                title="Tiempo de Gracia (meses)"
+                content={comodato.tiempo_de_gracia.toString()}
+              />
+              <CardTitleNumber
+                title="Porcentaje Tiempo de Gracia"
+                content={`${comodato.porcentaje_tiempo_de_gracia}%`}
               />
             </div>
+
+            <label className="font-semibold">Detalles de pagos</label>
+
+            <div className="flex flex-row gap-4 mb-4 mt-1 h-28">
+              <CardTitleNumber
+                title="Compra Mínima Mensual (Dinero)"
+                content={`$${comodato.compra_minima_mensual_dinero.toLocaleString()}`}
+              />
+              <CardTitleNumber
+                title="Compra Mínima Mensual (Reactivos)"
+                content={`${comodato.compra_minima_mensual_reactivo.toLocaleString()}`}
+              />
+            </div>
+
             <div className="mb-4">
               <label className="font-semibold">Es Renovable</label>
               <Input value={comodato.es_renovable ? "Sí" : "No"} readOnly />
@@ -73,41 +93,28 @@ const ComodatoDetalle: React.FC = () => {
                 readOnly
               />
             </div>
-            <div className="mb-4">
-              <label className="font-semibold">
-                Compra Mínima Mensual (Dinero)
-              </label>
-              <Input
-                value={`$${comodato.compra_minima_mensual_dinero.toLocaleString()}`}
-                readOnly
-              />
-            </div>
-            <div className="mb-4">
-              <label className="font-semibold">
-                Compra Mínima Mensual (Reactivos)
-              </label>
-              <Input
-                value={comodato.compra_minima_mensual_reactivo.toLocaleString()}
-                readOnly
-              />
-            </div>
           </div>
-
-          <div className="border-2  rounded-lg bg-dark-700">
-            <div className="flex flex-row p-4">
-              <div className="text-lg text-white font-semibold">Contrato</div>
-              <div className="ml-auto">
-                <Button type="primary" size="middle" className="rounded-full">
-                  Descargar
-                </Button>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <div className="border-2  rounded-lg bg-dark-700">
+              <div className="flex flex-row p-4">
+                <div className="text-lg text-white font-semibold">Contrato</div>
+                <div className="ml-auto">
+                  <Button type="primary" size="middle" className="rounded-full">
+                    Descargar
+                  </Button>
+                </div>
               </div>
+              <iframe
+                src={comodato.contrato}
+                className="w-full h-[600px]"
+                title="Contrato PDF"
+              />
             </div>
-            <iframe
-              src={comodato.contrato}
-              className="w-full h-[600px]"
-              title="Contrato PDF"
-            />
-          </div>
+          </motion.div>
         </div>
         <hr className="my-6 border-2" />
         <div className="flex-col w-full">
@@ -117,7 +124,7 @@ const ComodatoDetalle: React.FC = () => {
           <InstrumentosTable data={comodato.instrumentos} loading={loading} />
         </div>
       </div>
-    </>
+    </motion.div>
   );
 };
 

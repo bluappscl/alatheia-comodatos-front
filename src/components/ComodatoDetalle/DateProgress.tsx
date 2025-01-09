@@ -1,7 +1,6 @@
 import React from "react";
 import { Input, Progress, ProgressProps } from "antd";
 import dayjs from "dayjs";
-import { CheckOutlined } from "@ant-design/icons";
 
 interface DateProgressProps {
   startDate: string;

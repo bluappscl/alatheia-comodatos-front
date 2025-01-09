@@ -4,11 +4,16 @@ import { useFetchComodatos } from "../api/hooks/get_comodatos";
 
 import comodato_photo from "../media/temporal/comodato_photo.png";
 
+import { motion } from "motion/react";
 const ComodatosPage = () => {
   const { comodatos } = useFetchComodatos();
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <HeaderDescripcion
         title="Comodatos"
         description="Aqui puedes ver tus los comodatos existentes"
@@ -21,7 +26,7 @@ const ComodatosPage = () => {
       ) : (
         <p>Cargando datos...</p>
       )}
-    </>
+    </motion.div>
   );
 };
 
