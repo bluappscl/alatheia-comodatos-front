@@ -4,6 +4,6 @@ export interface ClienteInterface {
   rut: string;
   codigo_comuna: string;
   direccion: string;
-  logo: string;
-  comodatos: any[];
+  logo?: string;
+  comodatos?: any[];
 }

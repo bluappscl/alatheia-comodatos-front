@@ -1,4 +1,5 @@
 import { InstrumentoInterface } from "./InstrumentoInterface";
+import { ClienteInterface } from "./ClienteInterface";
 
 export interface ComodatoInterface {
   id: number;
@@ -8,7 +9,7 @@ export interface ComodatoInterface {
   fecha_inicio: string;
   fecha_fin: string;
   estado: string;
-  cliente_id: number;
+  cliente: ClienteInterface;
   nombre_cliente_representante: string;
   rut_cliente_representante: string;
   plazo_pago_facturas: number;

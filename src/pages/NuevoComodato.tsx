@@ -139,31 +139,70 @@ const CrearComodato: React.FC = () => {
                   showSelectedClient={true}
                 />
               </Form.Item>
+              <label className="font-semibold text-primary-700">
+                Resentante del Cliente
+              </label>
+              <div className="flex flex-row gap-4">
+                <Form.Item
+                  className="w-full"
+                  label="Nombre"
+                  name="nombre_representante_cliente"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor ingrese el nombre del cliente",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el nombre del cliente" />
+                </Form.Item>
 
-              <Form.Item
-                label="Nombre Cliente Representante"
-                name="nombre"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor ingrese el nombre del cliente",
-                  },
-                ]}
-              >
-                <Input placeholder="Ingrese el nombre del cliente" />
-              </Form.Item>
-              <Form.Item
-                label="Rut Cliente Representante"
-                name="rut"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor ingrese el rut del cliente",
-                  },
-                ]}
-              >
-                <Input placeholder="Ingrese el rut del cliente" />
-              </Form.Item>
+                <Form.Item
+                  className="w-full"
+                  label="Rut"
+                  name="rut_representante_cliente"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor ingrese el rut del cliente",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el rut del cliente" />
+                </Form.Item>
+              </div>
+
+              {/* Representante Alatheia */}
+              <label className="font-semibold">Resentante de Alatheia</label>
+              <div className="flex flex-row gap-4">
+                <Form.Item
+                  className="w-full"
+                  label="Nombre"
+                  name="_representante_alatheia"
+                  rules={[
+                    {
+                      required: true,
+                      message: "nombre del representante",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el nombre del cliente" />
+                </Form.Item>
+                <Form.Item
+                  className="w-full"
+                  label="Rut"
+                  name="rut_representante_alatheia"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Ingrese el rut del representante",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el rut del cliente" />
+                </Form.Item>
+              </div>
+
               <Form.Item
                 label="Direccion de Sucursal"
                 name="sucursal"
@@ -361,7 +400,7 @@ const CrearComodato: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col mb-10">
+          <div className="flex flex-col my-10">
             <InstrumentSelectorTable />
           </div>
 

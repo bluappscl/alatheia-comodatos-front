@@ -79,9 +79,9 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
               <Typography.Text>
                 Dirección: {selectedClient.direccion}
               </Typography.Text>
-              <Typography.Text>
+              {/* <Typography.Text>
                 Cantidad de Comodatos Activos: {selectedClient.comodatos.length}
-              </Typography.Text>
+              </Typography.Text> */}
             </div>
           </Card>
         </div>
@@ -132,9 +132,9 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
                   <Typography.Text>
                     Dirección: {cliente.direccion}
                   </Typography.Text>
-                  <Typography.Text>
+                  {/* <Typography.Text>
                     Cantidad de Comodatos Activos: {cliente.comodatos.length}
-                  </Typography.Text>
+                  </Typography.Text> */}
                 </div>
               </Card>
             ))}

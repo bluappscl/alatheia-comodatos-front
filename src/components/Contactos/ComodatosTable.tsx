@@ -86,7 +86,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
 
   const filteredData = filteredClients.length
     ? comodatos.filter((comodato) =>
-        filteredClients.includes(comodato.cliente_id.toString())
+        filteredClients.includes(comodato.cliente.id.toString())
       )
     : comodatos;
 

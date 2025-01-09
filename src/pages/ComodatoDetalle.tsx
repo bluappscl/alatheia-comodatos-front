@@ -1,16 +1,17 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Button, Input } from "antd";
+import { Button } from "antd";
 import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 
 import comodato_photo from "../media/temporal/comodato_photo.png";
 import { useFetchRetrieveComodato } from "../api/hooks/retrieve_comodatos";
-import DateProgress from "../components/ComodatoDetalle/DateProgress";
 
 import { motion } from "motion/react";
 import CardTitleNumber from "../components/ComodatoDetalle/CardTitleNumber";
 import ProgresoContrato from "../components/ComodatoDetalle/ProgresoContrato";
+import DetalleCliente from "../components/ComodatoDetalle/DetalleCliente";
+import ComodatoTags from "../components/ComodatoDetalle/ComodatoTags";
 
 const ComodatoDetalle: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,21 +33,21 @@ const ComodatoDetalle: React.FC = () => {
         description="Aqui puedes ver el detalle del comodato"
       />
       <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
+        <div className="flex flex-row gap-4">
+          <ComodatoTags
+            estado={comodato.estado}
+            es_renovable={comodato.es_renovable}
+            renovable_automatico={comodato.renovable_automatico}
+          />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
           <div>
-            <div
-              className={`inline-block px-4 py-2 text-sm font-semibold text-white rounded-full bg-success-700 mb-4`}
-            >
-              {comodato.estado}
-            </div>
-
             <div className="mb-4">
-              <label className="font-semibold">Representante</label>
-              <Input value={comodato.nombre_cliente_representante} readOnly />
-            </div>
-            <div className="mb-4">
-              <label className="font-semibold">RUT Representante</label>
-              <Input value={comodato.rut_cliente_representante} readOnly />
+              <DetalleCliente
+                cliente={comodato.cliente}
+                representante_nombre={comodato.nombre_cliente_representante}
+                representante_rut={comodato.rut_cliente_representante}
+              />
             </div>
 
             <label className="font-semibold">Detalles de pagos</label>
@@ -65,7 +66,7 @@ const ComodatoDetalle: React.FC = () => {
               />
             </div>
 
-            <label className="font-semibold">Detalles de pagos</label>
+            <label className="font-semibold">Objetivos</label>
 
             <div className="flex flex-row gap-4 mb-4 mt-1 h-28">
               <CardTitleNumber
@@ -77,28 +78,18 @@ const ComodatoDetalle: React.FC = () => {
                 content={`${comodato.compra_minima_mensual_reactivo.toLocaleString()}`}
               />
             </div>
-
-            <div className="mb-4">
-              <label className="font-semibold">Es Renovable</label>
-              <Input value={comodato.es_renovable ? "Sí" : "No"} readOnly />
-            </div>
-            <div className="mb-4">
-              <label className="font-semibold">Renovación Automática</label>
-              <Input
-                value={comodato.renovable_automatico ? "Sí" : "No"}
-                readOnly
-              />
-            </div>
           </div>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <ProgresoContrato
-              startDate={comodato.fecha_inicio}
-              endDate={comodato.fecha_fin}
-            />
+            <div className="mb-2">
+              <ProgresoContrato
+                startDate={comodato.fecha_inicio}
+                endDate={comodato.fecha_fin}
+              />
+            </div>
             <div className="border-2  rounded-lg bg-dark-700">
               <div className="flex flex-row p-4">
                 <div className="text-lg text-white font-semibold">Contrato</div>
@@ -116,7 +107,7 @@ const ComodatoDetalle: React.FC = () => {
             </div>
           </motion.div>
         </div>
-        <hr className="my-6 border-2" />
+        <hr className="my-6 text-dark-900 border" />
         <div className="flex-col w-full">
           <h2 className="text-lg font-semibold mt-6">
             Instrumentos en comodato
