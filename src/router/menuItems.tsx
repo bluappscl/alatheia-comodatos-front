@@ -20,13 +20,13 @@ export const items: MenuProps["items"] = [
     {
       key: "3",
       icon: <LaptopOutlined />,
-      label: <Link to="/clientes">Clientes</Link>,
-    },
-    {
-      key: "4",
-      icon: <LaptopOutlined />,
       label: <Link to="/nuevo-comodato">Nuevo Comodato</Link>,
     },
+    // {
+    //   key: "3",
+    //   icon: <LaptopOutlined />,
+    //   label: <Link to="/clientes">Clientes</Link>,
+    // },
     // {
     //   key: "5",
     //   icon: <LaptopOutlined />,

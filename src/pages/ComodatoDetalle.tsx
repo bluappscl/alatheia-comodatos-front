@@ -6,6 +6,7 @@ import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 
 import comodato_photo from "../media/temporal/comodato_photo.png";
 import { useFetchRetrieveComodato } from "../api/hooks/retrieve_comodatos";
+import DateProgress from "../components/asd";
 
 const ComodatoDetalle: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,17 +31,12 @@ const ComodatoDetalle: React.FC = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
           <div>
-            <div className="flex flex-row gap-4 mb-4">
-              <div className="w-full">
-                <label className="font-semibold">Fecha Inicio</label>
-                <Input value={comodato.fecha_inicio} readOnly />
-              </div>
-              <div className="w-full">
-                <label className="font-semibold">Fecha Fin</label>
-                <Input value={comodato.fecha_fin} readOnly />
-              </div>
+            <div className="mb-2">
+              <DateProgress
+                startDate={comodato.fecha_inicio}
+                endDate={comodato.fecha_fin}
+              />
             </div>
-
             <div className="mb-4">
               <label className="font-semibold">Representante</label>
               <Input value={comodato.nombre_cliente_representante} readOnly />
