@@ -8,7 +8,7 @@ import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 
 import clientes_photo from "../../media/temporal/comodato_photo.png";
 import PagosBarChart from "../../components/Dashboard/Charts/PagosBarChart";
-import ComodatosTable from "../../components/Comodatos/ComodatosTable";
+
 import ComodatosTableSinCLiente from "../../components/Comodatos/ComodatosTableSinCLiente";
 
 const ClienteDetalle: React.FC = () => {
