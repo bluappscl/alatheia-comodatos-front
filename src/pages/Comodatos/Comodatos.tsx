@@ -1,8 +1,8 @@
-import ComodatosTable from "../components/Clientes/ComodatosTable";
-import HeaderDescripcion from "../components/shared/HeaderDescripcion";
-import { useFetchComodatos } from "../api/hooks/get_comodatos";
+import ComodatosTable from "../../components/Comodatos/ComodatosTable";
+import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
+import { useFetchComodatos } from "../../api/hooks/comodatos/get_comodatos";
 
-import comodato_photo from "../media/temporal/comodato_photo.png";
+import comodato_photo from "../../media/temporal/comodato_photo.png";
 
 import { motion } from "motion/react";
 const ComodatosPage = () => {

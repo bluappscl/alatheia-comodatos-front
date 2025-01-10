@@ -10,12 +10,12 @@ import {
   Select,
 } from "antd";
 import axios from "axios";
-import ClientSelectionModal from "../components/NuevoComodato/ClienteSelector";
-import FileUploadDrawable from "../components/shared/FileUploadDrawable";
-import InstrumentSelectorTable from "../components/Instrumentos/InstrumentSelectorTable";
-import HeaderDescripcion from "../components/shared/HeaderDescripcion";
+import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector";
+import FileUploadDrawable from "../../components/shared/FileUploadDrawable";
+import InstrumentSelectorTable from "../../components/Instrumentos/InstrumentSelectorTable";
+import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 
-import comodato_photo from "../media/temporal/comodato_photo.png";
+import comodato_photo from "../../media/temporal/comodato_photo.png";
 
 import { motion } from "motion/react";
 

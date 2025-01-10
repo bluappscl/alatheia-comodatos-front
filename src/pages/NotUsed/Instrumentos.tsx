@@ -1,6 +1,6 @@
 import React from "react";
-import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
-import { useFetchInstrumentos } from "../api/hooks/get_instrumentos";
+import InstrumentosTable from "../../components/Instrumentos/InstrumentosTable";
+import { useFetchInstrumentos } from "../../api/hooks/get_instrumentos";
 
 const InstrumentoPage: React.FC = () => {
   const { instrumentos, loading, error } = useFetchInstrumentos();

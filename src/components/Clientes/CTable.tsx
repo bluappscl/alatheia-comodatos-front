@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Button, DatePicker, Table, Typography } from "antd";
-import {
-  FilePdfOutlined,
-  ZoomInOutlined,
-} from "@ant-design/icons";
+import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
 import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
-import { useFetchClientes } from "../../api/hooks/get_clientes";
+import { useFetchClientes } from "../../api/hooks/clientes/get_clientes";
 import ClientesMultipleSelect from "./ClientesMultipleSelect";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
@@ -22,7 +19,9 @@ interface ComodatosTableProps {
 
 const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
   const [filteredClients, setFilteredClients] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
+  const [dateRange, setDateRange] = useState<
+    [Dayjs | null, Dayjs | null] | null
+  >(null);
 
   const { clientes, loadingClientes } = useFetchClientes();
   const navigate = useNavigate();
@@ -31,17 +30,18 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
     navigate(`/comodatos/${id}`);
   };
 
-  // Table columns
   const columns: ColumnsType<ComodatoInterface> = [
     {
-      title: "Fecha de Inicio",
-      dataIndex: "fecha_inicio",
-      key: "fecha_inicio",
+      title: "Cliente",
+      dataIndex: ["cliente", "nombre"],
+      key: "cliente.nombre",
+      align: "center",
     },
     {
       title: "Fecha de Fin",
       dataIndex: "fecha_fin",
       key: "fecha_fin",
+      align: "center",
     },
     {
       title: "Compra Mínima Mensual (CLP)",
@@ -87,14 +87,21 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       key: "detalle",
       align: "center",
       render: (_: any, record: ComodatoInterface) => (
-        <Button onClick={() => handleNavigateToDetalle(record.id)}>
+        <Button
+          type="link"
+          size="large"
+          className="border rounded-full border-primary-700"
+          onClick={() => handleNavigateToDetalle(record.id)}
+        >
           <ZoomInOutlined />
         </Button>
       ),
     },
   ];
 
-  const handleDateRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+  const handleDateRangeChange = (
+    dates: [Dayjs | null, Dayjs | null] | null
+  ) => {
     setDateRange(dates);
   };
 
@@ -105,7 +112,12 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
 
     const matchesDateRange =
       dateRange && dateRange[0] && dateRange[1]
-        ? dayjs(comodato.fecha_fin).isBetween(dateRange[0], dateRange[1], "day", "[]")
+        ? dayjs(comodato.fecha_fin).isBetween(
+            dateRange[0],
+            dateRange[1],
+            "day",
+            "[]"
+          )
         : true;
 
     return matchesClient && matchesDateRange;
@@ -128,9 +140,9 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
         dataSource={filteredData}
         columns={columns}
         rowKey="id"
-        className="bg-dark-100 rounded-xl"
+        className="bg-dark-700 rounded-xl"
         pagination={{ pageSize: 5 }}
-        scroll={{ x: 1500 }}
+        scroll={{ x: 500 }}
       />
     </>
   );

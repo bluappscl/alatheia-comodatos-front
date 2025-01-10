@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Table, Input, Button, message } from "antd";
 import { PlusOutlined, UploadOutlined, EditOutlined } from "@ant-design/icons";
 import axios from "axios";
-import InsumosExcelUpload from "../components/Insumos/InsumosExcelUpload";
-import InsumosGeneralForm from "../components/Insumos/InsumosGeneralForm";
+import InsumosExcelUpload from "../../components/Insumos/InsumosExcelUpload";
+import InsumosGeneralForm from "../../components/Insumos/InsumosGeneralForm";
 
 interface Insumo {
   id: number;

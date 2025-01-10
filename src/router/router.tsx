@@ -5,16 +5,13 @@ import {
 } from "react-router-dom";
 
 import Home from "../pages/Home";
-import MyPage from "../pages/MyPage";
-import Contactos from "../pages/Contactos";
-import HospitalDetails from "../pages/HospitalPage";
-import CrearComodato from "../pages/NuevoComodato";
-import InsumoPage from "../pages/Insumos";
-import InstrumentoPage from "../pages/Instrumentos";
-import ComodatosPage from "../pages/Comodatos";
-import ComodatoDetalle from "../pages/ComodatoDetalle";
+import CrearComodato from "../pages/Comodatos/NuevoComodato";
+import ComodatosPage from "../pages/Comodatos/Comodatos";
+import ComodatoDetalle from "../pages/Comodatos/ComodatoDetalle";
 import LayoutBack from "../layouts/LayoutBack";
 import Login from "../pages/Login";
+import ClienteDetalle from "../pages/Clientes/ClienteDetalle";
+import Clientes from "../pages/Clientes/Clientes";
 
 const routes = createRoutesFromElements(
   <>
@@ -22,13 +19,10 @@ const routes = createRoutesFromElements(
     <Route path="/" element={<LayoutBack />}>
       <Route index element={<Home />} />
       <Route path="nuevo-comodato" element={<CrearComodato />} />
-      <Route path="mypage" element={<MyPage />} />
       <Route path="comodatos" element={<ComodatosPage />} />
       <Route path="comodatos/:id" element={<ComodatoDetalle />} />
-      <Route path="clientes" element={<Contactos />} />
-      <Route path="clientes/:id" element={<HospitalDetails />} />
-      <Route path="insumos" element={<InsumoPage />} />
-      <Route path="instrumentos" element={<InstrumentoPage />} />
+      <Route path="clientes" element={<Clientes />} />
+      <Route path="clientes/:id" element={<ClienteDetalle />} />
     </Route>
   </>
 );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Card, Typography, Spin, Input } from "antd";
 import { ClienteInterface } from "../../interfaces/ClienteInterface";
-import { useFetchClientes } from "../../api/hooks/get_clientes";
+import { useFetchClientes } from "../../api/hooks/clientes/get_clientes";
 
 const { Search } = Input;
 

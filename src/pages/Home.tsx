@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
-import Dashboard from "./Dashboard";
+import Dashboard from "../components/Dashboard/Dashboard";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 import dashboard_photo from "../media/temporal/dashboard_photo.png";
 
 import { motion } from "motion/react";
-import { useFetchClientes } from "../api/hooks/get_clientes";
+import { useFetchClientes } from "../api/hooks/clientes/get_clientes";
 
 import ClientesSelect from "../components/Clientes/ClientesSelect";
 

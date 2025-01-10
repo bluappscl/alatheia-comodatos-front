@@ -1,7 +1,7 @@
 // import axios from "axios";
 import { message } from "antd";
-import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
-import { comodatos_json } from "../json_examples/comodatos_json";
+import { ComodatoInterface } from "../../../interfaces/ComodatoInterface";
+import { comodatos_json } from "../../json_examples/comodatos_json";
 // import axios from "axios";
 
 // const API_BASE_URL = "http://localhost:3001";

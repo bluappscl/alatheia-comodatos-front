@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchRetrieveComodatos } from "../requests/http_retrieve_comodatos";
-import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
+import { fetchRetrieveComodatos } from "../../requests/comodatos/http_retrieve_comodatos";
+import { ComodatoInterface } from "../../../interfaces/ComodatoInterface";
 
 export const useFetchRetrieveComodato = (id: string) => {
   const [comodato, setComodato] = useState<ComodatoInterface | null>(null);

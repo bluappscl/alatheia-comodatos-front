@@ -28,7 +28,6 @@ const GeneralLayout: React.FC = () => {
   // const pathToKeyMap: Record<string, string> = {
   //   "/": "1",
   //   "/clientes": "2",
-  //   "/mypage": "3",
   //   "/nuevo-comodato": "4",
   // };
 

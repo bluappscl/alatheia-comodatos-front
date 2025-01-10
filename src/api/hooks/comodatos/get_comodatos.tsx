@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { message } from "antd";
-import { fetchComodatos } from "../requests/http_get_comodatos";
-import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
+import { fetchComodatos } from "../../requests/comodatos/http_get_comodatos";
+import { ComodatoInterface } from "../../../interfaces/ComodatoInterface";
 
 export const useFetchComodatos = () => {
   const [comodatos, setComodatos] = useState<ComodatoInterface[]>([]);

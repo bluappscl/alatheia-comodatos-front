@@ -2,35 +2,25 @@ import React, { useState } from "react";
 import { Table, Input, Button, TableColumnsType } from "antd";
 import { ZoomInOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
-export interface DataType {
-  key: React.Key;
-  id: number;
-  logo: string;
-  nombre: string;
-  rut: string;
-  direccion: string;
-  codigo_comuna: string;
-  comodatos: [];
-}
+import { ClienteInterface } from "../../interfaces/ClienteInterface";
 
 interface ContactTableProps {
-  data: DataType[];
+  clientes: ClienteInterface[];
   loading: boolean;
 }
 
-const CustomerTables: React.FC<ContactTableProps> = ({ data, loading }) => {
+const ClientesTable: React.FC<ContactTableProps> = ({ clientes, loading }) => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
 
-  const filteredData = data.filter(
+  const filteredData = clientes.filter(
     (item) =>
       item.nombre.toLowerCase().includes(searchText.toLowerCase()) ||
       item.rut.toLowerCase().includes(searchText.toLowerCase()) ||
       item.direccion.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const columns: TableColumnsType<DataType> = [
+  const columns: TableColumnsType<ClienteInterface> = [
     { title: "Nombre", dataIndex: "nombre", key: "nombre", align: "center" },
     { title: "RUT", dataIndex: "rut", key: "rut", align: "center" },
     {
@@ -43,13 +33,6 @@ const CustomerTables: React.FC<ContactTableProps> = ({ data, loading }) => {
       dataIndex: "codigo_comuna",
       align: "center",
       key: "codigo_comuna",
-    },
-    {
-      title: "Comodatos",
-      dataIndex: "comodatos",
-      key: "comodatos",
-      align: "center",
-      render: (_, record) => <>{record.comodatos.length}</>,
     },
     {
       title: "Detalle",
@@ -75,15 +58,17 @@ const CustomerTables: React.FC<ContactTableProps> = ({ data, loading }) => {
         onChange={(e) => setSearchText(e.target.value)}
         style={{ marginBottom: 16, width: "100%" }}
       />
-      <Table<DataType>
+
+      <Table
         columns={columns}
         dataSource={filteredData}
         loading={loading}
-        className="bg-blue-400 rounded-xl"
-        scroll={{ x: 1000 }}
+        className="bg-dark-700 rounded-xl"
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 500 }}
       />
     </div>
   );
 };
 
-export default CustomerTables;
+export default ClientesTable;

@@ -1,6 +1,6 @@
-import InstrumentosChart from "../components/Dashboard/Instrumentos";
-import PagosBarChart from "../components/Dashboard/PagosBarChart";
-import VigentesChart from "../components/Dashboard/Vigente";
+import InstrumentosChart from "./Charts/Instrumentos";
+import PagosBarChart from "./Charts/PagosBarChart";
+import VigentesChart from "./Charts/Vigente";
 
 const Dashboard = () => {
   return (

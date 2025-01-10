@@ -1,17 +1,18 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Button, Spin } from "antd";
-import InstrumentosTable from "../components/Instrumentos/InstrumentosTable";
-import HeaderDescripcion from "../components/shared/HeaderDescripcion";
+import InstrumentosTable from "../../components/Instrumentos/InstrumentosTable";
+import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 
-import comodato_photo from "../media/temporal/comodato_photo.png";
-import { useFetchRetrieveComodato } from "../api/hooks/retrieve_comodatos";
+import { useFetchRetrieveComodato } from "../../api/hooks/comodatos/retrieve_comodatos";
 
 import { motion } from "motion/react";
-import CardTitleNumber from "../components/ComodatoDetalle/CardTitleNumber";
-import ProgresoContrato from "../components/ComodatoDetalle/ProgresoContrato";
-import DetalleCliente from "../components/ComodatoDetalle/DetalleCliente";
-import ComodatoTags from "../components/ComodatoDetalle/ComodatoTags";
+import CardTitleNumber from "../../components/ComodatoDetalle/CardTitleNumber";
+import ProgresoContrato from "../../components/ComodatoDetalle/ProgresoContrato";
+import DetalleCliente from "../../components/ComodatoDetalle/DetalleCliente";
+import ComodatoTags from "../../components/ComodatoDetalle/ComodatoTags";
+
+import comodato_photo from "../../media/temporal/comodato_photo.png";
 
 const ComodatoDetalle: React.FC = () => {
   const { id } = useParams<{ id: string }>();
