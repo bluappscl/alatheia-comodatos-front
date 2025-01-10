@@ -1,13 +1,13 @@
 import { Select } from "antd";
-import { ClienteInterface } from "../../../interfaces/ClienteInterface";
+import { ClienteInterface } from "../../interfaces/ClienteInterface";
 
-interface ClientesFilterInterface {
+interface ClientesMultipleSelectInterface {
   clientes: ClienteInterface[];
   loading: boolean;
   setFilteredClients: (selectedIds: string[]) => void;
 }
 
-const ClientesFilter: React.FC<ClientesFilterInterface> = ({
+const ClientesMultipleSelect: React.FC<ClientesMultipleSelectInterface> = ({
   clientes,
   loading,
   setFilteredClients,
@@ -32,4 +32,4 @@ const ClientesFilter: React.FC<ClientesFilterInterface> = ({
   );
 };
 
-export default ClientesFilter;
+export default ClientesMultipleSelect;

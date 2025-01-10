@@ -1,13 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
 import Dashboard from "./Dashboard";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 import dashboard_photo from "../media/temporal/dashboard_photo.png";
 
 import { motion } from "motion/react";
+import { useFetchClientes } from "../api/hooks/get_clientes";
+
+import ClientesSelect from "../components/Clientes/ClientesSelect";
 
 const Home: React.FC = () => {
   const setBreadcrumbs = useBreadcrumbContext((state) => state.setBreadcrumbs);
+  const [_, setFilteredClient] = useState<string>("");
+
+  const { clientes, loadingClientes } = useFetchClientes();
 
   useEffect(() => {
     setBreadcrumbs([{ title: "Home", path: "/" }]);
@@ -24,6 +30,13 @@ const Home: React.FC = () => {
         description="Aqui puedes ver el reporte historico y mensual"
         photo_path={dashboard_photo}
       />
+      <div className="lg:w-1/2">
+        <ClientesSelect
+          clientes={clientes}
+          loading={loadingClientes}
+          setFilteredClients={setFilteredClient}
+        />
+      </div>
       <Dashboard />
     </motion.div>
   );

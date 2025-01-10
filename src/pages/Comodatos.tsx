@@ -1,4 +1,4 @@
-import ComodatosTable from "../components/Contactos/ComodatosTable";
+import ComodatosTable from "../components/Clientes/ComodatosTable";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 import { useFetchComodatos } from "../api/hooks/get_comodatos";
 

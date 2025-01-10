@@ -8,7 +8,7 @@ import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { useFetchClientes } from "../../api/hooks/get_clientes";
-import ClientesFilter from "./ComodatosTable/ClientesFilter";
+import ClientesMultipleSelect from "./ClientesMultipleSelect";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 
@@ -114,7 +114,7 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
   return (
     <>
       <div className="flex sm:flex-col lg:flex-row gap-4 w-full mb-4">
-        <ClientesFilter
+        <ClientesMultipleSelect
           clientes={clientes}
           loading={loadingClientes}
           setFilteredClients={setFilteredClients}

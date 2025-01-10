@@ -3,7 +3,7 @@ import { Card, Typography, message } from "antd";
 import { useParams } from "react-router-dom";
 import VigentesChart from "../components/Dashboard/Vigente";
 import PagosBarChart from "../components/Dashboard/PagosBarChart";
-import ComodatosTable from "../components/Contactos/ComodatosTable";
+import ComodatosTable from "../components/Clientes/ComodatosTable";
 import axios from "axios";
 import { ComodatoInterface } from "../interfaces/ComodatoInterface";
 

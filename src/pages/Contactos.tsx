@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
-import ContactTable, { DataType } from "../components/Contactos/ClientesTable";
-import CreateClienteModal from "../components/Contactos/CreateClienteModal";
+import ContactTable, { DataType } from "../components/Clientes/ClientesTable";
+import CreateClienteModal from "../components/Clientes/CreateClienteModal";
 import { clientes_json } from "../api/json_examples/clientes";
 
 const Contactos: React.FC = () => {
