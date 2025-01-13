@@ -60,19 +60,19 @@ const ComodatosTableSinCLiente: React.FC<ComodatosTableProps> = ({ comodatos }) 
         </Typography.Text>
       ),
     },
-    {
-      title: "Contrato",
-      dataIndex: "contrato",
-      key: "contrato",
-      align: "center",
-      render: (url: string) => (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          <Button>
-            Ver Contrato <FilePdfOutlined />
-          </Button>
-        </a>
-      ),
-    },
+    // {
+    //   title: "Contrato",
+    //   dataIndex: "contrato",
+    //   key: "contrato",
+    //   align: "center",
+    //   render: (url: string) => (
+    //     <a href={url} target="_blank" rel="noopener noreferrer">
+    //       <Button>
+    //         Ver Contrato <FilePdfOutlined />
+    //       </Button>
+    //     </a>
+    //   ),
+    // },
     {
       title: "Detalle",
       key: "detalle",
