@@ -10,7 +10,6 @@ import clientes_photo from "../../media/temporal/comodato_photo.png";
 import PagosBarChart from "../../components/Dashboard/Charts/PagosBarChart";
 
 import ComodatosTableSinCLiente from "../../components/Comodatos/ComodatosTableSinCLiente";
-import FacturesByMonthTable from "./FacturesTable";
 import InstrumentosChart from "../../components/Dashboard/Charts/Instrumentos";
 import FacturasByMonthTable from "./FacturesTable";
 

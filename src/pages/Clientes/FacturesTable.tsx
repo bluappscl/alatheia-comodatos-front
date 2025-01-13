@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Typography, TableColumnsType, Button } from "antd";
+import { Table, TableColumnsType, Button } from "antd";
 
 interface FacturaType {
   key: React.Key;
@@ -91,7 +91,7 @@ const FacturasByMonthTable: React.FC = () => (
               </tr>
             </thead>
             <tbody>
-              {record.details.map((detail, index) => (
+              {record.details.map((detail) => (
                 <tr className="">
                   <td className="px-6 py-4 text-center">{detail.date}</td>
                   <td className="px-6 py-4 text-center">
