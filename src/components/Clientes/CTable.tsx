@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, DatePicker, Table, Typography } from "antd";
-import { FilePdfOutlined, ZoomInOutlined } from "@ant-design/icons";
+import {  ZoomInOutlined } from "@ant-design/icons";
 import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
