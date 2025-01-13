@@ -75,6 +75,11 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       title: "Estado",
       dataIndex: "estado",
       key: "estado",
+      filters: [
+        { text: "Activo", value: "Activo" },
+        { text: "Pendiente", value: "Pendiente" },
+      ],
+      onFilter: (value, record) => record.estado.indexOf(value as string) === 0,
       render: (estado: string) => (
         <Typography.Text
           className={estado === "Activo" ? "text-green-600" : "text-red-600"}
@@ -83,19 +88,19 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
         </Typography.Text>
       ),
     },
-    // {
-    //   title: "Contrato",
-    //   dataIndex: "contrato",
-    //   key: "contrato",
-    //   align: "center",
-    //   render: (url: string) => (
-    //     <a href={url} target="_blank" rel="noopener noreferrer">
-    //       <Button>
-    //         Ver Contrato <FilePdfOutlined />
-    //       </Button>
-    //     </a>
-    //   ),
-    // },
+    {
+      title: "Contrato",
+      dataIndex: "contrato",
+      key: "contrato",
+      align: "center",
+      render: (url: string) => (
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          <Button>
+            Ver Contrato <FilePdfOutlined />
+          </Button>
+        </a>
+      ),
+    },
     {
       title: "Detalle",
       key: "detalle",

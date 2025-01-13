@@ -13,6 +13,9 @@ import DetalleCliente from "../../components/ComodatoDetalle/DetalleCliente";
 import ComodatoTags from "../../components/ComodatoDetalle/ComodatoTags";
 
 import comodato_photo from "../../media/temporal/comodato_photo.png";
+import PagosBarChart from "../../components/Dashboard/Charts/PagosBarChart";
+import FacturasByMonthTable from "../Clientes/FacturesTable";
+import InstrumentosChart from "../../components/Dashboard/Charts/Instrumentos";
 
 const ComodatoDetalle: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -118,6 +121,23 @@ const ComodatoDetalle: React.FC = () => {
             Instrumentos en comodato
           </h2>
           <InstrumentosTable data={comodato.instrumentos} loading={loading} />
+        </div>
+
+        <hr className="my-6 text-dark-900 border" />
+
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="md:w-1/2 w-full bg-white rounded-lg p-4">
+            <InstrumentosChart />
+            <div>
+              <h2 className="text-lg font-semibold mt-6 mb-2">
+                Historial de Facturas
+              </h2>
+              <FacturasByMonthTable />
+            </div>
+          </div>
+          <div className="md:w-1/2 w-full">
+            <PagosBarChart />
+          </div>
         </div>
       </div>
     </motion.div>

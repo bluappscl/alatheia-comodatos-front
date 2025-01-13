@@ -18,14 +18,14 @@ const PagosSummaryCards: React.FC = () => {
       textColor: "text-primary-900",
     },
     {
-      title: "Realizados",
+      title: "Compras",
       icon: <CheckCircleOutlined className="text-success-900 text-2xl" />,
       amount: "$240,000",
       bgColor: "bg-success-50",
       textColor: "text-success-900",
     },
     {
-      title: "No Pagado",
+      title: "Faltantes",
       icon: <CloseCircleOutlined className="text-error-900 text-2xl" />,
       amount: "$10,000",
       bgColor: "bg-error-50",
@@ -95,16 +95,16 @@ const PagosBarChart: React.FC = () => {
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
-      {
-        label: "No Pagado",
-        data: [
-          30000, 30000, 15000, 30000, 30000, 10000, 10000, 10000, 15000, 10000,
-          10000, 10000,
-        ],
-        backgroundColor: "rgba(255, 99, 132, 0.6)", // Red
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 1,
-      },
+      // {
+      //   label: "No Pagado",
+      //   data: [
+      //     30000, 30000, 15000, 30000, 30000, 10000, 10000, 10000, 15000, 10000,
+      //     10000, 10000,
+      //   ],
+      //   backgroundColor: "rgba(255, 99, 132, 0.6)", // Red
+      //   borderColor: "rgba(255, 99, 132, 1)",
+      //   borderWidth: 1,
+      // },
     ],
   };
 
