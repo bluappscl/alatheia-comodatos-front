@@ -44,14 +44,28 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       align: "center",
     },
     {
-      title: "Compra Mínima Mensual (CLP)",
+      title: "Objetivo de Compra Mensual",
       dataIndex: "compra_minima_mensual_dinero",
       key: "compra_minima_mensual_dinero",
       align: "center",
       render: (value: number) => `$${value.toLocaleString()}`,
     },
     {
-      title: "Compra Mínima Reactivos",
+      title: "Compra Mensual Realizada",
+      dataIndex: "compra_minima_mensual_dinero",
+      key: "compra_minima_mensual_dinero",
+      align: "center",
+      render: (value: number) => `$${value.toLocaleString()}`,
+    },
+    {
+      title: "Objetivo de Compra Reactivos",
+      dataIndex: "compra_minima_mensual_reactivo",
+      key: "compra_minima_mensual_reactivo",
+      align: "center",
+      render: (value: number) => `${value.toLocaleString()}`,
+    },
+    {
+      title: "Compra de Reactivos Realizada",
       dataIndex: "compra_minima_mensual_reactivo",
       key: "compra_minima_mensual_reactivo",
       align: "center",
@@ -69,19 +83,19 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
         </Typography.Text>
       ),
     },
-    {
-      title: "Contrato",
-      dataIndex: "contrato",
-      key: "contrato",
-      align: "center",
-      render: (url: string) => (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          <Button>
-            Ver Contrato <FilePdfOutlined />
-          </Button>
-        </a>
-      ),
-    },
+    // {
+    //   title: "Contrato",
+    //   dataIndex: "contrato",
+    //   key: "contrato",
+    //   align: "center",
+    //   render: (url: string) => (
+    //     <a href={url} target="_blank" rel="noopener noreferrer">
+    //       <Button>
+    //         Ver Contrato <FilePdfOutlined />
+    //       </Button>
+    //     </a>
+    //   ),
+    // },
     {
       title: "Detalle",
       key: "detalle",
