@@ -4,12 +4,15 @@ import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 import { fetchInstrumentos } from "../../api/requests/http_get_intrumentos";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { departments } from "../../api/json_examples/sub_secciones";
 
 const { Option } = Select;
 
 const InstrumentSelectorTable = () => {
   const [loading, setLoading] = useState(false);
-  const [addedInstrumentos, setAddedInstrumentos] = useState<InstrumentoInterface[]>([]);
+  const [addedInstrumentos, setAddedInstrumentos] = useState<
+    InstrumentoInterface[]
+  >([]);
   const [instrumentos, setInstrumentos] = useState<InstrumentoInterface[]>([]);
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -53,7 +56,25 @@ const InstrumentSelectorTable = () => {
   const columns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
     { title: "Producto", dataIndex: "producto", key: "producto" },
-    { title: "Número de Serie", dataIndex: "numero_serie", key: "numero_serie" },
+    {
+      title: "Número de Serie",
+      dataIndex: "numero_serie",
+      key: "numero_serie",
+    },
+    {
+      title: "Ubicación",
+      dataIndex: "ubicacion",
+      key: "ubicacion",
+      render: () => (
+        <Select placeholder="Tipo de sucursal" className="w-full">
+          {departments.map((value, key) => (
+            <Select.Option value={value.nombre} key={key}>
+              {value.nombre}
+            </Select.Option>
+          ))}
+        </Select>
+      ),
+    },
     {
       title: "Cantidad",
       dataIndex: "cantidad",
@@ -63,7 +84,11 @@ const InstrumentSelectorTable = () => {
           type="number"
           value={value}
           onChange={(e) =>
-            handleCellChange("cantidad", parseInt(e.target.value || "0"), record)
+            handleCellChange(
+              "cantidad",
+              parseInt(e.target.value || "0"),
+              record
+            )
           }
         />
       ),
@@ -77,7 +102,11 @@ const InstrumentSelectorTable = () => {
           type="number"
           value={value}
           onChange={(e) =>
-            handleCellChange("valor_neto", parseFloat(e.target.value || "0"), record)
+            handleCellChange(
+              "valor_neto",
+              parseFloat(e.target.value || "0"),
+              record
+            )
           }
         />
       ),
@@ -100,9 +129,9 @@ const InstrumentSelectorTable = () => {
     {
       title: "Valor Total",
       key: "valor_total",
-      align:"right" as "right", 
+      align: "right" as "right",
       render: (_: any, record: InstrumentoInterface) =>
-        `${formatCurrency(record.cantidad * record.valor_neto, 'CLP')} ${
+        `${formatCurrency(record.cantidad * record.valor_neto, "CLP")} ${
           record.moneda
         }`,
     },

@@ -61,12 +61,12 @@ const data: FacturaType[] = [
     details: [
       {
         date: "2024-06-05",
-        description: "Factura #1",
+        description: "82738",
         amount: 800000,
       },
       {
         date: "2024-06-15",
-        description: "Factura #2",
+        description: "23412",
         amount: 400000,
       },
     ],
@@ -85,7 +85,7 @@ const FacturasByMonthTable: React.FC = () => (
                   Fecha
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Facturas
+                  Número de Factura
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Total Pagado

@@ -216,25 +216,6 @@ const CrearComodato: React.FC = () => {
               >
                 <Input placeholder="Ingrese la direccion" />
               </Form.Item>
-
-              <Form.Item
-                label="Ubicación"
-                name="sucursal_tipo"
-                rules={[
-                  {
-                    required: true,
-                    message: "Porfavor seleccione un tipo de sucursal",
-                  },
-                ]}
-              >
-                <Select placeholder="Tipo de sucursal" className="w-full">
-                  {departments.map((value, key) => (
-                    <Select.Option value={value.nombre} key={key}>
-                      {value.nombre}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
             </div>
             <div>
               <Form.Item
