@@ -1,7 +1,5 @@
 import { Button, Modal, Table } from "antd";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
-import { render } from "react-dom";
-import { formatCurrency } from "../../utils/formatCurrency";
 
 interface Props {
   visible: boolean;
