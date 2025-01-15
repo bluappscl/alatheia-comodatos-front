@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 import { fetchInstrumentos } from "../../api/requests/http_get_intrumentos";
-import { formatCurrency } from "../../utils/formatCurrency";
 import { departments } from "../../api/json_examples/sub_secciones";
 
 const { Option } = Select;
