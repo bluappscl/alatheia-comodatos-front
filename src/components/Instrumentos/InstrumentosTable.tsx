@@ -1,6 +1,7 @@
 import { Input, Table } from "antd";
 import { useEffect, useState } from "react";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 interface InstrumentosTableProps {
     data: InstrumentoInterface[];
@@ -35,7 +36,8 @@ interface InstrumentosTableProps {
         title: "Valor Neto",
         dataIndex: "valor_neto",
         key: "valor_neto",
-        render: (value: number) => `${value.toLocaleString()}`,
+        render: (value: number) => `${formatCurrency(value, 'CLP')}`,
+        align: "right" as "right"
       },
       { title: "Moneda", dataIndex: "moneda", key: "moneda" },
     ];

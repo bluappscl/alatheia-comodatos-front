@@ -8,6 +8,7 @@ import { useFetchClientes } from "../../api/hooks/clientes/get_clientes";
 import ClientesMultipleSelect from "../Clientes/ClientesMultipleSelect";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 dayjs.extend(isBetween);
 
@@ -35,41 +36,41 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       title: "Cliente",
       dataIndex: ["cliente", "nombre"],
       key: "cliente.nombre",
-      align: "center",
     },
     {
       title: "Fecha de Fin",
       dataIndex: "fecha_fin",
       key: "fecha_fin",
       align: "center",
+      render:(date: string) => `${dayjs(date).format("DD/MM/YYYY")}`
     },
     {
       title: "Objetivo de Compra Mensual",
       dataIndex: "compra_minima_mensual_dinero",
       key: "compra_minima_mensual_dinero",
       align: "center",
-      render: (value: number) => `$${value.toLocaleString()}`,
+      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
     },
     {
       title: "Compra Mensual Realizada",
       dataIndex: "compra_minima_mensual_dinero",
       key: "compra_minima_mensual_dinero",
       align: "center",
-      render: (value: number) => `$${value.toLocaleString()}`,
+      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
     },
     {
       title: "Objetivo de Compra Reactivos",
       dataIndex: "compra_minima_mensual_reactivo",
       key: "compra_minima_mensual_reactivo",
       align: "center",
-      render: (value: number) => `${value.toLocaleString()}`,
+      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
     },
     {
       title: "Compra de Reactivos Realizada",
       dataIndex: "compra_minima_mensual_reactivo",
       key: "compra_minima_mensual_reactivo",
       align: "center",
-      render: (value: number) => `${value.toLocaleString()}`,
+      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
     },
     {
       title: "Estado",
@@ -123,6 +124,8 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
   ) => {
     setDateRange(dates);
   };
+
+
 
   const filteredData = comodatos.filter((comodato) => {
     const matchesClient = filteredClients.length

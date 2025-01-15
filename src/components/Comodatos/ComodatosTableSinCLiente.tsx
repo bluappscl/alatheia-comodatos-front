@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { ComodatoInterfaceWithoutCliente } from "../../interfaces/ComodatoInterfaceWithoutCliente";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 dayjs.extend(isBetween);
 
@@ -16,7 +17,9 @@ interface ComodatosTableProps {
   comodatos: ComodatoInterfaceWithoutCliente[];
 }
 
-const ComodatosTableSinCLiente: React.FC<ComodatosTableProps> = ({ comodatos }) => {
+const ComodatosTableSinCLiente: React.FC<ComodatosTableProps> = ({
+  comodatos,
+}) => {
   const [dateRange, setDateRange] = useState<
     [Dayjs | null, Dayjs | null] | null
   >(null);
@@ -33,20 +36,21 @@ const ComodatosTableSinCLiente: React.FC<ComodatosTableProps> = ({ comodatos }) 
       dataIndex: "fecha_fin",
       key: "fecha_fin",
       align: "center",
+      render: (date: string) => `${dayjs(date).format("DD/MM/YYYY")}`,
     },
     {
       title: "Compra Mínima Mensual (CLP)",
       dataIndex: "compra_minima_mensual_dinero",
       key: "compra_minima_mensual_dinero",
-      align: "center",
-      render: (value: number) => `$${value.toLocaleString()}`,
+      align: "right",
+      render: (value: number) => `${formatCurrency(value, "CLP")}`,
     },
     {
       title: "Compra Mínima Reactivos",
       dataIndex: "compra_minima_mensual_reactivo",
       key: "compra_minima_mensual_reactivo",
-      align: "center",
-      render: (value: number) => `${value.toLocaleString()}`,
+      align: "right",
+      render: (value: number) => `${formatCurrency(value, "CLP")}`,
     },
     {
       title: "Estado",
@@ -107,7 +111,7 @@ const ComodatosTableSinCLiente: React.FC<ComodatosTableProps> = ({ comodatos }) 
           )
         : true;
 
-    return  matchesDateRange;
+    return matchesDateRange;
   });
 
   return (

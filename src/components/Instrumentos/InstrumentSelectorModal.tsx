@@ -1,5 +1,7 @@
 import { Button, Modal, Table } from "antd";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
+import { render } from "react-dom";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 interface Props {
   visible: boolean;
@@ -22,16 +24,20 @@ const InstrumentSelectorModal: React.FC<Props> = ({
       dataIndex: "numero_serie",
       key: "numero_serie",
     },
-    { title: "Cantidad", dataIndex: "cantidad", key: "cantidad" },
-    { title: "Valor Neto", dataIndex: "valor_neto", key: "valor_neto" },
-    { title: "Moneda", dataIndex: "moneda", key: "moneda" },
+    // { title: "Cantidad", dataIndex: "cantidad", key: "cantidad" },
+    // {
+    //   title: "Valor Neto",
+    //   dataIndex: "valor_neto",
+    //   key: "valor_neto",
+    //   align:"right" as "right",
+    //   render: (value: number) => `${formatCurrency(value, "CLP")}`,
+    // },
+    // { title: "Moneda", dataIndex: "moneda", key: "moneda" },
     {
       title: "Acciones",
       key: "acciones",
       render: (_: any, record: InstrumentoInterface) => (
-        <Button onClick={() => onAddInstrumento(record)}>
-          Añadir
-        </Button>
+        <Button onClick={() => onAddInstrumento(record)}>Añadir</Button>
       ),
     },
   ];

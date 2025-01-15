@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 import { fetchInstrumentos } from "../../api/requests/http_get_intrumentos";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const { Option } = Select;
 
@@ -99,8 +100,9 @@ const InstrumentSelectorTable = () => {
     {
       title: "Valor Total",
       key: "valor_total",
+      align:"right" as "right", 
       render: (_: any, record: InstrumentoInterface) =>
-        `${(record.cantidad * record.valor_neto).toLocaleString()} ${
+        `${formatCurrency(record.cantidad * record.valor_neto, 'CLP')} ${
           record.moneda
         }`,
     },

@@ -380,12 +380,12 @@ const CrearComodato: React.FC = () => {
                         ]}
                       >
                         <div className="flex flex-wrap md:flex-nowrap items-center gap-4">
-                          <div className="w-28">
+                          {/* <div className="w-28">
                             <Select placeholder="Moneda" className="w-full">
                               <Select.Option value="CLP">CLP</Select.Option>
                               <Select.Option value="UF">UF</Select.Option>
                             </Select>
-                          </div>
+                          </div> */}
                           <InputNumber
                             min={1}
                             className="w-full"

@@ -3,6 +3,7 @@ import { Table, Input, Button, TableColumnsType } from "antd";
 import { ZoomInOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { ClienteInterface } from "../../interfaces/ClienteInterface";
+import { format } from "rut.js";
 
 interface ContactTableProps {
   clientes: ClienteInterface[];
@@ -21,8 +22,14 @@ const ClientesTable: React.FC<ContactTableProps> = ({ clientes, loading }) => {
   );
 
   const columns: TableColumnsType<ClienteInterface> = [
-    { title: "Nombre", dataIndex: "nombre", key: "nombre", align: "center" },
-    { title: "RUT", dataIndex: "rut", key: "rut", align: "center" },
+    { title: "Nombre", dataIndex: "nombre", key: "nombre" },
+    {
+      title: "RUT",
+      dataIndex: "rut",
+      key: "rut",
+      align: "center",
+      render: (rut: string) => `${format(rut)}`,
+    },
     {
       title: "Direccion",
       dataIndex: "direccion",

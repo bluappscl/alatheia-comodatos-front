@@ -1,5 +1,6 @@
 import React from "react";
 import { ClienteInterface } from "../../interfaces/ClienteInterface";
+import { format } from "rut.js";
 
 interface DetalleClienteProps {
   cliente: ClienteInterface;
@@ -24,7 +25,7 @@ const DetalleCliente: React.FC<DetalleClienteProps> = ({
         </div>
         <div>
           <label className="font-semibold block  mb-1">RUT</label>
-          <p className="">{cliente.rut}</p>
+          <p className="">{format(cliente.rut)}</p>
         </div>
         <div>
           <label className="font-semibold block  mb-1">Código Comuna</label>
@@ -45,7 +46,7 @@ const DetalleCliente: React.FC<DetalleClienteProps> = ({
           </div>
           <div>
             <label className="font-semibold block  mb-1">RUT</label>
-            <p className="">{representante_rut}</p>
+            <p className="">{format(representante_rut)}</p>
           </div>
         </div>
       </div>

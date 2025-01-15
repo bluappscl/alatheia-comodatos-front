@@ -1,13 +1,14 @@
 import React from "react";
 import { Table, TableColumnsType, Button } from "antd";
 import dayjs from "dayjs";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 interface FacturaType {
   key: React.Key;
   month: string; // Month of the Factura
   totalFacturas: number;
-  totalAmount: string;
-  details: { date: string; description: string; amount: string }[]; // Factura details
+  totalAmount: number;
+  details: { date: string; description: string; amount: number }[];
 }
 
 const columns: TableColumnsType<FacturaType> = [
@@ -32,22 +33,22 @@ const data: FacturaType[] = [
     key: 1,
     month: "Mayo 2024",
     totalFacturas: 3,
-    totalAmount: "1500000 CLP",
+    totalAmount: 1500000,
     details: [
       {
         date: "2024-05-10",
         description: "32124",
-        amount: "500000 CLP",
+        amount: 500000,
       },
       {
         date: "2024-05-15",
         description: "23124",
-        amount: "700000 CLP",
+        amount: 700000,
       },
       {
         date: "2024-05-20",
         description: "42132",
-        amount: "300000 CLP",
+        amount: 300000,
       },
     ],
   },
@@ -55,17 +56,17 @@ const data: FacturaType[] = [
     key: 2,
     month: "Junio 2024",
     totalFacturas: 2,
-    totalAmount: "1200000 CLP",
+    totalAmount: 1200000,
     details: [
       {
         date: "2024-06-05",
         description: "Factura #1",
-        amount: "800000 CLP",
+        amount: 800000,
       },
       {
         date: "2024-06-15",
         description: "Factura #2",
-        amount: "400000 CLP",
+        amount: 400000,
       },
     ],
   },
@@ -99,7 +100,9 @@ const FacturasByMonthTable: React.FC = () => (
                     <td className="px-6 py-4 text-center">
                       <Button type="link">{detail.description}</Button>
                     </td>
-                    <td className="px-6 py-4 text-center">{detail.amount}</td>
+                    <td className="px-6 py-4 text-center">
+                      {formatCurrency(detail.amount, "CLP")}
+                    </td>
                   </tr>
                 );
               })}

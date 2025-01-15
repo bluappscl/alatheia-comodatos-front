@@ -16,6 +16,7 @@ import comodato_photo from "../../media/temporal/comodato_photo.png";
 import PagosBarChart from "../../components/Dashboard/Charts/PagosBarChart";
 import FacturasByMonthTable from "../Clientes/FacturesTable";
 import InstrumentosChart from "../../components/Dashboard/Charts/Instrumentos";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const ComodatoDetalle: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -79,11 +80,11 @@ const ComodatoDetalle: React.FC = () => {
             <div className="flex flex-row gap-4 mb-4 mt-1 h-28">
               <CardTitleNumber
                 title="Compra Mínima Mensual (Dinero)"
-                content={`$${comodato.compra_minima_mensual_dinero.toLocaleString()}`}
+                content={`${formatCurrency(comodato.compra_minima_mensual_dinero, 'CLP')}`}
               />
               <CardTitleNumber
                 title="Compra Mínima Mensual (Reactivos)"
-                content={`${comodato.compra_minima_mensual_reactivo.toLocaleString()}`}
+                content={`${formatCurrency(comodato.compra_minima_mensual_reactivo, 'CLP')}`}
               />
             </div>
           </div>
