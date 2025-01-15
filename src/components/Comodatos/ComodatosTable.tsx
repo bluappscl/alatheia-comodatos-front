@@ -108,9 +108,6 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       align: "center",
       render: (_: any, record: ComodatoInterface) => (
         <Button
-          type="link"
-          size="large"
-          className="border rounded-full border-primary-700"
           onClick={() => handleNavigateToDetalle(record.id)}
         >
           <ZoomInOutlined />

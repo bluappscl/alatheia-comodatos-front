@@ -24,6 +24,7 @@ const columns: TableColumnsType<FacturaType> = [
     dataIndex: "totalAmount",
     key: "totalAmount",
     align: "center",
+    render: (value: number) => `${formatCurrency(value, "CLP")}`,
   },
   Table.EXPAND_COLUMN,
 ];
