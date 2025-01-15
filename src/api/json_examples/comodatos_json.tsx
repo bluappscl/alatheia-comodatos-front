@@ -73,7 +73,7 @@ export const comodatos_json = [
   {
     id: 2,
     contrato:
-      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FComodato_Contrato_2.pdf?alt=media&token=abcd1234-5678-90ef-ghij-klmnopqrstuv",
+      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FCONTRATO%20CFX%20BIOSCAN%20-%20PLANILLA%20COMODATO%20CM.pdf?alt=media&token=3793bcc0-feeb-482a-89be-0eaf95ef4130",
     compra_minima_mensual_dinero: 1500000, // 15,000,000 CLP
     compra_minima_mensual_reactivo: 280, // 18,000 unidades de reactivos
     fecha_inicio: "2023-02-01",
@@ -127,7 +127,7 @@ export const comodatos_json = [
   {
     id: 3,
     contrato:
-      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FComodato_Contrato_3.pdf?alt=media&token=xyz98765-4321-0abc-defg-hijklmnopqrs",
+      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FContrato%20Comodato%20CSM%20-%20PLANILLA%20COMODATO%20CM.pdf?alt=media&token=f1a1ec95-2c1b-4beb-9fe3-39ae1ba397a4",
     compra_minima_mensual_dinero: 1800000, // 18,000,000 CLP
     compra_minima_mensual_reactivo: 240, // 20,000 unidades de reactivos
     fecha_inicio: "2024-03-15",
@@ -191,7 +191,7 @@ export const comodatos_json = [
   {
     id: 4,
     contrato:
-      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FBioclinic_Contrato_Amplificacion_y_Extraccion_CM_1.pdf?alt=media&token=4a6a2258-4c05-4490-9cdc-961f77188039",
+      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FIMALAB%20-%20PLANILLA%20COMODATO%20CM.pdf?alt=media&token=ab3d85c8-5f05-41a3-9cdc-e1b35bd6c845",
     compra_minima_mensual_dinero: 3450000, // 3,450,000 CLP
     compra_minima_mensual_reactivo: 630, // 630 unidades de reactivos
     fecha_inicio: "2025-01-01",
@@ -266,7 +266,7 @@ export const comodatos_json = [
   {
     id: 5,
     contrato:
-      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FBioclinic_Contrato_Amplificacion_y_Extraccion_CM_2.pdf?alt=media&token=4a6a2258-4c05-4490-9cdc-961f77188039",
+      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FCTTO%20VET%20BUINZOO%20-%20PLANILLA%20COMODATO%20CM.pdf?alt=media&token=c0742e6e-00ef-483e-921f-c02e45f6f083",
     compra_minima_mensual_dinero: 2300000, // 2,300,000 CLP
     compra_minima_mensual_reactivo: 370, // 370 unidades de reactivos
     fecha_inicio: "2024-01-01",

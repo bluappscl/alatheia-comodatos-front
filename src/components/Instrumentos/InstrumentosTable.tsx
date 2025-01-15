@@ -29,9 +29,9 @@ interface InstrumentosTableProps {
   
     const columns = [
       { title: "Código", dataIndex: "codigo", key: "codigo" },
+      { title: "Marca", dataIndex: "marca", key: "marca" },
       { title: "Producto", dataIndex: "producto", key: "producto" },
       { title: "Número de Serie", dataIndex: "numero_serie", key: "numero_serie" },
-      { title: "Cantidad", dataIndex: "cantidad", key: "cantidad" },
       {
         title: "Valor Neto",
         dataIndex: "valor_neto",

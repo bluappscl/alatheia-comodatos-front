@@ -5,7 +5,7 @@ const InstrumentosChart = () => {
     labels: ["Instrumentos en Uso", "Instrumentos en Inventario"],
     datasets: [
       {
-        data: [300, 150],
+        data: [300, 20],
         backgroundColor: ["rgba(54, 162, 235, 0.6)", "rgba(255, 206, 86, 0.6)"],
         borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 206, 86, 1)"],
         borderWidth: 2,
@@ -30,7 +30,7 @@ const InstrumentosChart = () => {
           <span className="text-textgrey-100">Operativos:</span> 300
         </p>
         <p className="text-xl font-medium text-textgrey-100 my-2">
-          <span className="text-textgrey-100">No operativos:</span> 150
+          <span className="text-textgrey-100">No operativos:</span> 20
         </p>
 
       </div>

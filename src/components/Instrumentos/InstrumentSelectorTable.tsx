@@ -56,6 +56,7 @@ const InstrumentSelectorTable = () => {
   const columns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
     { title: "Producto", dataIndex: "producto", key: "producto" },
+    { title: "Marca", dataIndex: "marca", key: "marca" },
     {
       title: "Número de Serie",
       dataIndex: "numero_serie",
@@ -75,24 +76,25 @@ const InstrumentSelectorTable = () => {
         </Select>
       ),
     },
-    {
-      title: "Cantidad",
-      dataIndex: "cantidad",
-      key: "cantidad",
-      render: (value: number, record: InstrumentoInterface) => (
-        <Input
-          type="number"
-          value={value}
-          onChange={(e) =>
-            handleCellChange(
-              "cantidad",
-              parseInt(e.target.value || "0"),
-              record
-            )
-          }
-        />
-      ),
-    },
+    // {
+    //   title: "Cantidad",
+    //   dataIndex: "cantidad",
+    //   key: "cantidad",
+    //   render: (value: number, record: InstrumentoInterface) => (
+    //     <Input
+    //     className="w-16"
+    //       type="number"
+    //       value={value}
+    //       onChange={(e) =>
+    //         handleCellChange(
+    //           "cantidad",
+    //           parseInt(e.target.value || "0"),
+    //           record
+    //         )
+    //       }
+    //     />
+    //   ),
+    // },
     {
       title: "Valor Neto",
       dataIndex: "valor_neto",
@@ -125,15 +127,6 @@ const InstrumentSelectorTable = () => {
           <Option value="UF">UF</Option>
         </Select>
       ),
-    },
-    {
-      title: "Valor Total",
-      key: "valor_total",
-      align: "right" as "right",
-      render: (_: any, record: InstrumentoInterface) =>
-        `${formatCurrency(record.cantidad * record.valor_neto, "CLP")} ${
-          record.moneda
-        }`,
     },
     {
       title: "Acciones",

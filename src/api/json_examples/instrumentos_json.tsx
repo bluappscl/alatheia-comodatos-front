@@ -6,7 +6,8 @@ export const instrumentos_json = [
     "numero_serie": "88823-14",
     "cantidad": 1,
     "moneda": "CLP",
-    "valor_neto": 2500
+    "valor_neto": 2500,
+    "marca": "Seegene"
   },
   {
     "id": 2,
@@ -15,7 +16,8 @@ export const instrumentos_json = [
     "numero_serie": "CFX12345",
     "cantidad": 1,
     "moneda": "USD",
-    "valor_neto": 4800
+    "valor_neto": 4800,
+    "marca": "Bio-Rad"
   },
   {
     "id": 3,
@@ -24,7 +26,8 @@ export const instrumentos_json = [
     "numero_serie": "QS67890",
     "cantidad": 1,
     "moneda": "USD",
-    "valor_neto": 3200
+    "valor_neto": 3200,
+    "marca": "Thermo Fisher"
   },
   {
     "id": 4,
@@ -33,7 +36,8 @@ export const instrumentos_json = [
     "numero_serie": "RC8800123",
     "cantidad": 1,
     "moneda": "USD",
-    "valor_neto": 7500
+    "valor_neto": 7500,
+    "marca": "Roche"
   },
   {
     "id": 5,
@@ -42,6 +46,7 @@ export const instrumentos_json = [
     "numero_serie": "AM202311",
     "cantidad": 3,
     "moneda": "USD",
-    "valor_neto": 8600
+    "valor_neto": 8600,
+    "marca": "Abbott"
   }
-]
+];
