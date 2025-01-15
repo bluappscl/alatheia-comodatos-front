@@ -18,6 +18,7 @@ import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 import comodato_photo from "../../media/temporal/comodato_photo.png";
 
 import { motion } from "motion/react";
+import { departments } from "../../api/json_examples/sub_secciones";
 
 interface CrearComodatoValues {
   nombre: string;
@@ -227,9 +228,11 @@ const CrearComodato: React.FC = () => {
                 ]}
               >
                 <Select placeholder="Tipo de sucursal" className="w-full">
-                  <Select.Option value="Hematologia">Hematologia</Select.Option>
-                  <Select.Option value="Cardiología">Cardiología</Select.Option>
-                  <Select.Option value="Cardiología">...</Select.Option>
+                  {departments.map((value, key) => (
+                    <Select.Option value={value.nombre} key={key}>
+                      {value.nombre}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </div>
