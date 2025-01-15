@@ -7,7 +7,6 @@ import {
   message,
   Checkbox,
   InputNumber,
-  Select,
 } from "antd";
 import axios from "axios";
 import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector";
@@ -18,7 +17,6 @@ import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 import comodato_photo from "../../media/temporal/comodato_photo.png";
 
 import { motion } from "motion/react";
-import { departments } from "../../api/json_examples/sub_secciones";
 
 interface CrearComodatoValues {
   nombre: string;
