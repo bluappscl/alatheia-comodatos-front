@@ -1,5 +1,6 @@
 import React from "react";
 import { Table, TableColumnsType, Button } from "antd";
+import dayjs from "dayjs";
 
 interface FacturaType {
   key: React.Key;
@@ -10,7 +11,7 @@ interface FacturaType {
 }
 
 const columns: TableColumnsType<FacturaType> = [
-  { title: "Month", dataIndex: "month", key: "month", align: "center" },
+  { title: "Mes/Año", dataIndex: "month", key: "month", align: "center" },
   {
     title: "Total Facturas",
     dataIndex: "totalFacturas",
@@ -35,17 +36,17 @@ const data: FacturaType[] = [
     details: [
       {
         date: "2024-05-10",
-        description: "Factura #1",
+        description: "32124",
         amount: "500000 CLP",
       },
       {
         date: "2024-05-15",
-        description: "Factura #2",
+        description: "23124",
         amount: "700000 CLP",
       },
       {
         date: "2024-05-20",
-        description: "Factura #3",
+        description: "42132",
         amount: "300000 CLP",
       },
     ],
@@ -69,7 +70,6 @@ const data: FacturaType[] = [
     ],
   },
 ];
-
 const FacturasByMonthTable: React.FC = () => (
   <Table<FacturaType>
     columns={columns}
@@ -80,7 +80,7 @@ const FacturasByMonthTable: React.FC = () => (
             <thead className="text-xs bg-dark-700 text-white">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                  Mes
+                  Fecha
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Facturas
@@ -91,15 +91,18 @@ const FacturasByMonthTable: React.FC = () => (
               </tr>
             </thead>
             <tbody>
-              {record.details.map((detail) => (
-                <tr className="">
-                  <td className="px-6 py-4 text-center">{detail.date}</td>
-                  <td className="px-6 py-4 text-center">
-                    <Button type="link">{detail.description}</Button>
-                  </td>
-                  <td className="px-6 py-4 text-center">{detail.amount}</td>
-                </tr>
-              ))}
+              {record.details.map((detail) => {
+                const formattedDate = dayjs(detail.date).format("DD/MM/YYYY");
+                return (
+                  <tr key={detail.date} className="">
+                    <td className="px-6 py-4 text-center">{formattedDate}</td>
+                    <td className="px-6 py-4 text-center">
+                      <Button type="link">{detail.description}</Button>
+                    </td>
+                    <td className="px-6 py-4 text-center">{detail.amount}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -1,7 +1,7 @@
 // import axios from "axios";
 import { message } from "antd";
-import { clientes_json } from "../../json_examples/clientes";
 import { ClienteInterfaceWithComodatos } from "../../../interfaces/ClienteInterfaceWithComodatos";
+import { retrieve_cliente } from "../../json_examples/retrieve_cliente";
 // import axios from "axios";
 
 // const API_BASE_URL = "http://localhost:3001";
@@ -13,7 +13,8 @@ export const fetchRetrieveClientes = async (
     // const response = await axios.get(`${API_BASE_URL}/clientes/${id}`);
     // return response.data;
 
-    const cliente = clientes_json.find((item) => item.id === Number(id));
+    const cliente = retrieve_cliente.find((item) => item.id === Number(id));
+    console.log(cliente)
     if (!cliente) throw new Error("Comodato not found");
     return cliente;
   } catch (error) {

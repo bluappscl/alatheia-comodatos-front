@@ -16,8 +16,6 @@ const DateProgress: React.FC<DateProgressProps> = ({ startDate, endDate }) => {
   const start = dayjs(startDate);
   const end = dayjs(endDate);
 
-  console.log(start);
-  console.log(end);
   const today = dayjs();
 
   const totalDays = end.diff(start, "day");

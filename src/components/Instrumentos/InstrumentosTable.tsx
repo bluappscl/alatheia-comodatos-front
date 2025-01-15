@@ -56,7 +56,7 @@ interface InstrumentosTableProps {
           rowKey="id"
           loading={loading}
           scroll={{ x: 1000 }}
-          className="bg-dark-100 rounded-xl"
+          className="bg-dark-700 rounded-xl"
         />
       </div>
     );

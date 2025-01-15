@@ -5,5 +5,5 @@ export interface ClienteInterface {
   codigo_comuna: string;
   direccion: string;
   logo?: string;
-  comodatos?: any[];
+  comodatos?: number;
 }

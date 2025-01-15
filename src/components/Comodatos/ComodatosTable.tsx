@@ -76,13 +76,13 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       dataIndex: "estado",
       key: "estado",
       filters: [
-        { text: "Activo", value: "Activo" },
+        { text: "Vigente", value: "Vigente" },
         { text: "Pendiente", value: "Pendiente" },
       ],
       onFilter: (value, record) => record.estado.indexOf(value as string) === 0,
       render: (estado: string) => (
         <Typography.Text
-          className={estado === "Activo" ? "text-green-600" : "text-red-600"}
+          className={estado === "Vigente" ? "text-green-600" : "text-red-600"}
         >
           {estado}
         </Typography.Text>

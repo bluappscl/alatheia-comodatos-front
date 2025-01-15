@@ -205,20 +205,20 @@ const CrearComodato: React.FC = () => {
               </div>
 
               <Form.Item
-                label="Direccion de Sucursal"
+                label="Direccion"
                 name="sucursal"
                 rules={[
                   {
                     required: true,
-                    message: "Porfavor ingrese la direccion de la sucursal",
+                    message: "Porfavor ingrese la direccion",
                   },
                 ]}
               >
-                <Input placeholder="Ingrese la direccion de la sucursal" />
+                <Input placeholder="Ingrese la direccion" />
               </Form.Item>
 
               <Form.Item
-                label="Tipo de sucursal"
+                label="Ubicación"
                 name="sucursal_tipo"
                 rules={[
                   {

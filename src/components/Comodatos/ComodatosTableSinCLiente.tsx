@@ -54,7 +54,7 @@ const ComodatosTableSinCLiente: React.FC<ComodatosTableProps> = ({ comodatos }) 
       key: "estado",
       render: (estado: string) => (
         <Typography.Text
-          className={estado === "Activo" ? "text-green-600" : "text-red-600"}
+          className={estado === "Vigente" ? "text-green-600" : "text-red-600"}
         >
           {estado}
         </Typography.Text>

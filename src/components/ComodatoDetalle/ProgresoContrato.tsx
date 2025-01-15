@@ -6,7 +6,7 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 
 import fin_contrato from "../../media/icons/fin-de-contrato.png";
-import { Input, theme } from "antd";
+import { theme } from "antd";
 
 interface ProgresoContratoProps {
   startDate: string;

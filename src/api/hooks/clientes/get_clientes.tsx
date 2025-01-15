@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { message } from "antd";
 import { fetchClientes } from "../../requests/clientes/http_get_clientes";
 // import { ClienteInterface } from "../../../interfaces/ClienteInterface";
-import { ClienteInterfaceWithComodatos } from "../../../interfaces/ClienteInterfaceWithComodatos";
+// import { ClienteInterfaceWithComodatos } from "../../../interfaces/ClienteInterfaceWithComodatos";
+import { ClienteInterface } from "../../../interfaces/ClienteInterface";
 
 export const useFetchClientes = () => {
-  const [clientes, setClientes] = useState<ClienteInterfaceWithComodatos[]>([]);
+  const [clientes, setClientes] = useState<ClienteInterface[]>([]);
   const [loadingClientes, setLoadingClientes] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
