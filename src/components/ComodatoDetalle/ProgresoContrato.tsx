@@ -35,11 +35,11 @@ const ProgresoContrato: React.FC<ProgresoContratoProps> = ({
       <div className="flex flex-col justify-start items-start w-full md:w-2/3 gap-4">
         <div className="w-full">
           <label className="font-semibold block mb-1">Fecha Inicio</label>
-          <Input value={start.format("DD/MM/YYYY")} readOnly />
+          <p className="ml-2">{start.format("DD/MM/YYYY")} </p>
         </div>
         <div className="w-full">
           <label className="font-semibold block mb-1">Fecha Fin</label>
-          <Input value={end.format("DD/MM/YYYY")} readOnly />
+          <p className="ml-2">{end.format("DD/MM/YYYY")} </p>
         </div>
       </div>
 

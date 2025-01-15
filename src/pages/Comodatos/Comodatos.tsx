@@ -7,7 +7,7 @@ import comodato_photo from "../../media/temporal/comodato_photo.png";
 import { motion } from "motion/react";
 const ComodatosPage = () => {
   const { comodatos } = useFetchComodatos();
-
+  console.log("comodatoscomodatoscomodatos sisi sexo ", comodatos);
   return (
     <motion.div
       initial={{ opacity: 0 }}
