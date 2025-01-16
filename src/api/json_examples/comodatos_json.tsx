@@ -36,6 +36,7 @@ export const comodatos_json = [
         numero_serie: "BR123456",
         cantidad: 2,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 23500000, // CLP
       },
       {
@@ -46,6 +47,7 @@ export const comodatos_json = [
         numero_serie: "TB654321",
         cantidad: 1,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 6500000, // CLP
       },
     ],
@@ -111,7 +113,8 @@ export const comodatos_json = [
         marca: "Thermo Fisher",
         numero_serie: "QS67890",
         cantidad: 1,
-        moneda: "USD",
+        moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 3200, // USD
       },
     ],
@@ -170,8 +173,9 @@ export const comodatos_json = [
         marca: "Beckman Coulter",
         numero_serie: "BC123789",
         cantidad: 3,
-        moneda: "USD",
-        valor_neto: 4500, // USD
+        moneda: "CLP",
+        adn: "FWASDW",
+        valor_neto: 450000, // USD
       },
       {
         id: 5,
@@ -180,8 +184,9 @@ export const comodatos_json = [
         marca: "Roche",
         numero_serie: "RC456123",
         cantidad: 2,
-        moneda: "USD",
-        valor_neto: 5000, // USD
+        moneda: "CLP",
+        adn: "FWASDW",
+        valor_neto: 500000, // USD
       },
     ],
     reactivos: [
@@ -241,6 +246,7 @@ export const comodatos_json = [
         numero_serie: "BR654321",
         cantidad: 1,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 23500000, // CLP
       },
       {
@@ -251,6 +257,7 @@ export const comodatos_json = [
         numero_serie: "BI098765",
         cantidad: 1,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 6500000, // CLP
       },
       {
@@ -261,6 +268,7 @@ export const comodatos_json = [
         numero_serie: "TB123456",
         cantidad: 1,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 37506000, // CLP
       },
     ],
@@ -321,6 +329,7 @@ export const comodatos_json = [
         numero_serie: "BR789012",
         cantidad: 1,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 23500000, // CLP
       },
       {
@@ -331,6 +340,7 @@ export const comodatos_json = [
         numero_serie: "BI567890",
         cantidad: 1,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 6500000, // CLP
       },
       {
@@ -341,6 +351,7 @@ export const comodatos_json = [
         numero_serie: "TB789012",
         cantidad: 1,
         moneda: "CLP",
+        adn: "FWASDW",
         valor_neto: 37506000, // CLP
       },
     ],

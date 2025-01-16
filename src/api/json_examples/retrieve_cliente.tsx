@@ -25,6 +25,11 @@ export const retrieve_cliente = [
         porcentaje_tiempo_de_gracia: 10,
         es_renovable: true,
         renovable_automatico: true,
+        representante_venta: {
+          id: 1,
+          codigo: "AKC",
+          nombre: "Camilo Ramirez",
+        },
         instrumentos: [
           {
             id: 1,
@@ -34,6 +39,7 @@ export const retrieve_cliente = [
             numero_serie: "BR123456",
             cantidad: 2,
             moneda: "CLP",
+            adn: "FWASDW",
             valor_neto: 23500000, // CLP
           },
           {
@@ -44,6 +50,7 @@ export const retrieve_cliente = [
             numero_serie: "TB654321",
             cantidad: 1,
             moneda: "CLP",
+            adn: "FWASDW",
             valor_neto: 6500000, // CLP
           },
         ],
@@ -66,6 +73,11 @@ export const retrieve_cliente = [
         porcentaje_tiempo_de_gracia: 15, // %
         es_renovable: false,
         renovable_automatico: false,
+        representante_venta: {
+          id: 1,
+          codigo: "AKC",
+          nombre: "Camilo Ramirez",
+        },
         instrumentos: [
           {
             id: 3,
@@ -74,8 +86,9 @@ export const retrieve_cliente = [
             marca: "Thermo Fisher",
             numero_serie: "QS67890",
             cantidad: 1,
-            moneda: "USD",
-            valor_neto: 3200, // USD
+            moneda: "CLP",
+            adn: "FWASDW",
+            valor_neto: 302000, // USD
           },
         ],
         created_at: "2023-03-01T12:00:00Z",
@@ -109,6 +122,11 @@ export const retrieve_cliente = [
         porcentaje_tiempo_de_gracia: 20, // %
         es_renovable: true,
         renovable_automatico: false,
+        representante_venta: {
+          id: 1,
+          codigo: "AKC",
+          nombre: "Camilo Ramirez",
+        },
         instrumentos: [
           {
             id: 4,
@@ -117,8 +135,9 @@ export const retrieve_cliente = [
             marca: "Beckman Coulter",
             numero_serie: "BC123789",
             cantidad: 3,
-            moneda: "USD",
-            valor_neto: 4500, // USD
+            moneda: "CLP",
+            adn: "FWASDW",
+            valor_neto: 450000, // USD
           },
           {
             id: 5,
@@ -127,8 +146,9 @@ export const retrieve_cliente = [
             marca: "Roche",
             numero_serie: "RC456123",
             cantidad: 2,
-            moneda: "USD",
-            valor_neto: 5000, // USD
+            moneda: "CLP",
+            adn: "ASDWF",
+            valor_neto: 900000, // USD
           },
         ],
         created_at: "2023-02-01T12:00:00Z",
@@ -162,6 +182,12 @@ export const retrieve_cliente = [
         porcentaje_tiempo_de_gracia: 10, // %
         es_renovable: false,
         renovable_automatico: false,
+        representante_venta: {
+          id: 1,
+          codigo: "AKC",
+          nombre: "Camilo Ramirez",
+          adn: "GYHBVG",
+        },
         instrumentos: [
           {
             id: 1,
@@ -171,6 +197,7 @@ export const retrieve_cliente = [
             numero_serie: "BR654321",
             cantidad: 1,
             moneda: "CLP",
+            adn: "KIJUH",
             valor_neto: 23500000, // CLP
           },
           {
@@ -181,6 +208,7 @@ export const retrieve_cliente = [
             numero_serie: "BI098765",
             cantidad: 1,
             moneda: "CLP",
+            adn: "ASDWE",
             valor_neto: 6500000, // CLP
           },
           {
@@ -191,6 +219,7 @@ export const retrieve_cliente = [
             numero_serie: "TB123456",
             cantidad: 1,
             moneda: "CLP",
+            adn: "FWASDW",
             valor_neto: 37506000, // CLP
           },
         ],
@@ -213,6 +242,11 @@ export const retrieve_cliente = [
         porcentaje_tiempo_de_gracia: 10, // %
         es_renovable: false,
         renovable_automatico: false,
+        representante_venta: {
+          id: 1,
+          codigo: "AKC",
+          nombre: "Camilo Ramirez",
+        },
         instrumentos: [
           {
             id: 1,
@@ -222,6 +256,7 @@ export const retrieve_cliente = [
             numero_serie: "BR789012",
             cantidad: 1,
             moneda: "CLP",
+            adn: "FWASDW",
             valor_neto: 23500000, // CLP
           },
           {
@@ -232,6 +267,7 @@ export const retrieve_cliente = [
             numero_serie: "BI567890",
             cantidad: 1,
             moneda: "CLP",
+            adn: "FWASDW",
             valor_neto: 6500000, // CLP
           },
           {
@@ -242,6 +278,7 @@ export const retrieve_cliente = [
             numero_serie: "TB789012",
             cantidad: 1,
             moneda: "CLP",
+            adn: "FWASDW",
             valor_neto: 37506000, // CLP
           },
         ],

@@ -15,6 +15,7 @@ export interface ComodatoInterfaceWithoutCliente {
   porcentaje_tiempo_de_gracia: number;
   es_renovable: boolean;
   renovable_automatico: boolean;
+  representante_venta: { id: number; codigo: string; nombre: string };
   instrumentos: InstrumentoInterface[];
   created_at: string;
   updated_at: string;
