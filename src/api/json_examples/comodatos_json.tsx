@@ -2,7 +2,7 @@ export const comodatos_json = [
   {
     id: 1,
     contrato:
-    "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FComodato_Contrato.pdf?alt=media&token=25d6876a-2073-46b8-a8aa-0c09ee1a807e",
+      "https://firebasestorage.googleapis.com/v0/b/okairum-v2.appspot.com/o/shared%2FComodato_Contrato.pdf?alt=media&token=25d6876a-2073-46b8-a8aa-0c09ee1a807e",
     compra_minima_mensual_dinero: 3300000,
     compra_minima_mensual_reactivo: 350,
     fecha_inicio: "2022-02-11",
@@ -14,6 +14,11 @@ export const comodatos_json = [
       rut: "12345678-9",
       codigo_comuna: "001",
       direccion: "Calle Principal 123",
+    },
+    representante_venta: {
+      id: 2,
+      codigo: "F8R",
+      nombre: "Ricardo Montaner",
     },
     nombre_cliente_representante: "Carlos Eduardo Garcés Garcés",
     rut_cliente_representante: "15.224.788-5",
@@ -86,6 +91,11 @@ export const comodatos_json = [
       codigo_comuna: "001",
       direccion: "Calle Principal 123",
     },
+    representante_venta: {
+      id: 1,
+      codigo: "AKC",
+      nombre: "Camilo Ramirez",
+    },
     nombre_cliente_representante: "León Eugene Kramarenko Squirrell",
     rut_cliente_representante: "18.638.954-9",
     plazo_pago_facturas: 45, // días
@@ -139,6 +149,11 @@ export const comodatos_json = [
       rut: "23456789-1",
       codigo_comuna: "003",
       direccion: "Camino Alemán 789",
+    },
+    representante_venta: {
+      id: 2,
+      codigo: "F8R",
+      nombre: "Ricardo Montaner",
     },
     nombre_cliente_representante: "María Fernanda López Pérez",
     rut_cliente_representante: "19.876.543-2",
@@ -204,6 +219,11 @@ export const comodatos_json = [
       codigo_comuna: "002",
       direccion:
         " Juan Antonio Rios 2889 A-B-C, de la ciudad de Iquique, Chile",
+    },
+    representante_venta: {
+      id: 2,
+      codigo: "F8R",
+      nombre: "Ricardo Montaner",
     },
     nombre_cliente_representante: "Carlos Eduardo Garcés Garcés",
     rut_cliente_representante: "15.224.788-5",
@@ -279,6 +299,11 @@ export const comodatos_json = [
       codigo_comuna: "002",
       direccion:
         " Juan Antonio Rios 2889 A-B-C, de la ciudad de Iquique, Chile",
+    },
+    representante_venta: {
+      id: 1,
+      codigo: "AKC",
+      nombre: "Camilo Ramirez",
     },
     nombre_cliente_representante: "Carlos Eduardo Garcés Garcés",
     rut_cliente_representante: "15.224.788-5",

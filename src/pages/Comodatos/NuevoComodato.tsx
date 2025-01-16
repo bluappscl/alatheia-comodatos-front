@@ -7,6 +7,7 @@ import {
   message,
   Checkbox,
   InputNumber,
+  Select,
 } from "antd";
 import axios from "axios";
 import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector";
@@ -38,6 +39,7 @@ const CrearComodato: React.FC = () => {
   const [enableReactivos, setEnableReactivos] = useState(false);
   const [enableDinero, setEnableDinero] = useState(false);
   const [enableGraceTime, setEnableGraceTime] = useState(false);
+  const [plazoParaPago, setPlazoParaPago] = useState(false);
 
   const onFinish = async (values: CrearComodatoValues) => {
     setLoading(true);
@@ -214,6 +216,22 @@ const CrearComodato: React.FC = () => {
               >
                 <Input placeholder="Ingrese la direccion" />
               </Form.Item>
+
+              <Form.Item
+                label="Representante de venta"
+                name="representante_de_venta"
+                rules={[
+                  {
+                    required: true,
+                    message: "Porfavor seleccione un representante de venta",
+                  },
+                ]}
+              >
+                <Select placeholder="Seleccione un representante de venta" className="w-full">
+                  <Select.Option value={1}>AKC - Camilo Ramirez</Select.Option>
+                  <Select.Option value={2}>F8R - Ricardo Montaner</Select.Option>
+                </Select>
+              </Form.Item>
             </div>
             <div>
               <Form.Item
@@ -241,23 +259,36 @@ const CrearComodato: React.FC = () => {
               >
                 <DatePicker className="w-full" />
               </Form.Item>
-              <Form.Item
-                label="Plazo para pago de facturas"
-                name="plazoPagoFacturas"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor ingrese el plazo de días para pagar",
-                  },
-                ]}
-              >
-                <InputNumber
-                  placeholder="Ingrese la cantidad de días para pagar la factura despues de emitida"
-                  className="w-full"
-                />
+
+              <Form.Item>
+                <div className="flex flex-col gap-2">
+                  <Checkbox
+                    checked={plazoParaPago}
+                    onChange={(e) => setPlazoParaPago(e.target.checked)}
+                  >
+                    Tiene plazo para pago de facturas?
+                  </Checkbox>
+                  {plazoParaPago && (
+                    <Form.Item
+                      name="plazoPagoFacturas"
+                      rules={[
+                        {
+                          required: true,
+                          message:
+                            "Por favor ingrese el plazo de días para pagar",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        placeholder="Ingrese la cantidad de días para pagar la factura despues de emitida"
+                        className="w-full"
+                      />
+                    </Form.Item>
+                  )}
+                </div>
               </Form.Item>
 
-              <Form.Item label="Tiempo de Gracia">
+              <Form.Item>
                 <div className="flex flex-col gap-2">
                   <Checkbox
                     checked={enableGraceTime}
@@ -293,7 +324,7 @@ const CrearComodato: React.FC = () => {
                 </div>
               </Form.Item>
 
-              <Form.Item label="Opciones de renovación">
+              <Form.Item>
                 <div className="flex items-center gap-4 ">
                   <Checkbox
                     checked={isRenovable}

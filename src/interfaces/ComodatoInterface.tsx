@@ -10,6 +10,7 @@ export interface ComodatoInterface {
   fecha_fin: string;
   estado: string;
   cliente: ClienteInterface;
+  representante_venta: { id: number; codigo: string; nombre: string };
   nombre_cliente_representante: string;
   rut_cliente_representante: string;
   plazo_pago_facturas: number;

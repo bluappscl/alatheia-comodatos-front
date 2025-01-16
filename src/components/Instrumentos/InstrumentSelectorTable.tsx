@@ -62,6 +62,14 @@ const InstrumentSelectorTable = () => {
       key: "numero_serie",
     },
     {
+      title: "ADN",
+      dataIndex: "adn",
+      key: "ubicacion",
+      render: () => (
+        <Input placeholder="ADN de instrumento" />
+      ),
+    },
+    {
       title: "Ubicación",
       dataIndex: "ubicacion",
       key: "ubicacion",

@@ -9,6 +9,7 @@ interface ProductDetail {
   description: string;
   quantity: number;
   value: number;
+  marca: string;
 }
 
 interface FacturaType {
@@ -57,6 +58,7 @@ const data: FacturaType[] = [
               "TANbead Nucleic acid Extraction kit Optipure Viral Auto Plate",
             quantity: 2,
             value: 75000,
+            marca: "TANbead",
           },
           {
             code: "301149",
@@ -64,6 +66,7 @@ const data: FacturaType[] = [
               "TANbead Nucleic acid Extraction kit Optipure Viral Auto Plate",
             quantity: 4,
             value: 10000,
+            marca: "TANbead",
           },
         ],
         amount: 190000,
@@ -76,6 +79,7 @@ const data: FacturaType[] = [
             description: "FLASHDX INSTRUMENT 1000-E",
             quantity: 2,
             value: 40000,
+            marca: "FLASHDX",
           },
         ],
         amount: 80000,
@@ -96,12 +100,14 @@ const data: FacturaType[] = [
             description: "Extraction Tubes",
             quantity: 50,
             value: 3000,
+            marca: "Desconocida",
           },
           {
             code: "PT45678",
             description: "Plastic Tips for Pipettes",
             quantity: 200,
             value: 500,
+            marca: "Desconocida",
           },
         ],
         amount: 150000,
@@ -114,6 +120,7 @@ const data: FacturaType[] = [
             description: "Medical Device X",
             quantity: 1,
             value: 300000,
+            marca: "Desconocida",
           },
         ],
         amount: 300000,
@@ -134,6 +141,7 @@ const data: FacturaType[] = [
             description: "Laboratory Testing Kit",
             quantity: 10,
             value: 20000,
+            marca: "Desconocida",
           },
         ],
         amount: 200000,
@@ -146,6 +154,7 @@ const data: FacturaType[] = [
             description: "BioTech Analyzer 5000",
             quantity: 1,
             value: 300000,
+            marca: "BioTech",
           },
         ],
         amount: 300000,
@@ -158,6 +167,7 @@ const data: FacturaType[] = [
             description: "Printer for Lab Results",
             quantity: 1,
             value: 120000,
+            marca: "Desconocida",
           },
         ],
         amount: 120000,
@@ -178,12 +188,14 @@ const data: FacturaType[] = [
             description: "Diagnostics Device Model D100",
             quantity: 3,
             value: 70000,
+            marca: "Diagnostics",
           },
           {
             code: "S250",
             description: "Sample Storage Units",
             quantity: 5,
             value: 30000,
+            marca: "Desconocida",
           },
         ],
         amount: 310000,
@@ -196,6 +208,7 @@ const data: FacturaType[] = [
             description: "Calibration Kit for D100",
             quantity: 2,
             value: 50000,
+            marca: "Diagnostics",
           },
         ],
         amount: 100000,
@@ -203,6 +216,7 @@ const data: FacturaType[] = [
     ],
   },
 ];
+
 
 const FacturasByMonthTable: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

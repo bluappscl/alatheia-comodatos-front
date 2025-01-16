@@ -6,12 +6,14 @@ interface DetalleClienteProps {
   cliente: ClienteInterface;
   representante_nombre: string;
   representante_rut: string;
+  representante_de_venta: { codigo: string; nombre: string };
 }
 
 const DetalleCliente: React.FC<DetalleClienteProps> = ({
   cliente,
   representante_nombre,
   representante_rut,
+  representante_de_venta,
 }) => {
   return (
     <div className="p-4 bg-white border-b-2 border-primary-300 ">
@@ -38,7 +40,9 @@ const DetalleCliente: React.FC<DetalleClienteProps> = ({
       </div>
 
       <div className="mt-4">
-        <h3 className="font-semibold text-lg mb-2">Representante</h3>
+        <h3 className="font-semibold text-lg mb-2">
+          Representante de Alatheia
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="font-semibold block  mb-1">Nombre</label>
@@ -47,6 +51,20 @@ const DetalleCliente: React.FC<DetalleClienteProps> = ({
           <div>
             <label className="font-semibold block  mb-1">RUT</label>
             <p className="">{format(representante_rut)}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <h3 className="font-semibold text-lg mb-2">Representante de Venta</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="font-semibold block  mb-1">Nombre</label>
+            <p className="">{representante_de_venta.nombre}</p>
+          </div>
+          <div>
+            <label className="font-semibold block  mb-1">Codigo</label>
+            <p className="">{representante_de_venta.codigo}</p>
           </div>
         </div>
       </div>

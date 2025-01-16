@@ -56,6 +56,7 @@ const ComodatoDetalle: React.FC = () => {
                 cliente={comodato.cliente}
                 representante_nombre={comodato.nombre_cliente_representante}
                 representante_rut={comodato.rut_cliente_representante}
+                representante_de_venta={comodato.representante_venta}
               />
             </div>
 

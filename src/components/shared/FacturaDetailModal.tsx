@@ -24,6 +24,7 @@ const FacturaDetailModal: React.FC<FacturaDetailModalProps> = ({
 }) => {
   const columns: TableColumnsType<ProductDetail> = [
     { title: "Código", dataIndex: "code", key: "code", align: "center" },
+    { title: "Marca", dataIndex: "marca", key: "marca", align: "center" },
     { title: "Descripción", dataIndex: "description", key: "description", align: "center" },
     { title: "Cantidad", dataIndex: "quantity", key: "quantity", align: "center" },
     {
@@ -38,7 +39,7 @@ const FacturaDetailModal: React.FC<FacturaDetailModalProps> = ({
   return (
     <Modal
       title={`Productos de la Factura: ${facturaNumber}`}
-      visible={isVisible}
+      open={isVisible}
       onCancel={onClose}
       footer={null}
       width={800}
