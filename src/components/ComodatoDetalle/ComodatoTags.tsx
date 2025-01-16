@@ -13,7 +13,11 @@ const ComodatoTags: React.FC<ComodatoTagsProps> = ({
 }) => {
   return (
     <div className="flex flex-row gap-4">
-      <div className="inline-block px-4 py-2 text-sm font-semibold text-white rounded-full bg-success-700">
+      <div
+        className={`inline-block px-4 py-2 text-sm font-semibold text-white rounded-full ${
+          estado === "Vigente" ? "bg-success-700" : "bg-error-700"
+        }`}
+      >
         {estado}
       </div>
 

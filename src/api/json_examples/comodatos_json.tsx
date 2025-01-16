@@ -7,7 +7,7 @@ export const comodatos_json = [
     compra_minima_mensual_reactivo: 350,
     fecha_inicio: "2022-02-11",
     fecha_fin: "2023-02-10",
-    estado: "Vigente",
+    estado: "No Vigente",
     cliente: {
       id: 1,
       nombre: "Clinica Dávila",
@@ -78,7 +78,7 @@ export const comodatos_json = [
     compra_minima_mensual_reactivo: 280, // 18,000 unidades de reactivos
     fecha_inicio: "2023-02-01",
     fecha_fin: "2024-01-31",
-    estado: "Vigente",
+    estado: "No Vigente",
     cliente: {
       id: 1,
       nombre: "Clinica Dávila",
