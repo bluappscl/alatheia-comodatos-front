@@ -54,20 +54,17 @@ const InstrumentSelectorTable = () => {
 
   const columns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
-    { title: "Producto", dataIndex: "producto", key: "producto" },
+    {
+      title: "ADN",
+      dataIndex: "adn",
+      key: "adn",
+    },
+    { title: "Instrumento", dataIndex: "producto", key: "producto" },
     { title: "Marca", dataIndex: "marca", key: "marca" },
     {
       title: "Número de Serie",
       dataIndex: "numero_serie",
       key: "numero_serie",
-    },
-    {
-      title: "ADN",
-      dataIndex: "adn",
-      key: "ubicacion",
-      render: () => (
-        <Input placeholder="ADN de instrumento" />
-      ),
     },
     {
       title: "Ubicación",

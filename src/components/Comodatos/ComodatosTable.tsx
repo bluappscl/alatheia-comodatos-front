@@ -38,6 +38,12 @@ const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
       key: "cliente.nombre",
     },
     {
+      title: "Representante de Venta",
+      dataIndex: ["representante_venta", "codigo"],
+      key: "representante_venta.codigo",
+      align: "center"
+    },
+    {
       title: "Fecha de Fin",
       dataIndex: "fecha_fin",
       key: "fecha_fin",

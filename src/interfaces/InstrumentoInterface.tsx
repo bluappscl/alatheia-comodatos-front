@@ -6,5 +6,6 @@ export interface InstrumentoInterface {
     numero_serie: string;
     cantidad: number;
     valor_neto: number;
+    adn:string;
     moneda: string;
   }

@@ -5,6 +5,7 @@ import { useFetchComodatos } from "../../api/hooks/comodatos/get_comodatos";
 import comodato_photo from "../../media/temporal/comodato_photo.png";
 
 import { motion } from "motion/react";
+import { Spin } from "antd";
 const ComodatosPage = () => {
   const { comodatos } = useFetchComodatos();
   return (
@@ -23,7 +24,7 @@ const ComodatosPage = () => {
           <ComodatosTable comodatos={comodatos} />
         </div>
       ) : (
-        <p>Cargando datos...</p>
+        <Spin className="w-full flex justify-center items-center" />
       )}
     </motion.div>
   );

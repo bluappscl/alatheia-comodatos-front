@@ -16,6 +16,7 @@ const InstrumentSelectorModal: React.FC<Props> = ({
 }) => {
   const columns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
+    { title: "ADN", dataIndex: "adn", key: "adn" },
     { title: "Instrumento", dataIndex: "producto", key: "producto" },
     { title: "Marca", dataIndex: "marca", key: "marca" },
     {
