@@ -13,9 +13,9 @@ import DetalleCliente from "../../components/ComodatoDetalle/DetalleCliente";
 import ComodatoTags from "../../components/ComodatoDetalle/ComodatoTags";
 
 import comodato_photo from "../../media/temporal/comodato_photo.png";
-import PagosBarChart from "../../components/Dashboard/Charts/PagosBarChart";
-import FacturasByMonthTable from "../Clientes/FacturesTable";
-import InstrumentosChart from "../../components/Dashboard/Charts/Instrumentos";
+// import PagosBarChart from "../../components/Dashboard/Charts/PagosBarChart";
+// import FacturasByMonthTable from "../Clientes/FacturesTable";
+// import InstrumentosChart from "../../components/Dashboard/Charts/Instrumentos";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 const ComodatoDetalle: React.FC = () => {
@@ -125,7 +125,7 @@ const ComodatoDetalle: React.FC = () => {
           <InstrumentosTable data={comodato.instrumentos} loading={loading} />
         </div>
 
-        <hr className="my-6 text-dark-900 border" />
+        {/* <hr className="my-6 text-dark-900 border" />
 
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/2 w-full bg-white rounded-lg p-4">
@@ -140,7 +140,7 @@ const ComodatoDetalle: React.FC = () => {
           <div className="md:w-1/2 w-full">
             <PagosBarChart />
           </div>
-        </div>
+        </div> */}
       </div>
     </motion.div>
   );
