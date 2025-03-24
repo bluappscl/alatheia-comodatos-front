@@ -8,6 +8,7 @@ import {
   Checkbox,
   InputNumber,
   Select,
+  Divider,
 } from "antd";
 import axios from "axios";
 import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector";
@@ -107,13 +108,13 @@ const CrearComodato: React.FC = () => {
         description="Aqui puedes crear un nuevo comodato"
         photo_path={comodato_photo}
       />
-      <div className="p-6 w-full h-full mx-auto bg-white rounded-md">
+      <div className="p-6 max-w-4xl h-full mx-auto bg-white rounded-md"> 
         <Form
           layout="vertical"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             <div>
               <Form.Item
                 label="Contrato"
@@ -141,9 +142,9 @@ const CrearComodato: React.FC = () => {
                 />
               </Form.Item>
               <label className="font-semibold text-primary-700">
-                Resentante del Cliente
+                Representante del Cliente
               </label>
-              <div className="flex flex-row gap-4">
+              <div className="flex flex-row gap-4 mt-4">
                 <Form.Item
                   className="w-full"
                   label="Nombre"
@@ -172,10 +173,12 @@ const CrearComodato: React.FC = () => {
                   <Input placeholder="Ingrese el rut del cliente" />
                 </Form.Item>
               </div>
-
+              <Divider />
               {/* Representante Alatheia */}
-              <label className="font-semibold">Resentante de Alatheia</label>
-              <div className="flex flex-row gap-4">
+              <label className="font-semibold text-primary-700">
+                Representante de Alatheia
+              </label>
+              <div className="flex flex-row gap-4 mt-5">
                 <Form.Item
                   className="w-full"
                   label="Nombre"
@@ -204,36 +207,46 @@ const CrearComodato: React.FC = () => {
                 </Form.Item>
               </div>
 
-              <Form.Item
-                label="Direccion"
-                name="sucursal"
-                rules={[
-                  {
-                    required: true,
-                    message: "Porfavor ingrese la direccion",
-                  },
-                ]}
-              >
-                <Input placeholder="Ingrese la direccion" />
-              </Form.Item>
+              <div className="grid grid-cols-2 gap-4">
+                <Form.Item
+                  label="Direccion"
+                  name="sucursal"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Porfavor ingrese la direccion",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese la direccion" />
+                </Form.Item>
 
-              <Form.Item
-                label="Representante de venta"
-                name="representante_de_venta"
-                rules={[
-                  {
-                    required: true,
-                    message: "Porfavor seleccione un representante de venta",
-                  },
-                ]}
-              >
-                <Select placeholder="Seleccione un representante de venta" className="w-full">
-                  <Select.Option value={1}>AKC - Camilo Ramirez</Select.Option>
-                  <Select.Option value={2}>F8R - Ricardo Montaner</Select.Option>
-                </Select>
-              </Form.Item>
+                <Form.Item
+                  label="Representante de venta"
+                  name="representante_de_venta"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Porfavor seleccione un representante de venta",
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Seleccione un representante de venta"
+                    className="w-full"
+                  >
+                    <Select.Option value={1}>
+                      AKC - Camilo Ramirez
+                    </Select.Option>
+                    <Select.Option value={2}>
+                      F8R - Ricardo Montaner
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
             </div>
-            <div>
+
+            <div className="grid grid-cols-2 gap-6">
               <Form.Item
                 label="Fecha de Inicio"
                 name="fechaInicio"
@@ -266,7 +279,18 @@ const CrearComodato: React.FC = () => {
                     checked={plazoParaPago}
                     onChange={(e) => setPlazoParaPago(e.target.checked)}
                   >
-                    Tiene plazo para pago de facturas?
+                    <div className="text-sm/6">
+                      <label
+                        htmlFor="comments"
+                        className="font-medium text-gray-900"
+                      >
+                        Plazo
+                      </label>
+                      <p id="comments-description" className="text-gray-500">
+                        Marque si tiene plazos disponibles para pagar las
+                        facturas
+                      </p>
+                    </div>
                   </Checkbox>
                   {plazoParaPago && (
                     <Form.Item
@@ -294,7 +318,17 @@ const CrearComodato: React.FC = () => {
                     checked={enableGraceTime}
                     onChange={(e) => setEnableGraceTime(e.target.checked)}
                   >
-                    Tiene tiempo de gracia?
+                    <div className="text-sm/6">
+                      <label
+                        htmlFor="comments"
+                        className="font-medium text-gray-900"
+                      >
+                        Tiempo de Gracia
+                      </label>
+                      <p id="comments-description" className="text-gray-500">
+                        Marque si tiene Tiene tiempo de gracia
+                      </p>
+                    </div>
                   </Checkbox>
                   {enableGraceTime && (
                     <Form.Item
@@ -325,32 +359,53 @@ const CrearComodato: React.FC = () => {
               </Form.Item>
 
               <Form.Item>
-                <div className="flex items-center gap-4 ">
+                <div className="flex flex-col gap-6 ">
                   <Checkbox
                     checked={isRenovable}
                     onChange={handleIsRenovableChange}
                   >
-                    Es renovable?
+                    <div className="text-sm/6">
+                      <label
+                        htmlFor="comments"
+                        className="font-medium text-gray-900"
+                      >
+                        Renovación
+                      </label>
+                      <p id="comments-description" className="text-gray-500">
+                        Marque si tiene plazos disponibles para pagar las
+                        facturas
+                      </p>
+                    </div>
                   </Checkbox>
-                  <Checkbox
-                    checked={autoRenew}
-                    onChange={handleAutoRenewChange}
-                    disabled={!isRenovable}
-                  >
-                    ¿Se renueva automáticamente?
-                  </Checkbox>
+                  {isRenovable && (
+                    <Checkbox
+                      checked={autoRenew}
+                      onChange={handleAutoRenewChange}
+                      disabled={!isRenovable}
+                    >
+                      ¿Se renueva automáticamente?
+                    </Checkbox>
+                  )}
                 </div>
               </Form.Item>
 
               <div className="flex flex-col">
-                <Form.Item label="Objetivos">
+                <Form.Item
+                  label={
+                    <label className="font-medium text-gray-900">
+                      Objetivos
+                    </label>
+                  }
+                >
                   {/* Reactivos Objective */}
                   <div className="flex flex-col gap-2 mb-4">
                     <Checkbox
                       checked={enableReactivos}
                       onChange={(e) => setEnableReactivos(e.target.checked)}
                     >
-                      Objetivo de Reactivos (Cantidad)
+                      <span className="text-gray-500">
+                        Objetivo de Reactivos (Cantidad)
+                      </span>
                     </Checkbox>
                     {enableReactivos && (
                       <Form.Item
@@ -377,7 +432,7 @@ const CrearComodato: React.FC = () => {
                       checked={enableDinero}
                       onChange={(e) => setEnableDinero(e.target.checked)}
                     >
-                      Objetivo de Dinero
+                      <span className="text-gray-500">Objetivo de Dinero</span>
                     </Checkbox>
                     {enableDinero && (
                       <Form.Item
@@ -411,7 +466,10 @@ const CrearComodato: React.FC = () => {
                 </Form.Item> */}
               </div>
             </div>
+
+            
           </div>
+
 
           <div className="flex flex-col my-10">
             <InstrumentSelectorTable />
