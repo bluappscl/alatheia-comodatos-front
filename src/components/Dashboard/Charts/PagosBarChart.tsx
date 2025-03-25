@@ -1,165 +1,202 @@
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  DollarOutlined,
-  DownOutlined,
-} from "@ant-design/icons";
 import React from "react";
-import { Bar } from "react-chartjs-2";
-import { ChartOptions } from "chart.js";
+import ReactEcharts from 'echarts-for-react';
+import { ArrowDownOutlined } from "@ant-design/icons";
+import { Card, Progress } from "antd";
 
 const PagosSummaryCards: React.FC = () => {
-  const summaryData = [
-    {
-      title: "Objetivo",
-      icon: <DollarOutlined className="text-primary-900 text-2xl" />,
-      amount: "$250,000",
-      bgColor: "bg-primary-50",
-      textColor: "text-primary-900",
-    },
-    {
-      title: "Compras",
-      icon: <CheckCircleOutlined className="text-success-900 text-2xl" />,
-      amount: "$240,000",
-      bgColor: "bg-success-50",
-      textColor: "text-success-900",
-    },
-    {
-      title: "Faltantes",
-      icon: <CloseCircleOutlined className="text-error-900 text-2xl" />,
-      amount: "$10,000",
-      bgColor: "bg-error-50",
-      textColor: "text-error-900",
-    },
-  ];
-
+  const goalAmount = 250000;
+  const paidAmount = 240000;
+  const remainingAmount = 10000;
+  const progressPercentage = (paidAmount / goalAmount) * 100;
+  
   return (
-    <>
-      <h3 className="text-lg text-textgrey-200 mb-2">Este mes</h3>
-      <div className="flex flex-wrap gap-4">
-        {summaryData.map((item, index) => (
-          <div
-            key={index}
-            className={`flex flex-col justify-between p-4 rounded-lg ${item.bgColor} flex-grow`}
-          >
-            <div className="flex justify-between items-start">
-              <span className={`text-lg font-medium ${item.textColor}`}>
-                {item.title}
-              </span>
-              <div>{item.icon}</div>
-            </div>
-            <div className={`text-2xl font-bold ${item.textColor} mt-2`}>
-              {item.amount}
-            </div>
-          </div>
-        ))}
+    <Card className="shadow-sm">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold">Estado de Pagos</h3>
+        <p className="text-sm text-gray-500">Este mes</p>
       </div>
-    </>
+      <div className="space-y-8">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-emerald-600">Objetivo</span>
+            </div>
+            <div className="font-semibold">$250,000</div>
+          </div>
+          <Progress 
+            percent={100} 
+            showInfo={false} 
+            strokeColor="#059669" 
+            trailColor="#D1FAE5" 
+            size={['default', 8]} 
+          />
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-blue-600">Compras</span>
+            </div>
+            <div className="font-semibold">$240,000</div>
+          </div>
+          <Progress 
+            percent={96} 
+            showInfo={false} 
+            strokeColor="#2563EB" 
+            trailColor="#DBEAFE" 
+            size={['default', 8]} 
+          />
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-red-600">Faltantes</span>
+            </div>
+            <div className="font-semibold">$10,000</div>
+          </div>
+          <Progress 
+            percent={4} 
+            showInfo={false} 
+            strokeColor="#DC2626" 
+            trailColor="#FEE2E2" 
+            size={['default', 8]} 
+          />
+        </div>
+
+        <div className="rounded-lg border bg-gray-50 p-4">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-medium">Progreso total</div>
+            <div className="text-sm font-medium">96%</div>
+          </div>
+          <Progress 
+            percent={96} 
+            showInfo={false} 
+            className="mt-2" 
+            size={['default', 8]} 
+          />
+          <div className="mt-2 text-xs text-gray-500">
+            Faltan $10,000 para alcanzar el objetivo mensual
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 };
 
 const PagosBarChart: React.FC = () => {
-  const data = {
-    labels: [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
-    ],
-    datasets: [
-      {
-        label: "Pagos Objetivo",
-        data: [
-          150000, 160000, 140000, 170000, 180000, 190000, 200000, 210000,
-          220000, 230000, 240000, 250000,
-        ],
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Pagos Realizados",
-        data: [
-          120000, 130000, 125000, 140000, 150000, 180000, 190000, 200000,
-          205000, 220000, 230000, 240000,
-        ],
-        backgroundColor: "rgba(75, 192, 192, 0.6)", // Green
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-      // {
-      //   label: "No Pagado",
-      //   data: [
-      //     30000, 30000, 15000, 30000, 30000, 10000, 10000, 10000, 15000, 10000,
-      //     10000, 10000,
-      //   ],
-      //   backgroundColor: "rgba(255, 99, 132, 0.6)", // Red
-      //   borderColor: "rgba(255, 99, 132, 1)",
-      //   borderWidth: 1,
-      // },
-    ],
-  };
+  // Datos de ejemplo para las gráficas
+  const months = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
 
-  const options: ChartOptions<"bar"> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: "top", // Display legend at the top
-      },
+  const pagosObjetivoData = [150, 160, 140, 170, 180, 190, 200, 210, 220, 230, 240, 250];
+  const pagosRealizadosData = [120, 130, 125, 140, 150, 180, 190, 200, 205, 220, 230, 240];
+  
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
     },
-    scales: {
-      x: {
-        grid: {
-          display: false, // Remove grid lines
-        },
-        ticks: {
-          color: "#6B7280", // Tailwind's gray-500 for labels
-          font: {
-            size: 10,
-          },
-        },
-      },
-      y: {
-        grid: {
-          display: true, // Show grid lines
-        },
-        ticks: {
-          color: "#6B7280",
-          font: {
-            size: 10,
-          },
-          stepSize: 50000, // Adjust step size for better readability
-        },
-      },
+    legend: {
+      data: ['Pagos Objetivo', 'Pagos Realizados'],
+      top: 'top'
     },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '8%',
+      top: '15%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: months,
+      axisLine: {
+        lineStyle: {
+          color: '#6B7280'
+        }
+      },
+      axisLabel: {
+        color: '#6B7280',
+        fontSize: 10,
+        formatter: (value: any) => value.substring(0, 3)
+      },
+      splitLine: {
+        show: false
+      }
+    },
+    yAxis: {
+      type: 'value',
+      splitLine: {
+        lineStyle: {
+          color: '#E5E7EB'
+        }
+      },
+      axisLabel: {
+        color: '#6B7280',
+        fontSize: 10
+      }
+    },
+    series: [
+      {
+        name: 'Pagos Objetivo',
+        type: 'bar',
+        data: pagosObjetivoData,
+        itemStyle: {
+          color: 'rgba(59, 130, 246, 0.7)', // Blue color
+          borderColor: 'rgba(59, 130, 246, 1)',
+          borderWidth: 1
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        barMaxWidth: '60%'
+      },
+      {
+        name: 'Pagos Realizados',
+        type: 'bar',
+        data: pagosRealizadosData,
+        itemStyle: {
+          color: 'rgba(20, 184, 166, 0.7)', // Teal color
+          borderColor: 'rgba(20, 184, 166, 1)',
+          borderWidth: 1
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        barMaxWidth: '60%'
+      }
+    ]
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg">
-      <div className="mb-6">
-        <h3 className="text-xl text-textgrey-200 mb-2">Pagos</h3>
-        <div className="mb-6 p-4 border border-blue-50 rounded-xl">
-          <PagosSummaryCards />
-        </div>
-        <p className="text-sm text-gray-500 mt-8">
-          Pagos atrasados:{" "}
-          <span className="text-error-500 font-semibold">
-            3 <DownOutlined />
-          </span>
-        </p>
-      </div>
+    <div className="w-full">
+      <p className="text-sm text-gray-500 mb-4">
+        Pagos atrasados:{" "}
+        <span className="text-red-600 font-semibold flex items-center inline-flex">
+          3 <ArrowDownOutlined className="ml-1 h-3 w-3" />
+        </span>
+      </p>
 
-      <div className="mt-4">
-        <Bar data={data} height={200} options={options} />
+      <ReactEcharts 
+        option={option} 
+        style={{ height: '300px', width: '100%' }} 
+        opts={{ renderer: 'canvas' }}
+      />
+      
+      <div className="mt-6 flex items-center justify-center gap-4">
+        <div className="flex items-center gap-1">
+          <div className="h-3 w-3 rounded-sm bg-blue-400"></div>
+          <span className="text-sm text-gray-500">Pagos Objetivo</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="h-3 w-3 rounded-sm bg-teal-400"></div>
+          <span className="text-sm text-gray-500">Pagos Realizados</span>
+        </div>
       </div>
     </div>
   );

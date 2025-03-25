@@ -1,43 +1,84 @@
-import { Doughnut } from "react-chartjs-2";
+import React from "react";
+import ReactEcharts from 'echarts-for-react';
 
-const InstrumentosChart = () => {
-  const data = {
-    labels: ["Instrumentos en Uso", "Instrumentos en Inventario"],
-    datasets: [
-      {
-        data: [300, 20],
-        backgroundColor: ["rgba(54, 162, 235, 0.6)", "rgba(255, 206, 86, 0.6)"],
-        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 206, 86, 1)"],
-        borderWidth: 2,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false, // Hide the legend
-      },
+const InstrumentosChart: React.FC = () => {
+  const option = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{a} <br/>{b}: {c} ({d}%)'
     },
+    legend: {
+      orient: 'horizontal',
+      top: 'bottom',
+      data: ['Operativos', 'No operativos']
+    },
+    series: [
+      {
+        name: 'Estado de instrumentos',
+        type: 'pie',
+        radius: ['50%', '70%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 2
+        },
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: '18',
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: [
+          { value: 300, name: 'Operativos', itemStyle: { color: '#10B981' } },
+          { value: 20, name: 'No operativos', itemStyle: { color: '#EF4444' } }
+        ]
+      }
+    ]
   };
 
   return (
-    <div className="flex flex-col md:flex-row p-6 bg-white rounded-lg">
-      <div className="flex-1">
-        <h3 className="text-xl text-textgrey-100 mb-4">Instrumentos</h3>
-        <p className="text-xl font-medium text-textgrey-100 mb-2">
-          <span className="text-textgrey-100">Operativos:</span> 300
-        </p>
-        <p className="text-xl font-medium text-textgrey-100 my-2">
-          <span className="text-textgrey-100">No operativos:</span> 20
-        </p>
-
+    <div className="w-full">
+      <div className="mb-4">
+        <h3 className="text-lg font-medium">Estado de Instrumentos</h3>
+        <p className="text-sm text-gray-500">Total: 320 instrumentos registrados</p>
+      </div>
+      
+      <div className="grid md:grid-cols-2 gap-4 mb-4">
+        <div className="p-4 rounded-lg">
+          <div className="flex justify-between items-center">
+            <span className="text-green-700 font-medium">Operativos</span>
+            <span className="text-green-700 font-bold text-xl">300</span>
+          </div>
+          <div className="mt-2 text-sm text-green-600">
+            93.75% del total de instrumentos
+          </div>
+        </div>
+        
+        <div className="p-4 rounded-lg">
+          <div className="flex justify-between items-center">
+            <span className="text-red-700 font-medium">No operativos</span>
+            <span className="text-red-700 font-bold text-xl">20</span>
+          </div>
+          <div className="mt-2 text-sm text-red-600">
+            6.25% del total de instrumentos
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 flex justify-center items-center h-48">
-        <Doughnut data={data} options={options} />
-      </div>
+      <ReactEcharts 
+        option={option} 
+        style={{ height: '300px', width: '100%' }} 
+        opts={{ renderer: 'canvas' }}
+      />
     </div>
   );
 };
