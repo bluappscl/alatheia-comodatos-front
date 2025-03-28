@@ -330,6 +330,25 @@ const CrearComodato: React.FC = () => {
                       </p>
                     </div>
                   </Checkbox>
+
+                  <Checkbox
+                    checked={enableGraceTime}
+                    onChange={(e) => setEnableGraceTime(e.target.checked)}
+                  >
+                    <div className="text-sm/6">
+                      <label
+                        htmlFor="comments"
+                        className="font-medium text-gray-900"
+                      >
+                        Campo Nuevo
+                      </label>
+                      <p id="comments-description" className="text-gray-500">
+                        Marque si tiene Tiene tiempo de gracia
+                      </p>
+                    </div>
+                  </Checkbox>
+
+
                   {enableGraceTime && (
                     <Form.Item
                       name="tiempoDeGracia"
