@@ -5,20 +5,20 @@ import {
 } from "react-router-dom";
 
 import Home from "../pages/Home";
-import CrearComodato from "../pages/Comodatos/NuevoComodato";
 import ComodatosPage from "../pages/Comodatos/Comodatos";
 import ComodatoDetalle from "../pages/Comodatos/ComodatoDetalle";
 import LayoutBack from "../layouts/LayoutBack";
 import Login from "../pages/Login";
 import ClienteDetalle from "../pages/Clientes/ClienteDetalle";
 import Clientes from "../pages/Clientes/Clientes";
+import { CrearGeneral } from "../pages/Comodatos/CrearGeneral";
 
 const routes = createRoutesFromElements(
   <>
     <Route path="/login" element={<Login />} />
     <Route path="/" element={<LayoutBack />}>
       <Route index element={<Home />} />
-      <Route path="nuevo-comodato" element={<CrearComodato />} />
+      <Route path="nuevo-comodato" element={<CrearGeneral />} />
       <Route path="comodatos" element={<ComodatosPage />} />
       <Route path="comodatos/:id" element={<ComodatoDetalle />} />
       <Route path="clientes" element={<Clientes />} />

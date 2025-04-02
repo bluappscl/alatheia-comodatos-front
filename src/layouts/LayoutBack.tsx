@@ -1,8 +1,7 @@
+import logo_blanco from "../media/logos/alatheia-logo-blanco.svg";
 import React, { useState } from "react";
-
 import { Layout, Menu, theme } from "antd";
 import { Outlet } from "react-router-dom";
-import logo_blanco from "../media/logos/alatheia-logo-blanco.svg"
 import { items } from "../router/menuItems";
 
 const { Content, Sider } = Layout;
@@ -20,8 +19,8 @@ const LayoutBack: React.FC = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
       >
-        <div className="my-5 mx-4">
-          <img src={logo_blanco} />
+        <div className="my-8 mx-4 p-4">
+          <img src={logo_blanco} className="w-auto" />
         </div>
 
         <Menu
