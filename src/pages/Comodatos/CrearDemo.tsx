@@ -16,58 +16,132 @@ import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 import comodato_photo from "../../media/temporal/comodato_photo.png";
 import { motion } from "motion/react";
 
-const CrearDEMO: React.FC = () => {
-  const [isRenovable, setIsRenovable] = useState(false);
-  const [autoRenew, setAutoRenew] = useState(false);
-  const [enableReactivos, setEnableReactivos] = useState(false);
-  const [enableDinero, setEnableDinero] = useState(false);
-  const [enableGraceTime, setEnableGraceTime] = useState(false);
+const CrearDEMO: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
+  CambiarSeleccionButton,
+}) => {
   const [plazoParaPago, setPlazoParaPago] = useState(false);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <HeaderDescripcion
-        title="Demo de Comodato"
-        description="Vista de prueba crear comodato"
+        title="Registrar DEMO"
+        description="Registra un nuevo DEMO para un cliente."
         photo_path={comodato_photo}
       />
+      <div className="flex items-center justify-end">
+        {CambiarSeleccionButton}
+      </div>
       <div className="p-6 max-w-4xl mx-auto bg-white rounded-md">
         <Form layout="vertical">
-          <Form.Item label="Contrato">
+          <Form.Item
+            label="Contrato"
+            rules={[{ required: true, message: "Por favor suba el contrato" }]}
+          >
             <FileUploadDrawable />
           </Form.Item>
-          <Form.Item label="Cliente">
-            <ClientSelectionModal onSelectClient={() => {}} showSelectedClient={true} />
+          <Form.Item
+            label="Cliente"
+            rules={[
+              { required: true, message: "Por favor seleccione un cliente" },
+            ]}
+          >
+            <ClientSelectionModal
+              onSelectClient={() => {}}
+              showSelectedClient={true}
+            />
           </Form.Item>
 
-          <label className="font-semibold text-primary-700">Representante del Cliente</label>
+          <label className="font-semibold text-primary-700">
+            Representante del Cliente
+          </label>
           <div className="flex flex-row gap-4 mt-4">
-            <Form.Item className="w-full" label="Nombre" name="nombre_representante_cliente">
+            <Form.Item
+              className="w-full"
+              label="Nombre"
+              name="nombre_representante_cliente"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingrese el nombre del representante",
+                },
+              ]}
+            >
               <Input placeholder="Nombre del cliente" />
             </Form.Item>
-            <Form.Item className="w-full" label="Rut" name="rut_representante_cliente">
+            <Form.Item
+              className="w-full"
+              label="Rut"
+              name="rut_representante_cliente"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingrese el RUT del representante",
+                },
+              ]}
+            >
               <Input placeholder="RUT del cliente" />
             </Form.Item>
           </div>
 
           <Divider />
 
-          <label className="font-semibold text-primary-700">Representante de Alatheia</label>
+          <label className="font-semibold text-primary-700">
+            Representante de Alatheia
+          </label>
           <div className="flex flex-row gap-4 mt-5">
-            <Form.Item className="w-full" label="Nombre" name="nombre_representante_alatheia">
+            <Form.Item
+              className="w-full"
+              label="Nombre"
+              name="nombre_representante_alatheia"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingrese el nombre del representante",
+                },
+              ]}
+            >
               <Input placeholder="Nombre del representante" />
             </Form.Item>
-            <Form.Item className="w-full" label="Rut" name="rut_representante_alatheia">
+            <Form.Item
+              className="w-full"
+              label="Rut"
+              name="rut_representante_alatheia"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingrese el RUT del representante",
+                },
+              ]}
+            >
               <Input placeholder="RUT del representante" />
             </Form.Item>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Form.Item label="Dirección" name="sucursal">
+            <Form.Item
+              label="Dirección"
+              name="sucursal"
+              rules={[
+                { required: true, message: "Por favor ingrese la dirección" },
+              ]}
+            >
               <Input placeholder="Dirección" />
             </Form.Item>
 
-            <Form.Item label="Representante de venta" name="representante_de_venta">
+            <Form.Item
+              label="Representante de venta"
+              name="representante_de_venta"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor seleccione un representante",
+                },
+              ]}
+            >
               <Select placeholder="Seleccione">
                 <Select.Option value={1}>AKC - Camilo Ramirez</Select.Option>
                 <Select.Option value={2}>F8R - Ricardo Montaner</Select.Option>
@@ -76,68 +150,53 @@ const CrearDEMO: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-6">
-            <Form.Item label="Fecha de Inicio" name="fechaInicio">
+            <Form.Item
+              label="Fecha de Inicio"
+              name="fechaInicio"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor seleccione una fecha de inicio",
+                },
+              ]}
+            >
               <DatePicker className="w-full" />
             </Form.Item>
-            <Form.Item label="Fecha de Fin" name="fechaFin">
+            <Form.Item
+              label="Fecha de Fin"
+              name="fechaFin"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor seleccione una fecha de fin",
+                },
+              ]}
+            >
               <DatePicker className="w-full" />
             </Form.Item>
 
             <Form.Item>
-              <Checkbox checked={plazoParaPago} onChange={(e) => setPlazoParaPago(e.target.checked)}>
+              <Checkbox
+                checked={plazoParaPago}
+                onChange={(e) => setPlazoParaPago(e.target.checked)}
+              >
                 Plazo para pagar facturas
               </Checkbox>
               {plazoParaPago && (
-                <Form.Item name="plazoPagoFacturas">
-                  <InputNumber className="w-full" placeholder="Días para pagar" />
-                </Form.Item>
-              )}
-            </Form.Item>
-
-            <Form.Item>
-              <Checkbox checked={enableGraceTime} onChange={(e) => setEnableGraceTime(e.target.checked)}>
-                Tiempo de gracia
-              </Checkbox>
-              {enableGraceTime && (
-                <Form.Item name="tiempoDeGracia">
-                  <div className="flex flex-row items-center gap-4">
-                    <InputNumber className="w-full" placeholder="Meses de gracia" />
-                    <InputNumber className="w-full" placeholder="Descuento %" suffix="%" />
-                  </div>
-                </Form.Item>
-              )}
-            </Form.Item>
-
-            <Form.Item>
-              <Checkbox checked={isRenovable} onChange={(e) => setIsRenovable(e.target.checked)}>
-                Renovable
-              </Checkbox>
-              {isRenovable && (
-                <Checkbox
-                  checked={autoRenew}
-                  onChange={(e) => setAutoRenew(e.target.checked)}
-                  disabled={!isRenovable}
+                <Form.Item
+                  className="mt-4"
+                  name="plazoPagoFacturas"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor ingrese el plazo de pago",
+                    },
+                  ]}
                 >
-                  ¿Renovación automática?
-                </Checkbox>
-              )}
-            </Form.Item>
-
-            <Form.Item label="Objetivos">
-              <Checkbox checked={enableReactivos} onChange={(e) => setEnableReactivos(e.target.checked)}>
-                Objetivo de Reactivos
-              </Checkbox>
-              {enableReactivos && (
-                <Form.Item name="objetivoReactivosCantidad">
-                  <InputNumber className="w-full" placeholder="Cantidad" />
-                </Form.Item>
-              )}
-              <Checkbox checked={enableDinero} onChange={(e) => setEnableDinero(e.target.checked)}>
-                Objetivo de Dinero
-              </Checkbox>
-              {enableDinero && (
-                <Form.Item name="objetivoDineroCantidad">
-                  <InputNumber className="w-full" placeholder="Monto" />
+                  <InputNumber
+                    className="w-full"
+                    placeholder="Días para pagar"
+                  />
                 </Form.Item>
               )}
             </Form.Item>

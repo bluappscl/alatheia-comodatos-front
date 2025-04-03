@@ -31,8 +31,9 @@ interface CrearComodatoValues {
   objetivoReactivosCantidad?: number;
   objetivoDineroCantidad?: number;
 }
-
-const CrearComodato: React.FC = () => {
+const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
+  CambiarSeleccionButton,
+}) => {
   const [loading, setLoading] = useState(false);
   const [isRenovable, setIsRenovable] = useState(false);
   const [autoRenew, setAutoRenew] = useState(false);
@@ -79,7 +80,6 @@ const CrearComodato: React.FC = () => {
 
   const onFinishFailed = (errorInfo: any) => {
     console.error("Failed:", errorInfo);
-    message.error("Por favor, complete todos los campos obligatorios");
   };
 
   const handleIsRenovableChange = (e: { target: { checked: boolean } }) => {
@@ -104,11 +104,15 @@ const CrearComodato: React.FC = () => {
       transition={{ duration: 0.5 }}
     >
       <HeaderDescripcion
-        title="Nuevo Comodato"
+        title="Registrar Comodato"
         description="Aqui puedes crear un nuevo comodato"
         photo_path={comodato_photo}
       />
-      <div className="p-6 max-w-4xl h-full mx-auto bg-white rounded-md"> 
+
+      <div className="flex items-center justify-end">
+        {CambiarSeleccionButton}
+      </div>
+      <div className="p-6 max-w-4xl h-full mx-auto bg-white rounded-md">
         <Form
           layout="vertical"
           onFinish={onFinish}
@@ -331,24 +335,6 @@ const CrearComodato: React.FC = () => {
                     </div>
                   </Checkbox>
 
-                  <Checkbox
-                    checked={enableGraceTime}
-                    onChange={(e) => setEnableGraceTime(e.target.checked)}
-                  >
-                    <div className="text-sm/6">
-                      <label
-                        htmlFor="comments"
-                        className="font-medium text-gray-900"
-                      >
-                        Campo Nuevo
-                      </label>
-                      <p id="comments-description" className="text-gray-500">
-                        Marque si tiene Tiene tiempo de gracia
-                      </p>
-                    </div>
-                  </Checkbox>
-
-
                   {enableGraceTime && (
                     <Form.Item
                       name="tiempoDeGracia"
@@ -485,10 +471,7 @@ const CrearComodato: React.FC = () => {
                 </Form.Item> */}
               </div>
             </div>
-
-            
           </div>
-
 
           <div className="flex flex-col my-10">
             <InstrumentSelectorTable />
