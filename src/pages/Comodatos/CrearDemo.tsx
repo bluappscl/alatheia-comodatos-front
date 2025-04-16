@@ -123,10 +123,10 @@ const CrearDEMO: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="Dirección"
+              label="Dirección del cliente"
               name="sucursal"
               rules={[
-                { required: true, message: "Por favor ingrese la dirección" },
+                { required: true, message: "Por favor ingrese la dirección del cliente" },
               ]}
             >
               <Input placeholder="Dirección" />
@@ -147,6 +147,19 @@ const CrearDEMO: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 <Select.Option value={2}>F8R - Ricardo Montaner</Select.Option>
               </Select>
             </Form.Item>
+  <Form.Item
+                  label="Código de Bodega"
+                  name="codigo_bodega"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Porfavor ingrese el codigo de bodega",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el codigo de bodega" />
+                </Form.Item>
+            
           </div>
 
           <div className="grid grid-cols-2 gap-6">

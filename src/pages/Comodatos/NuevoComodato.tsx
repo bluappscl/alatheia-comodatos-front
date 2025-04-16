@@ -15,9 +15,7 @@ import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector
 import FileUploadDrawable from "../../components/shared/FileUploadDrawable";
 import InstrumentSelectorTable from "../../components/Instrumentos/InstrumentSelectorTable";
 import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
-
 import comodato_photo from "../../media/temporal/comodato_photo.png";
-
 import { motion } from "motion/react";
 
 interface CrearComodatoValues {
@@ -213,12 +211,12 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <Form.Item
-                  label="Direccion"
+                  label="Direccion del cliente"
                   name="sucursal"
                   rules={[
                     {
                       required: true,
-                      message: "Porfavor ingrese la direccion",
+                      message: "Porfavor ingrese la direccion del cliente",
                     },
                   ]}
                 >
@@ -247,6 +245,43 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                     </Select.Option>
                   </Select>
                 </Form.Item>
+                
+                <Form.Item
+                  label="Representante de venta"
+                  name="representante_de_venta"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Porfavor seleccione un representante de venta",
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Seleccione un representante de venta"
+                    className="w-full"
+                  >
+                    <Select.Option value={1}>
+                      AKC - Camilo Ramirez
+                    </Select.Option>
+                    <Select.Option value={2}>
+                      F8R - Ricardo Montaner
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
+                
+                <Form.Item
+                  label="Código de Bodega"
+                  name="codigo_bodega"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Porfavor ingrese el codigo de bodega",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el codigo de bodega" />
+                </Form.Item>
+                
               </div>
             </div>
 
