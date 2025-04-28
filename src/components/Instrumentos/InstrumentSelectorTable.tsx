@@ -2,118 +2,139 @@ import { Button, Input, message, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
-import { fetchInstrumentos } from "../../api/requests/http_get_intrumentos";
-import { departments } from "../../api/json_examples/sub_secciones";
+import axiosInstance from "../../api/axiosInstance";
+import type { ColumnsType } from "antd/es/table";
+
+// Ampliamos InstrumentoInterface con campos extra
+interface SelectedInstrumento extends InstrumentoInterface {
+  codigo_ubicacion: string;
+  valor_neto: number;
+  moneda: string;
+  secuencia: string; // Nueva propiedad
+  serie: string;     // Nueva propiedad
+}
+
+interface ProductoComodato {
+  codigo: string;
+  descripcion: string;
+  adn: string;
+  tipo: string;
+  marca: string;
+}
+
+interface InstrumentSelectorTableProps {
+  onChange?: (instruments: SelectedInstrumento[]) => void;
+}
 
 const { Option } = Select;
 
-const InstrumentSelectorTable = () => {
-  const [loading, setLoading] = useState(false);
-  const [addedInstrumentos, setAddedInstrumentos] = useState<
-    InstrumentoInterface[]
-  >([]);
-  const [instrumentos, setInstrumentos] = useState<InstrumentoInterface[]>([]);
+const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
+  onChange,
+}) => {
+  const [addedInstrumentos, setAddedInstrumentos] = useState<SelectedInstrumento[]>([]);
+  const [productosComodato, setProductosComodato] = useState<ProductoComodato[]>([]);
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(() => {
-    const loadInstrumentos = async () => {
-      setLoading(true);
-      const data = await fetchInstrumentos();
-      setInstrumentos(data);
-      setLoading(false);
-    };
-    loadInstrumentos();
-  }, []);
-
-  const handleAddInstrumento = (instrumento: InstrumentoInterface) => {
-    if (!addedInstrumentos.some((item) => item.id === instrumento.id)) {
-      setAddedInstrumentos([...addedInstrumentos, instrumento]);
-      message.success("Instrumento agregado a la tabla");
-    } else {
-      message.warning("El instrumento ya está en la tabla");
+  // Notifica al padre siempre que cambie la lista
+  const notifyParent = (nextList: SelectedInstrumento[]) => {
+    if (onChange) {
+      onChange(nextList);
     }
   };
 
-  const handleRemoveInstrumento = (id: number) => {
-    setAddedInstrumentos((prev) => prev.filter((item) => item.id !== id));
-    message.success("Instrumento quitado");
+  useEffect(() => {
+    const loadProductosComodato = async () => {
+      try {
+        const { data } = await axiosInstance.get("/comodatos/productos/");
+        setProductosComodato(data.productos);
+      } catch {
+        message.error("Error al cargar productos de comodatos");
+      }
+    };
+
+    loadProductosComodato();
+  }, []);
+
+  const handleAddInstrumento = (instrumento: InstrumentoInterface) => {
+    setAddedInstrumentos(prev => {
+      if (prev.some(item => item.codigo === instrumento.codigo)) {
+        message.warning("El instrumento ya está en la tabla");
+        return prev;
+      }
+      const next = [
+        ...prev,
+        {
+          ...instrumento,
+          codigo_ubicacion: "",
+          valor_neto: 0,
+          moneda: "CLP",
+          secuencia: "", // Inicializar secuencia
+          serie: "",     // Inicializar serie
+        },
+      ];
+      message.success("Instrumento agregado a la tabla");
+      notifyParent(next);
+      return next;
+    });
+  };
+
+  const handleRemoveInstrumento = (codigo: string) => {
+    setAddedInstrumentos(prev => {
+      const next = prev.filter(item => item.codigo !== codigo);
+      message.success("Instrumento quitado");
+      notifyParent(next);
+      return next;
+    });
   };
 
   const handleCellChange = (
-    key: keyof InstrumentoInterface,
+    key: keyof Omit<SelectedInstrumento, keyof InstrumentoInterface>,
     value: any,
-    record: InstrumentoInterface
+    record: SelectedInstrumento
   ) => {
-    setAddedInstrumentos((prev) =>
-      prev.map((item) =>
-        item.id === record.id ? { ...item, [key]: value } : item
-      )
-    );
+    setAddedInstrumentos(prev => {
+      const next = prev.map(item =>
+        item.codigo === record.codigo ? { ...item, [key]: value } : item
+      );
+      notifyParent(next);
+      return next;
+    });
   };
 
-  const columns = [
+  const columns: ColumnsType<SelectedInstrumento> = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
-    {
-      title: "ADN",
-      dataIndex: "adn",
-      key: "adn",
-    },
-    { title: "Instrumento", dataIndex: "producto", key: "producto" },
+    { title: "ADN", dataIndex: "adn", key: "adn" },
+    { title: "Descripción", dataIndex: "descripcion", key: "descripcion" },
+    { title: "Tipo", dataIndex: "tipo", key: "tipo" },
     { title: "Marca", dataIndex: "marca", key: "marca" },
     {
-      title: "Número de Serie",
-      dataIndex: "numero_serie",
-      key: "numero_serie",
-    },
-    {
       title: "Ubicación",
-      dataIndex: "ubicacion",
-      key: "ubicacion",
-      render: () => (
-        <Select placeholder="Tipo de sucursal" className="w-full">
-          {departments.map((value, key) => (
-            <Select.Option value={value.nombre} key={key}>
-              {value.nombre}
-            </Select.Option>
-          ))}
-        </Select>
+      dataIndex: "codigo_ubicacion",
+      key: "codigo_ubicacion",
+      render: (value: string, record) => (
+        <Input
+          placeholder="Ubicación"
+          value={value}
+          onChange={e =>
+            handleCellChange("codigo_ubicacion", e.target.value, record)
+          }
+        />
       ),
     },
-    // {
-    //   title: "Cantidad",
-    //   dataIndex: "cantidad",
-    //   key: "cantidad",
-    //   render: (value: number, record: InstrumentoInterface) => (
-    //     <Input
-    //     className="w-16"
-    //       type="number"
-    //       value={value}
-    //       onChange={(e) =>
-    //         handleCellChange(
-    //           "cantidad",
-    //           parseInt(e.target.value || "0"),
-    //           record
-    //         )
-    //       }
-    //     />
-    //   ),
-    // },
     {
-      title: "Valor Neto",
+      title: "Valor",
       dataIndex: "valor_neto",
       key: "valor_neto",
-      render: (value: number, record: InstrumentoInterface) => (
+      render: (value: number, record) => (
         <Input
           type="number"
+          placeholder="valor neto"
           value={value}
-          onChange={(e) =>
-            handleCellChange(
-              "valor_neto",
-              parseFloat(e.target.value || "0"),
-              record
-            )
+          onChange={e =>
+            handleCellChange("valor_neto", parseFloat(e.target.value) || 0, record)
           }
+          className="w-24"
         />
       ),
     },
@@ -121,10 +142,10 @@ const InstrumentSelectorTable = () => {
       title: "Moneda",
       dataIndex: "moneda",
       key: "moneda",
-      render: (value: string, record: InstrumentoInterface) => (
+      render: (value: string, record) => (
         <Select
           value={value}
-          onChange={(val) => handleCellChange("moneda", val, record)}
+          onChange={val => handleCellChange("moneda", val, record)}
           style={{ width: 80 }}
         >
           <Option value="CLP">CLP</Option>
@@ -133,13 +154,41 @@ const InstrumentSelectorTable = () => {
       ),
     },
     {
+      title: "Secuencia",
+      dataIndex: "secuencia",
+      key: "secuencia",
+      render: (value: string, record) => (
+        <Input
+          placeholder="Secuencia"
+          value={value}
+          onChange={e =>
+            handleCellChange("secuencia", e.target.value, record)
+          }
+        />
+      ),
+    },
+    {
+      title: "Serie",
+      dataIndex: "serie",
+      key: "serie",
+      render: (value: string, record) => (
+        <Input
+          placeholder="Serie"
+          value={value}
+          onChange={e =>
+            handleCellChange("serie", e.target.value, record)
+          }
+        />
+      ),
+    },
+    {
       title: "Acciones",
       key: "acciones",
-      render: (_: any, record: InstrumentoInterface) => (
+      render: (_, record) => (
         <Button
           type="link"
           danger
-          onClick={() => handleRemoveInstrumento(record.id)}
+          onClick={() => handleRemoveInstrumento(record.codigo)}
         >
           Quitar
         </Button>
@@ -151,9 +200,9 @@ const InstrumentSelectorTable = () => {
     <>
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
         <Input
-          placeholder="Buscar por Código o Producto"
+          placeholder="Buscar por Código o Descripción"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={e => setSearchText(e.target.value)}
           className="w-full"
         />
         <Button type="primary" onClick={() => setIsModalVisible(true)}>
@@ -162,11 +211,14 @@ const InstrumentSelectorTable = () => {
       </div>
 
       <Table
-        dataSource={addedInstrumentos}
+        dataSource={addedInstrumentos.filter(
+          item =>
+            item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.descripcion.toLowerCase().includes(searchText.toLowerCase())
+        )}
         columns={columns}
-        rowKey="id"
-        loading={loading}
-        scroll={{ x: 1000 }}
+        rowKey="codigo"
+        scroll={{ x: 1200 }}
         className="rounded-xl"
       />
 
@@ -174,7 +226,7 @@ const InstrumentSelectorTable = () => {
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onAddInstrumento={handleAddInstrumento}
-        instrumentos={instrumentos}
+        productosComodato={productosComodato}
       />
     </>
   );

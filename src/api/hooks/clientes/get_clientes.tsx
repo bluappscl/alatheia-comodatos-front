@@ -11,6 +11,7 @@ export const useFetchClientes = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    
     const fetchData = async () => {
       try {
         const data = await fetchClientes();

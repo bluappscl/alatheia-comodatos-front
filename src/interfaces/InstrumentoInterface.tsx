@@ -1,11 +1,10 @@
 
 export interface InstrumentoInterface {
-    id: number;
+    id: string;
     codigo: string;
-    producto: string;
-    numero_serie: string;
-    cantidad: number;
-    valor_neto: number;
+    descripcion: string;
     adn:string;
-    moneda: string;
+    producto?:string;
+    tipo:string;
+    marca: string;
   }

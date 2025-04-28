@@ -7,31 +7,27 @@ import {
   message,
   Checkbox,
   InputNumber,
-  Select,
   Divider,
 } from "antd";
-import axios from "axios";
 import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector";
 import FileUploadDrawable from "../../components/shared/FileUploadDrawable";
 import InstrumentSelectorTable from "../../components/Instrumentos/InstrumentSelectorTable";
 import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 import comodato_photo from "../../media/temporal/comodato_photo.png";
 import { motion } from "motion/react";
+import axiosInstance from "../../api/axiosInstance";
+import RepresentanteSelector, {
+  Representante,
+} from "../../components/RepresentantesSelect";
+import BodegasSelector from "../../components/BodegasSelect";
+import { useNavigate } from "react-router-dom";
+import { format as formatRut } from "rut.js";
 
-interface CrearComodatoValues {
-  nombre: string;
-  descripcion: string;
-  fechaInicio: { format: (format: string) => string };
-  fechaFin: { format: (format: string) => string };
-  insumos?: Array<{ id: number; cantidad: number }>;
-  instrumentos?: Array<{ id: number; cantidad: number }>;
-  client_id: number;
-  objetivoReactivosCantidad?: number;
-  objetivoDineroCantidad?: number;
-}
 const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
   CambiarSeleccionButton,
 }) => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [isRenovable, setIsRenovable] = useState(false);
   const [autoRenew, setAutoRenew] = useState(false);
@@ -40,31 +36,83 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
   const [enableDinero, setEnableDinero] = useState(false);
   const [enableGraceTime, setEnableGraceTime] = useState(false);
   const [plazoParaPago, setPlazoParaPago] = useState(false);
+  const [selectedBodega, setSelectedBodega] = useState<string>("");
+  const [selectedRep, setSelectedRep] = useState<Representante | null>(null);
 
-  const onFinish = async (values: CrearComodatoValues) => {
+  console.log("selectedRep", selectedRep);
+
+  const [selectedInstrumentos, setSelectedInstrumentos] = useState<any[]>([]);
+
+  const onFinish = async (values: any) => {
     setLoading(true);
-    try {
-      const data = {
-        nombre: values.nombre,
-        fechaInicio: values.fechaInicio.format("YYYY-MM-DD"),
-        fechaFin: values.fechaFin.format("YYYY-MM-DD"),
-        esRenovable: isRenovable,
-        seRenuevaAutomaticamente: isRenovable ? autoRenew : false,
-        insumos: values.insumos || [],
-        instrumentos: values.instrumentos || [],
-        client_id: clientId,
-        objetivoReactivosCantidad: enableReactivos
+
+    if (!selectedRep) {
+      message.error("Seleccione un representante de venta");
+      return;
+    }
+
+    const payload = {
+      comodato: {
+        // número de comodato (antes “values.contrato”)
+        numero_comodato: values.numero_comodato,
+
+        // rut del cliente
+        rut_cliente: clientId,
+
+        // representante del cliente
+        nombre_representante_cliente: values.nombre_representante_cliente,
+        rut_representante_cliente: values.rut_representante_cliente,
+
+        // representante de Alatheia
+        rut_representante_alatheia: values.rut_representante_alatheia,
+        codigo_representante: selectedRep.codigo,
+        nombre_representante_alatheia: selectedRep.nombre[0],
+
+        // dirección / sucursal del cliente
+        direccion_cliente: values.sucursal,
+
+        // representante de venta y bodega
+        representante_de_venta: values.representante_de_venta,
+        codigo_bodega: selectedBodega,
+
+        // fechas en snake_case
+        fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
+        fecha_fin: values.fechaFin.format("YYYY-MM-DD"),
+
+        // plazo para pago
+        plazo_para_pago: plazoParaPago,
+        plazo_pago_facturas: plazoParaPago
+          ? values.plazoPagoFacturas
+          : undefined,
+
+        // tiempo de gracia
+        tiempo_de_gracia: enableGraceTime
+          ? {
+              meses: values.tiempoDeGracia[0],
+              porcentaje: values.tiempoDeGracia[1],
+            }
+          : undefined,
+
+        // renovación
+        es_renovable: isRenovable,
+        se_renueva_automaticamente: isRenovable ? autoRenew : false,
+
+        // objetivos
+        objetivo_reactivos_cantidad: enableReactivos
           ? values.objetivoReactivosCantidad
           : undefined,
-        objetivoDineroCantidad: enableDinero
+        objetivo_dinero_cantidad: enableDinero
           ? values.objetivoDineroCantidad
           : undefined,
-      };
+      },
+      instrumentos: selectedInstrumentos,
+    };
 
-      const response = await axios.post("/api/comodatos", data);
-
-      if (response.status === 200) {
+    try {
+      const response = await axiosInstance.post("/comodatos/", payload);
+      if (response.status === 201) {
         message.success("Comodato creado exitosamente");
+        navigate("/comodatos");
       } else {
         message.error("Error al crear el comodato");
       }
@@ -91,8 +139,8 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
     setAutoRenew(e.target.checked);
   };
 
-  const handleSelectClient = (id: number) => {
-    setClientId(id);
+  const handleSelectClient = (rut: string) => {
+    setClientId(parseInt(rut));
   };
 
   return (
@@ -118,6 +166,22 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
         >
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             <div>
+              <div>
+                <Form.Item
+                  className="w-full"
+                  label="Número de Comodato"
+                  name="numero_comodato"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor ingrese el número de comodato",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el número del comodato" />
+                </Form.Item>
+              </div>
+
               <Form.Item
                 label="Contrato"
                 rules={[
@@ -146,7 +210,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
               <label className="font-semibold text-primary-700">
                 Representante del Cliente
               </label>
-              <div className="flex flex-row gap-4 mt-4">
+              <div className="grid grid-cols-2 gap-4 mt-4">
                 <Form.Item
                   className="w-full"
                   label="Nombre"
@@ -162,7 +226,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 </Form.Item>
 
                 <Form.Item
-                  className="w-full"
                   label="Rut"
                   name="rut_representante_cliente"
                   rules={[
@@ -171,33 +234,64 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                       message: "Por favor ingrese el rut del cliente",
                     },
                   ]}
+                  getValueFromEvent={(e) => {
+                    // cada vez que teclean, formatea el valor
+                    const raw: string = e.target.value;
+                    return formatRut(raw);
+                  }}
                 >
                   <Input placeholder="Ingrese el rut del cliente" />
                 </Form.Item>
               </div>
+
+              <Form.Item
+                label="Direccion del cliente"
+                name="sucursal"
+                rules={[
+                  {
+                    required: true,
+                    message: "Porfavor ingrese la direccion del cliente",
+                  },
+                ]}
+              >
+                <Input placeholder="Ingrese la direccion" />
+              </Form.Item>
+
               <Divider />
+
               {/* Representante Alatheia */}
               <label className="font-semibold text-primary-700">
                 Representante de Alatheia
               </label>
-              <div className="flex flex-row gap-4 mt-5">
+              <div className="grid grid-cols-2 gap-4">
                 <Form.Item
-                  className="w-full"
-                  label="Nombre"
-                  name="_representante_alatheia"
+                  label="Representante de venta"
+                  required
                   rules={[
                     {
-                      required: true,
-                      message: "nombre del representante",
+                      validator: () =>
+                        selectedRep
+                          ? Promise.resolve()
+                          : Promise.reject("Seleccione un representante"),
                     },
                   ]}
                 >
-                  <Input placeholder="Ingrese el nombre del cliente" />
+                  <RepresentanteSelector
+                    value={selectedRep?.codigo}
+                    onChange={setSelectedRep}
+                    placeholder="Seleccione un representante de venta"
+                  />
                 </Form.Item>
+
                 <Form.Item
                   className="w-full"
                   label="Rut"
                   name="rut_representante_alatheia"
+                  getValueFromEvent={(e) => {
+                    // cada vez que teclean, formatea el valor
+                    const raw: string = e.target.value;
+                    return formatRut(raw);
+                  }}
                   rules={[
                     {
                       required: true,
@@ -205,85 +299,24 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                     },
                   ]}
                 >
-                  <Input placeholder="Ingrese el rut del cliente" />
-                </Form.Item>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <Form.Item
-                  label="Direccion del cliente"
-                  name="sucursal"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Porfavor ingrese la direccion del cliente",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Ingrese la direccion" />
+                  <Input placeholder="Ingrese el rut del representante" />
                 </Form.Item>
 
-                <Form.Item
-                  label="Representante de venta"
-                  name="representante_de_venta"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Porfavor seleccione un representante de venta",
-                    },
-                  ]}
-                >
-                  <Select
-                    placeholder="Seleccione un representante de venta"
-                    className="w-full"
-                  >
-                    <Select.Option value={1}>
-                      AKC - Camilo Ramirez
-                    </Select.Option>
-                    <Select.Option value={2}>
-                      F8R - Ricardo Montaner
-                    </Select.Option>
-                  </Select>
-                </Form.Item>
-                
-                <Form.Item
-                  label="Representante de venta"
-                  name="representante_de_venta"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Porfavor seleccione un representante de venta",
-                    },
-                  ]}
-                >
-                  <Select
-                    placeholder="Seleccione un representante de venta"
-                    className="w-full"
-                  >
-                    <Select.Option value={1}>
-                      AKC - Camilo Ramirez
-                    </Select.Option>
-                    <Select.Option value={2}>
-                      F8R - Ricardo Montaner
-                    </Select.Option>
-                  </Select>
-                </Form.Item>
-                
                 <Form.Item
                   label="Código de Bodega"
-                  name="codigo_bodega"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Porfavor ingrese el codigo de bodega",
-                    },
-                  ]}
+                  required
+                  rules={[{ required: true, message: "Seleccione una bodega" }]}
                 >
-                  <Input placeholder="Ingrese el codigo de bodega" />
+                  <BodegasSelector
+                    value={selectedBodega}
+                    onChange={setSelectedBodega}
+                    placeholder="Seleccione una bodega"
+                  />
                 </Form.Item>
-                
               </div>
             </div>
+
+            <Divider />
 
             <div className="grid grid-cols-2 gap-6">
               <Form.Item
@@ -380,19 +413,23 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                         },
                       ]}
                     >
-                      <div className="flex flex-row items-center gap-4">
+                        <div className="flex flex-row items-center gap-4">
                         <InputNumber
                           min={1}
                           className="w-full"
                           placeholder="Meses de gracia"
+                          keyboard={false}
+                          type="number"
                         />
                         <InputNumber
                           min={1}
                           className="w-full"
                           placeholder="Porcentaje de descuento"
                           suffix="%"
+                          keyboard={false}
+                          type="number"
                         />
-                      </div>
+                        </div>
                     </Form.Item>
                   )}
                 </div>
@@ -509,7 +546,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
           </div>
 
           <div className="flex flex-col my-10">
-            <InstrumentSelectorTable />
+            <InstrumentSelectorTable onChange={setSelectedInstrumentos} />
           </div>
 
           <Form.Item>

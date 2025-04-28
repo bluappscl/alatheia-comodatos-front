@@ -1,5 +1,5 @@
 export interface ClienteInterface {
-  id: number;
+  id: string;
   nombre: string;
   rut: string;
   codigo_comuna: string;

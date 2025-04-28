@@ -1,59 +1,83 @@
-import { Button, Modal, Table } from "antd";
+import { Button, Modal, Table, Input } from "antd";
+import { useState } from "react";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
+
+interface ProductoComodato {
+  codigo: string;
+  descripcion: string;
+  adn: string;
+  tipo: string;
+  marca: string;
+}
 
 interface Props {
   visible: boolean;
   onClose: () => void;
   onAddInstrumento: (instrumento: InstrumentoInterface) => void;
-  instrumentos: InstrumentoInterface[]; // Pass fetched instruments
+  productosComodato: ProductoComodato[];
 }
 
 const InstrumentSelectorModal: React.FC<Props> = ({
   visible,
   onClose,
   onAddInstrumento,
-  instrumentos,
+  productosComodato,
 }) => {
-  const columns = [
+  const [searchText, setSearchText] = useState("");
+
+  // Filtrar productos según búsqueda
+  const filteredProductos = productosComodato.filter((item) =>
+    item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.descripcion.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const productosComodatoColumns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
     { title: "ADN", dataIndex: "adn", key: "adn" },
-    { title: "Instrumento", dataIndex: "producto", key: "producto" },
+    { title: "Descripción", dataIndex: "descripcion", key: "descripcion" },
+    { title: "Tipo", dataIndex: "tipo", key: "tipo" },
     { title: "Marca", dataIndex: "marca", key: "marca" },
-    {
-      title: "Número de Serie",
-      dataIndex: "numero_serie",
-      key: "numero_serie",
-    },
-    // { title: "Cantidad", dataIndex: "cantidad", key: "cantidad" },
-    // {
-    //   title: "Valor Neto",
-    //   dataIndex: "valor_neto",
-    //   key: "valor_neto",
-    //   align:"right" as "right",
-    //   render: (value: number) => `${formatCurrency(value, "CLP")}`,
-    // },
-    // { title: "Moneda", dataIndex: "moneda", key: "moneda" },
     {
       title: "Acciones",
       key: "acciones",
-      render: (_: any, record: InstrumentoInterface) => (
-        <Button onClick={() => onAddInstrumento(record)}>Añadir</Button>
+      render: (_: any, record: ProductoComodato) => (
+        <Button
+          onClick={() =>
+            onAddInstrumento({
+              codigo: record.codigo,
+              descripcion: record.descripcion,
+              adn: record.adn,
+              tipo: record.tipo,
+              marca: record.marca,
+            })
+          }
+        >
+          Añadir
+        </Button>
       ),
     },
   ];
 
   return (
     <Modal
-      title="Seleccionar Instrumento"
+      title="Seleccionar Instrumento o Producto"
       open={visible}
       onCancel={onClose}
       footer={null}
       width={1200}
     >
+      {/* Buscador */}
+      <Input
+        placeholder="Buscar por código o descripción"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        style={{ marginBottom: 16 }}
+      />
+
       <Table
-        dataSource={instrumentos}
-        columns={columns}
-        rowKey="id"
+        dataSource={filteredProductos}
+        columns={productosComodatoColumns}
+        rowKey="codigo"
         scroll={{ x: 1000 }}
       />
     </Modal>

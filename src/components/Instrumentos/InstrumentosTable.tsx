@@ -21,8 +21,8 @@ interface InstrumentosTableProps {
       setFilteredInstrumentos(
         data.filter(
           (item) =>
-            item.codigo.toLowerCase().includes(value.toLowerCase()) ||
-            item.producto.toLowerCase().includes(value.toLowerCase())
+            item.codigo?.toLowerCase().includes(value.toLowerCase()) ||
+            item.producto?.toLowerCase().includes(value.toLowerCase())
         )
       );
     };

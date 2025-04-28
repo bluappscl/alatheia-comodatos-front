@@ -1,13 +1,13 @@
+// src/components/NuevoComodato/ClienteSelector.tsx
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Card, Typography, Spin, Input } from "antd";
+import axiosInstance from "../../api/axiosInstance";
 import { ClienteInterface } from "../../interfaces/ClienteInterface";
-import { useFetchClientes } from "../../api/hooks/clientes/get_clientes";
 
 const { Search } = Input;
 
 interface ClientSelectionModalProps {
-  onSelectClient: (id: number) => void;
-  onAddClient?: () => void;
+  onSelectClient: (rut: string) => void;
   showSelectedClient?: boolean;
 }
 
@@ -16,75 +16,79 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   showSelectedClient = true,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filteredClientes, setFilteredClientes] = useState<ClienteInterface[]>(
-    []
-  );
+  const [clientes, setClientes] = useState<ClienteInterface[]>([]);
+  const [filtered, setFiltered] = useState<ClienteInterface[]>([]);
+  const [loadingClientes, setLoadingClientes] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [selectedClient, setSelectedClient] = useState<ClienteInterface>();
+  const [selectedClient, setSelectedClient] = useState<ClienteInterface | null>(null);
 
-  const { clientes, loadingClientes } = useFetchClientes();
-
+  // Hacer GET directamente aquí
   useEffect(() => {
-    if (isModalOpen) {
-      setFilteredClientes(clientes);
-    }
+    setLoadingClientes(true);
+    axiosInstance
+      .get<{ clientes: ClienteInterface[] }>("/comodatos/clientes/")
+      .then(res => {
+        setClientes(res.data.clientes);
+        if (isModalOpen) {
+          setFiltered(res.data.clientes);
+        }
+      })
+      .catch(err => {
+        console.error("Error al cargar clientes:", err);
+      })
+      .finally(() => {
+        setLoadingClientes(false);
+      });
   }, [isModalOpen]);
 
-  const handleCardClick = (client: ClienteInterface) => {
-    onSelectClient(client.id);
-    setSelectedClient(client);
-    setIsModalOpen(false);
-  };
+  // Resetear filtro cuando se abra el modal
+  useEffect(() => {
+    if (isModalOpen) {
+      setFiltered(clientes);
+      setSearchText("");
+    }
+  }, [isModalOpen, clientes]);
 
   const handleSearch = (value: string) => {
     setSearchText(value);
-    setFilteredClientes(
-      clientes.filter((cliente) =>
-        cliente.nombre.toLowerCase().includes(value.toLowerCase())
+    setFiltered(
+      clientes.filter(c =>
+        c.nombre.toLowerCase().includes(value.toLowerCase())
       )
     );
+  };
+
+  const handleCardClick = (c: ClienteInterface) => {
+    setSelectedClient(c);
+    onSelectClient(c.rut);
+    setIsModalOpen(false);
   };
 
   return (
     <>
       <Button
-        className="w-full"
         type="primary"
+        className="w-full"
         onClick={() => setIsModalOpen(true)}
       >
         Seleccionar Cliente
       </Button>
-      {showSelectedClient && selectedClient && (
-        <div className="flex justify-center items-center mt-4">
-          <Card className="mt-4 flex w-fit flex-col items-center px-10 bg-gray-50">
-            {/* <img
-              src={
-                selectedClient.logo ||
-                "https://static.vecteezy.com/system/resources/previews/005/720/408/non_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg"
-              }
-              // https://via.placeholder.com/100
-              // https://static.vecteezy.com/system/resources/previews/005/720/408/non_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg
-              alt={selectedClient.nombre}
-              className="w-20 h-20 object-cover rounded-3xl mb-4 bg-white"
-            /> */}
 
-            <div className="flex flex-col">
-              <Typography.Title level={5}>
-                {selectedClient.nombre}
-              </Typography.Title>
-              <Typography.Text>RUT: {selectedClient.rut} </Typography.Text>
-              <Typography.Text>
-                Código Comuna: {selectedClient.codigo_comuna}
-              </Typography.Text>
-              <Typography.Text>
-                Dirección: {selectedClient.direccion}
-              </Typography.Text>
-              {/* <Typography.Text>
-                Cantidad de Comodatos Activos: {selectedClient.comodatos.length}
-              </Typography.Text> */}
-            </div>
-          </Card>
-        </div>
+      {showSelectedClient && selectedClient && (
+        <Card className="mt-4 bg-gray-50">
+          <Typography.Title level={5}>
+            {selectedClient.nombre}
+          </Typography.Title>
+          <Typography.Text>RUT: {selectedClient.rut}</Typography.Text>
+          <br />
+          <Typography.Text>
+            Cód. Comuna: {selectedClient.codigo_comuna}
+          </Typography.Text>
+          <br />
+          <Typography.Text>
+            Dirección: {selectedClient.direccion}
+          </Typography.Text>
+        </Card>
       )}
 
       <Modal
@@ -94,48 +98,37 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
         footer={null}
         width={800}
       >
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-          <Search
-            placeholder="Buscar cliente..."
-            allowClear
-            enterButton
-            onSearch={handleSearch}
-            value={searchText}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="w-full md:w-2/3"
-          />
-        </div>
+        <Search
+          placeholder="Buscar cliente..."
+          allowClear
+          enterButton
+          onSearch={handleSearch}
+          value={searchText}
+          onChange={e => handleSearch(e.target.value)}
+          className="mb-4"
+        />
+
         {loadingClientes ? (
-          <Spin className="w-full flex justify-center items-center" />
+          <div className="flex justify-center">
+            <Spin />
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredClientes.map((cliente) => (
+            {filtered.map(c => (
               <Card
-                key={cliente.id}
+                key={c.rut}
                 hoverable
-                className="mt-4 flex flex-col items-center p-4 bg-gray-50"
-                onClick={() => handleCardClick(cliente)}
+                onClick={() => handleCardClick(c)}
+                className="cursor-pointer"
               >
-                {/* <img
-                  src={cliente.logo || "https://via.placeholder.com/100"}
-                  alt={cliente.nombre}
-                  className="w-20 h-20 object-cover rounded-3xl mb-4 bg-white"
-                /> */}
-                <div className="flex flex-col">
-                  <Typography.Title level={5}>
-                    {cliente.nombre}
-                  </Typography.Title>
-                  <Typography.Text>RUT: {cliente.rut}</Typography.Text>
-                  <Typography.Text>
-                    Código Comuna: {cliente.codigo_comuna}
-                  </Typography.Text>
-                  <Typography.Text>
-                    Dirección: {cliente.direccion}
-                  </Typography.Text>
-                  {/* <Typography.Text>
-                    Cantidad de Comodatos Activos: {cliente.comodatos.length}
-                  </Typography.Text> */}
-                </div>
+                <Typography.Title level={5}>{c.nombre}</Typography.Title>
+                <Typography.Text>RUT: {c.rut}</Typography.Text>
+                <br />
+                <Typography.Text>
+                  Cód. Comuna: {c.codigo_comuna}
+                </Typography.Text>
+                <br />
+                <Typography.Text>Dirección: {c.direccion}</Typography.Text>
               </Card>
             ))}
           </div>

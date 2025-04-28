@@ -12,8 +12,9 @@ export const fetchClientes = async (): Promise<ClienteInterface[]> => {
     //   ...item
     // }));
 
-    return clientes_json.map((item: ClienteInterface) => ({
+    return clientes_json.map((item) => ({
       ...item,
+      id: item.id.toString(),
     }));
   } catch (error) {
     console.error("Error fetching instrumentos:", error);
