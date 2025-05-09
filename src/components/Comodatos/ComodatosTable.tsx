@@ -12,7 +12,9 @@ dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
 
-// 1. Interfaz ajustada a lo que devuelve tu API
+/* ────────────────────────────────────────────
+   1. Interfaz ajustada (se añade es_demo)
+   ──────────────────────────────────────────── */
 export interface ComodatoInterface {
   id: number;
   nombre_cliente: string;
@@ -25,32 +27,32 @@ export interface ComodatoInterface {
   objetivo_cantidad_mensual: string;
   cantidad_mensual_realizada: string;
   estado: boolean;
+  es_demo: boolean;          // 👈 NUEVO
 }
 
 const ComodatosTable: React.FC = () => {
   const [comodatos, setComodatos] = useState<ComodatoInterface[]>([]);
-  // const [filteredClients, setFilteredClients] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
 
   console.log('dateRange', dateRange)
 
   const navigate = useNavigate();
 
-  // 2. Fetch de comodatos al montar el componente
+  /* ────────────────────────────────────────
+     2. Carga inicial de datos
+     ──────────────────────────────────────── */
   useEffect(() => {
     axiosInstance
       .get<{ comodatos: ComodatoInterface[] }>("/comodatos/")
       .then((res) => setComodatos(res.data.comodatos))
-      .catch((err) => {
-        console.error("Error al obtener comodatos:", err);
-      });
+      .catch((err) => console.error("Error al obtener comodatos:", err));
   }, []);
 
-  const handleNavigateToDetalle = (id: number) => {
-    navigate(`/comodato/${id}`);
-  };
+  const handleNavigateToDetalle = (id: number) => navigate(`/comodato/${id}`);
 
-  // 3. Columnas sin modificaciones (solo renombradas a los campos de la API)
+  /* ────────────────────────────────────────
+     3. Columnas de la tabla
+     ──────────────────────────────────────── */
   const columns: ColumnsType<ComodatoInterface> = [
     {
       title: "Cliente",
@@ -96,80 +98,82 @@ const ComodatosTable: React.FC = () => {
       dataIndex: "objetivo_cantidad_mensual",
       key: "objetivo_cantidad_mensual",
       align: "center",
-      render: (value: string) => value,
     },
     {
       title: "Reactivos Realizados",
       dataIndex: "cantidad_mensual_realizada",
       key: "cantidad_mensual_realizada",
       align: "center",
-      render: (value: string) => value,
     },
     {
       title: "Estado",
       dataIndex: "estado",
       key: "estado",
+      align: "center",
       filters: [
         { text: "Vigente", value: true },
         { text: "Pendiente", value: false },
       ],
       onFilter: (value, record) => record.estado === value,
       render: (estado: boolean) => (
-        <Typography.Text
-          className={estado ? "text-green-600" : "text-red-600"}
-        >
+        <Typography.Text className={estado ? "text-green-600" : "text-red-600"}>
           {estado ? "Vigente" : "Pendiente"}
         </Typography.Text>
       ),
+    },
+    /* ───────────────────────────────────
+       NUEVA COLUMNA → filtro Demo
+       ─────────────────────────────────── */
+    {
+      title: "Tipo",
+      dataIndex: "es_demo",
+      key: "es_demo",
+      align: "center",
+      filters: [
+        { text: "Demos", value: true },
+        { text: "Comodato", value: false },
+      ],
+      onFilter: (value, record) => record.es_demo === value,
+      render: (val: boolean) => (val ? "Demo" : "Comodato"),
     },
     {
       title: "Detalle",
       key: "detalle",
       align: "center",
-      render: (_: any, record: ComodatoInterface) => (
+      render: (_, record) => (
         <Tooltip title="Ver Detalle del Comodato">
-        <Button onClick={() => handleNavigateToDetalle(record.id)}>
-          <ZoomInOutlined />
-        </Button>
+          <Button onClick={() => handleNavigateToDetalle(record.id)}>
+            <ZoomInOutlined />
+          </Button>
         </Tooltip>
       ),
     },
   ];
 
-  // Filtrado por clientes y rango de fechas (igual al tuyo)
-  // const filteredData = comodatos.filter((c) => {
-  //   const matchesClient = filteredClients.length
-  //     ? filteredClients.includes(c.rut_cliente)
-  //     : true;
+  /* ────────────────────────────────────────
+     4. Rango de fechas (si lo necesitas)
+     ──────────────────────────────────────── */
+  // Si más adelante quieres combinar este filtro de Demos con un rango de fechas,
+  // basta con descomentar el bloque y alimentar `dataSource` con filteredData.
 
-  //   const matchesDateRange =
-  //     dateRange && dateRange[0] && dateRange[1]
-  //       ? dayjs(c.fecha_fin).isBetween(
-  //           dateRange[0],
-  //           dateRange[1],
-  //           "day",
-  //           "[]"
-  //         )
-  //       : true;
-
-  //   return matchesClient && matchesDateRange;
-  // });
+  /* const filteredData = comodatos.filter((c) => {
+    const matchesDateRange =
+      dateRange && dateRange[0] && dateRange[1]
+        ? dayjs(c.fecha_fin).isBetween(dateRange[0], dateRange[1], "day", "[]")
+        : true;
+    return matchesDateRange;
+  }); */
 
   return (
     <>
       <div className="flex sm:flex-col lg:flex-row gap-4 w-full mb-4">
-        {/* <ClientesMultipleSelect
-          clientes={clientes}
-          loading={loadingClientes}
-          setFilteredClients={setFilteredClients}
-        /> */}
-
         <div className="flex flex-row w-full gap-2 items-center">
           <RangePicker className="w-full" onChange={setDateRange} />
         </div>
       </div>
 
       <Table
+        /* dataSource={filteredData} */  /* ← usa esto si aplicas rango de fechas */
         dataSource={comodatos}
         columns={columns}
         rowKey="id"
