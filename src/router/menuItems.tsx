@@ -18,6 +18,8 @@ export const items: MenuProps["items"] = [
     label: "Comodatos",
     icon: <SettingOutlined />,
     children: [
+
+
       {
         key: "2",
         icon: <LaptopOutlined />,
@@ -28,6 +30,7 @@ export const items: MenuProps["items"] = [
         icon: <LaptopOutlined />,
         label: <Link to="/nuevo-comodato">Crear</Link>,
       },
+ 
     ],
   },
   {

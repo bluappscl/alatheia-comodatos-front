@@ -10,7 +10,6 @@ import {
   Divider,
 } from "antd";
 import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector";
-import FileUploadDrawable from "../../components/shared/FileUploadDrawable";
 import InstrumentSelectorTable from "../../components/Instrumentos/InstrumentSelectorTable";
 import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 import comodato_photo from "../../media/temporal/comodato_photo.png";
@@ -74,6 +73,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
         // representante de venta y bodega
         representante_de_venta: values.representante_de_venta,
         codigo_bodega: selectedBodega,
+        es_demo: false,
 
         // fechas en snake_case
         fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
@@ -182,17 +182,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 </Form.Item>
               </div>
 
-              <Form.Item
-                label="Contrato"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor ingrese el nombre del cliente",
-                  },
-                ]}
-              >
-                <FileUploadDrawable />
-              </Form.Item>
+
               <Form.Item
                 label="Cliente"
                 rules={[

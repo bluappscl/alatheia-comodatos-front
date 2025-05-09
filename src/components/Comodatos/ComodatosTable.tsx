@@ -1,168 +1,176 @@
-import React, { useState } from "react";
-import { Button, DatePicker, Table, Typography } from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, DatePicker, Table, Tooltip, Typography } from "antd";
 import { ZoomInOutlined } from "@ant-design/icons";
-import { ComodatoInterface } from "../../interfaces/ComodatoInterface";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
-import { useFetchClientes } from "../../api/hooks/clientes/get_clientes";
-import ClientesMultipleSelect from "../Clientes/ClientesMultipleSelect";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { formatCurrency } from "../../utils/formatCurrency";
+import axiosInstance from "../../api/axiosInstance";
 
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
 
-interface ComodatosTableProps {
-  comodatos: ComodatoInterface[];
+// 1. Interfaz ajustada a lo que devuelve tu API
+export interface ComodatoInterface {
+  id: number;
+  nombre_cliente: string;
+  rut_cliente: string;
+  codigo_representante_venta: string;
+  fecha_inicio: string;
+  fecha_fin: string | null;
+  objetivo_compra_mensual: string;
+  compra_mensual_realizada: string;
+  objetivo_cantidad_mensual: string;
+  cantidad_mensual_realizada: string;
+  estado: boolean;
 }
 
-const ComodatosTable: React.FC<ComodatosTableProps> = ({ comodatos }) => {
-  const [filteredClients, setFilteredClients] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<
-    [Dayjs | null, Dayjs | null] | null
-  >(null);
+const ComodatosTable: React.FC = () => {
+  const [comodatos, setComodatos] = useState<ComodatoInterface[]>([]);
+  // const [filteredClients, setFilteredClients] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
 
-  const { clientes, loadingClientes } = useFetchClientes();
+  console.log('dateRange', dateRange)
+
   const navigate = useNavigate();
 
+  // 2. Fetch de comodatos al montar el componente
+  useEffect(() => {
+    axiosInstance
+      .get<{ comodatos: ComodatoInterface[] }>("/comodatos/")
+      .then((res) => setComodatos(res.data.comodatos))
+      .catch((err) => {
+        console.error("Error al obtener comodatos:", err);
+      });
+  }, []);
+
   const handleNavigateToDetalle = (id: number) => {
-    navigate(`/comodatos/${id}`);
+    navigate(`/comodato/${id}`);
   };
 
+  // 3. Columnas sin modificaciones (solo renombradas a los campos de la API)
   const columns: ColumnsType<ComodatoInterface> = [
     {
       title: "Cliente",
-      dataIndex: ["cliente", "nombre"],
-      key: "cliente.nombre",
+      dataIndex: "nombre_cliente",
+      key: "nombre_cliente",
+    },
+    {
+      title: "RUT Cliente",
+      dataIndex: "rut_cliente",
+      key: "rut_cliente",
+      align: "center",
     },
     {
       title: "Representante de Venta",
-      dataIndex: ["representante_venta", "codigo"],
-      key: "representante_venta.codigo",
-      align: "center"
+      dataIndex: "codigo_representante_venta",
+      key: "codigo_representante_venta",
+      align: "center",
     },
     {
       title: "Fecha de Fin",
       dataIndex: "fecha_fin",
       key: "fecha_fin",
       align: "center",
-      render:(date: string) => `${dayjs(date).format("DD/MM/YYYY")}`
+      render: (date: string | null) =>
+        date ? dayjs(date).format("DD/MM/YYYY") : "-",
     },
     {
-      title: "Objetivo de Compra Mensual",
-      dataIndex: "compra_minima_mensual_dinero",
-      key: "compra_minima_mensual_dinero",
+      title: "Objetivo Compra $",
+      dataIndex: "objetivo_compra_mensual",
+      key: "objetivo_compra_mensual",
       align: "center",
-      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
+      render: (value: string) => formatCurrency(Number(value), "CLP"),
     },
     {
-      title: "Compra Mensual Realizada",
-      dataIndex: "compra_minima_mensual_dinero",
-      key: "compra_minima_mensual_dinero",
+      title: "Compra $ Realizada",
+      dataIndex: "compra_mensual_realizada",
+      key: "compra_mensual_realizada",
       align: "center",
-      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
+      render: (value: string) => formatCurrency(Number(value), "CLP"),
     },
     {
-      title: "Objetivo de Compra Reactivos",
-      dataIndex: "compra_minima_mensual_reactivo",
-      key: "compra_minima_mensual_reactivo",
+      title: "Objetivo Reactivos",
+      dataIndex: "objetivo_cantidad_mensual",
+      key: "objetivo_cantidad_mensual",
       align: "center",
-      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
+      render: (value: string) => value,
     },
     {
-      title: "Compra de Reactivos Realizada",
-      dataIndex: "compra_minima_mensual_reactivo",
-      key: "compra_minima_mensual_reactivo",
+      title: "Reactivos Realizados",
+      dataIndex: "cantidad_mensual_realizada",
+      key: "cantidad_mensual_realizada",
       align: "center",
-      render: (value: number) => `${formatCurrency(value, 'CLP')}`,
+      render: (value: string) => value,
     },
     {
       title: "Estado",
       dataIndex: "estado",
       key: "estado",
       filters: [
-        { text: "Vigente", value: "Vigente" },
-        { text: "Pendiente", value: "Pendiente" },
+        { text: "Vigente", value: true },
+        { text: "Pendiente", value: false },
       ],
-      onFilter: (value, record) => record.estado.indexOf(value as string) === 0,
-      render: (estado: string) => (
+      onFilter: (value, record) => record.estado === value,
+      render: (estado: boolean) => (
         <Typography.Text
-          className={estado === "Vigente" ? "text-green-600" : "text-red-600"}
+          className={estado ? "text-green-600" : "text-red-600"}
         >
-          {estado}
+          {estado ? "Vigente" : "Pendiente"}
         </Typography.Text>
       ),
     },
-    // {
-    //   title: "Contrato",
-    //   dataIndex: "contrato",
-    //   key: "contrato",
-    //   align: "center",
-    //   render: (url: string) => (
-    //     <a href={url} target="_blank" rel="noopener noreferrer">
-    //       <Button>
-    //         Ver Contrato <FilePdfOutlined />
-    //       </Button>
-    //     </a>
-    //   ),
-    // },
     {
       title: "Detalle",
       key: "detalle",
       align: "center",
       render: (_: any, record: ComodatoInterface) => (
-        <Button
-          onClick={() => handleNavigateToDetalle(record.id)}
-        >
+        <Tooltip title="Ver Detalle del Comodato">
+        <Button onClick={() => handleNavigateToDetalle(record.id)}>
           <ZoomInOutlined />
         </Button>
+        </Tooltip>
       ),
     },
   ];
 
-  const handleDateRangeChange = (
-    dates: [Dayjs | null, Dayjs | null] | null
-  ) => {
-    setDateRange(dates);
-  };
+  // Filtrado por clientes y rango de fechas (igual al tuyo)
+  // const filteredData = comodatos.filter((c) => {
+  //   const matchesClient = filteredClients.length
+  //     ? filteredClients.includes(c.rut_cliente)
+  //     : true;
 
+  //   const matchesDateRange =
+  //     dateRange && dateRange[0] && dateRange[1]
+  //       ? dayjs(c.fecha_fin).isBetween(
+  //           dateRange[0],
+  //           dateRange[1],
+  //           "day",
+  //           "[]"
+  //         )
+  //       : true;
 
-
-  const filteredData = comodatos.filter((comodato) => {
-    const matchesClient = filteredClients.length
-      ? filteredClients.includes(comodato.cliente.id.toString())
-      : true;
-
-    const matchesDateRange =
-      dateRange && dateRange[0] && dateRange[1]
-        ? dayjs(comodato.fecha_fin).isBetween(
-            dateRange[0],
-            dateRange[1],
-            "day",
-            "[]"
-          )
-        : true;
-
-    return matchesClient && matchesDateRange;
-  });
+  //   return matchesClient && matchesDateRange;
+  // });
 
   return (
     <>
       <div className="flex sm:flex-col lg:flex-row gap-4 w-full mb-4">
-        <ClientesMultipleSelect
+        {/* <ClientesMultipleSelect
           clientes={clientes}
           loading={loadingClientes}
           setFilteredClients={setFilteredClients}
-        />
+        /> */}
 
         <div className="flex flex-row w-full gap-2 items-center">
-          <RangePicker className="w-full" onChange={handleDateRangeChange} />
+          <RangePicker className="w-full" onChange={setDateRange} />
         </div>
       </div>
+
       <Table
-        dataSource={filteredData}
+        dataSource={comodatos}
         columns={columns}
         rowKey="id"
         className="bg-dark-700 rounded-xl"

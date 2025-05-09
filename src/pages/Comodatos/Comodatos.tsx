@@ -21,7 +21,7 @@ const ComodatosPage = () => {
       />
       {comodatos.length > 0 ? (
         <div className="md:col-span-12">
-          <ComodatosTable comodatos={comodatos} />
+          <ComodatosTable />
         </div>
       ) : (
         <Spin className="w-full flex justify-center items-center" />

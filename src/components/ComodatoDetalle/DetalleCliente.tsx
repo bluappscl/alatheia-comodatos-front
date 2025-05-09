@@ -1,13 +1,12 @@
-import React from "react";
-import { ClienteInterface } from "../../interfaces/ClienteInterface";
 import { format } from "rut.js";
 
 interface DetalleClienteProps {
-  cliente: ClienteInterface;
+  cliente: any;
   representante_nombre: string;
   representante_rut: string;
   representante_de_venta: { codigo: string; nombre: string };
 }
+
 
 const DetalleCliente: React.FC<DetalleClienteProps> = ({
   cliente,
@@ -15,6 +14,7 @@ const DetalleCliente: React.FC<DetalleClienteProps> = ({
   representante_rut,
   representante_de_venta,
 }) => {
+  console.log('cliente', cliente)
   return (
     <div className="p-4 bg-white border-b-2 border-primary-300 ">
       <h2 className="text-lg font-bold mb-3">Detalles del Cliente</h2>
