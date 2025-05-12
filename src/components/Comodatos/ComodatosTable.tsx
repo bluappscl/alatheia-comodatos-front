@@ -27,7 +27,7 @@ export interface ComodatoInterface {
   objetivo_cantidad_mensual: string;
   cantidad_mensual_realizada: string;
   estado: boolean;
-  es_demo: boolean;          // 👈 NUEVO
+  es_demo: boolean;         
 }
 
 const ComodatosTable: React.FC = () => {

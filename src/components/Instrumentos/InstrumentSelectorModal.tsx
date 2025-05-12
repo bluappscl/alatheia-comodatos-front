@@ -44,6 +44,7 @@ const InstrumentSelectorModal: React.FC<Props> = ({
         <Button
           onClick={() =>
             onAddInstrumento({
+              id: record.codigo,
               codigo: record.codigo,
               descripcion: record.descripcion,
               adn: record.adn,

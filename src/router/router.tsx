@@ -6,7 +6,7 @@ import {
 
 import Home from "../pages/Home";
 import ComodatosPage from "../pages/Comodatos/Comodatos";
-import ComodatoDetalle from "../pages/Comodatos/ComodatoDetalle";
+// import ComodatoDetalle from "../pages/Comodatos/ComodatoDetalle";
 import LayoutBack from "../layouts/LayoutBack";
 import Login from "../pages/Login";
 import ClienteDetalle from "../pages/Clientes/ClienteDetalle";
@@ -21,7 +21,7 @@ const routes = createRoutesFromElements(
       <Route index element={<Home />} />
       <Route path="nuevo-comodato" element={<CrearGeneral />} />
       <Route path="comodatos" element={<ComodatosPage />} />
-      <Route path="comodatos/:id" element={<ComodatoDetalle />} />
+      {/* <Route path="comodatos/:id" element={<ComodatoDetalle />} /> */}
       <Route path="comodato/:id" element={<VerDetalleComodato/>} />
       <Route path="clientes" element={<Clientes />} />
       <Route path="clientes/:id" element={<ClienteDetalle />} />
