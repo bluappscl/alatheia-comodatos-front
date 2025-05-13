@@ -4,6 +4,7 @@ import clientes_photo from "../../media/temporal/comodato_photo.png";
 import { motion } from "motion/react";
 import axiosInstance from "../../api/axiosInstance";
 import { Table, TableColumnsType, Input, Button, Tooltip } from "antd";
+import { useNavigate } from "react-router-dom";
 
 interface Cliente {
   rut: string;
@@ -16,6 +17,8 @@ interface Cliente {
 const Clientes: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -67,7 +70,7 @@ const Clientes: React.FC = () => {
         <Tooltip title="Ver detalle del cliente">
           <Button
             onClick={() => {
-              console.log("Detalle del cliente:", record);
+              navigate(`/clientes/${record.rut}`);
             }}
           >
             Ver Detalle

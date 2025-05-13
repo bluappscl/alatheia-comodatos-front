@@ -24,7 +24,7 @@ const routes = createRoutesFromElements(
       {/* <Route path="comodatos/:id" element={<ComodatoDetalle />} /> */}
       <Route path="comodato/:id" element={<VerDetalleComodato/>} />
       <Route path="clientes" element={<Clientes />} />
-      <Route path="clientes/:id" element={<ClienteDetalle />} />
+      <Route path="clientes/:rut" element={<ClienteDetalle />} />
     </Route>
   </>
 );
