@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { Table, DatePicker, Select, Card, Button, Tag, Tooltip, Spin } from "antd";
-import {  ReloadOutlined } from "@ant-design/icons";
+import {  ReloadOutlined, ZoomInOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import type { TableProps } from "antd";
 import axiosInstance from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 // Interfaz para los datos de comodato
 interface Comodato {
@@ -39,6 +40,11 @@ const ComodatosCliente: React.FC<ComodatosClienteProps> = ({ rut }) => {
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null] | null>(null);
   const [demoFilter, setDemoFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  const navigate = useNavigate();
+
+  const handleNavigateToDetalle = (id: number) => navigate(`/comodato/${id}`);
+
 
   // Columnas de la tabla
   const columns: TableProps<Comodato>["columns"] = [
@@ -96,6 +102,20 @@ const ComodatosCliente: React.FC<ComodatosClienteProps> = ({ rut }) => {
       key: "estado",
       render: (act) => <Tag color={act ? "success" : "error"}>{act ? "Activo" : "Inactivo"}</Tag>,
     },
+
+        {
+      title: "Detalle",
+      key: "detalle",
+      align: "center",
+      render: (_, record) => (
+        <Tooltip title="Ver Detalle del Comodato">
+          <Button onClick={() => handleNavigateToDetalle(record.id)}>
+            <ZoomInOutlined />
+          </Button>
+        </Tooltip>
+      ),
+    },
+
   ];
 
   // Función para obtener datos de la API
