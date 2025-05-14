@@ -16,8 +16,9 @@ import {
   message,
   Table,
   TableColumnsType,
+  Modal,
 } from 'antd'
-import { FileText, Search, Plus, Minus } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import axiosInstance from '../../api/axiosInstance'
 
 const { Title, Text } = Typography
@@ -82,6 +83,12 @@ const VerDetalleComodato: React.FC = () => {
   const [instrumentos, setInstrumentos] = useState<Instrumento[]>([])
   const [loading, setLoading] = useState(true)
 
+
+  // Modal contrato
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [contractUrl, setContractUrl] = useState<string | null>(null)
+  const [loadingContract, setLoadingContract] = useState(false)
+
   /* Peticiones */
   const fetchData = useCallback(async () => {
     try {
@@ -107,6 +114,32 @@ const VerDetalleComodato: React.FC = () => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+    /* Carga del documento contrato vía axios */
+const loadContract = async () => {
+  setLoadingContract(true)
+  try {
+    // 1️⃣ Pido sólo el JSON con la URL del PDF
+    const { data } = await axiosInstance.get<{ archivo: string }>(
+      `/comodatos/contratos/${id}`
+    )
+    // 2️⃣ Esa URL la uso directamente como src del iframe
+    setContractUrl(data.archivo)
+  } catch (err) {
+    console.error(err)
+    message.error('Error al cargar el contrato.')
+    setContractUrl(null)
+  } finally {
+    setLoadingContract(false)
+  }
+}
+
+    /* Cuando abre modal, cargar contrato */
+  useEffect(() => {
+    if (isModalVisible && !contractUrl) {
+      loadContract()
+    }
+  }, [isModalVisible])
 
 
 
@@ -322,48 +355,15 @@ const VerDetalleComodato: React.FC = () => {
        
 
           {/* Contrato */}
-          <Card>
+               <Card>
             <Row align="middle" justify="space-between">
               <Title level={5} className="!mb-0">
                 Contrato
               </Title>
-              <Button type="primary" size="small">
-                Descargar
+              <Button type="primary" size="small" onClick={() => setIsModalVisible(true)}>
+                Ver Contrato
               </Button>
             </Row>
-
-            <div className="border rounded-md p-2 mt-4">
-              <Row
-                align="middle"
-                justify="space-between"
-                className="border-b pb-2"
-              >
-                <Space>
-                  <Button
-                    size="small"
-                    type="text"
-                    icon={<Search size={14} />}
-                  />
-                  <Button
-                    size="small"
-                    type="text"
-                    icon={<Minus size={14} />}
-                  />
-                  <Button
-                    size="small"
-                    type="text"
-                    icon={<Plus size={14} />}
-                  />
-                </Space>
-                <Text type="secondary">
-                  1 <span className="mx-1">/</span> 3
-                </Text>
-              </Row>
-
-              <div className="h-40 bg-gray-100 flex items-center justify-center mt-2 rounded-md">
-                <Text type="secondary">Vista previa del contrato</Text>
-              </div>
-            </div>
           </Card>
         </Col>
       </Row>
@@ -382,6 +382,37 @@ const VerDetalleComodato: React.FC = () => {
           scroll={{ x: 800 }}
         />
       </Card>
+
+    
+<Modal
+  title="Contrato"
+  open={isModalVisible}
+  onCancel={() => setIsModalVisible(false)}
+  footer={null}
+  width="80%"
+  style={{ top: 20 }}
+  bodyStyle={{ padding: 0, height: '80vh' }}
+  destroyOnClose
+>
+  {loadingContract ? (
+    <div className="flex justify-center items-center h-full">
+      <Spin />
+    </div>
+  ) : contractUrl ? (
+    // iframe carga directamente el PDF de S3
+    <iframe
+      src={contractUrl}
+      title="Contrato"
+      style={{ width: '100%', height: '100%', border: 'none' }}
+    />
+  ) : (
+    <div className="p-4 text-center text-red-500">
+      No se encontró el contrato.
+    </div>
+  )}
+</Modal>
+
+
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
-import Dashboard from "../components/Dashboard/Dashboard";
+// import Dashboard from "../components/Dashboard/Dashboard";
 import HeaderDescripcion from "../components/shared/HeaderDescripcion";
 import dashboard_photo from "../media/temporal/dashboard_photo.png";
 
@@ -24,7 +24,11 @@ const Home: React.FC = () => {
         description="Aqui puedes ver el reporte historico y mensual"
         photo_path={dashboard_photo}
       />
-      <Dashboard />
+
+      
+
+
+      {/* <Dashboard /> */}
     </motion.div>
   );
 };

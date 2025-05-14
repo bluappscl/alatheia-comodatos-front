@@ -21,103 +21,100 @@ import RepresentanteSelector, {
 import BodegasSelector from "../../components/BodegasSelect";
 import { useNavigate } from "react-router-dom";
 import { format as formatRut } from "rut.js";
+import dayjs from 'dayjs';
 
 const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
   CambiarSeleccionButton,
 }) => {
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
   const [isRenovable, setIsRenovable] = useState(false);
   const [autoRenew, setAutoRenew] = useState(false);
-  const [clientId, setClientId] = useState<number>(0);
+  const [clientId, setClientId] = useState("");
   const [enableReactivos, setEnableReactivos] = useState(false);
+  const [enableDinero, setEnableDinero] = useState(false);
   const [enableGraceTime, setEnableGraceTime] = useState(false);
   const [plazoParaPago, setPlazoParaPago] = useState(false);
   const [selectedBodega, setSelectedBodega] = useState<string>("");
   const [selectedRep, setSelectedRep] = useState<Representante | null>(null);
 
-  console.log("selectedRep", selectedRep);
+    // Estados de carga por etapa
+  const [loadingStage, setLoadingStage] = useState<"comodato" | "contrato" | null>(null);
+
+    // Archivo de contrato
+  const [contractFile, setContractFile] = useState<File | null>(null);
+
 
   const [selectedInstrumentos, setSelectedInstrumentos] = useState<any[]>([]);
 
   const onFinish = async (values: any) => {
-    setLoading(true);
-
-    if (!selectedRep) {
-      message.error("Seleccione un representante de venta");
-      return;
-    }
-
-    const payload = {
-      comodato: {
-        // número de comodato (antes “values.contrato”)
-        numero_comodato: values.numero_comodato,
-
-        // rut del cliente
-        rut_cliente: clientId,
-
-        // representante del cliente
-        nombre_representante_cliente: values.nombre_representante_cliente,
-        rut_representante_cliente: values.rut_representante_cliente,
-
-        // representante de Alatheia
-        rut_representante_alatheia: values.rut_representante_alatheia,
-        codigo_representante: selectedRep.codigo,
-        nombre_representante_alatheia: selectedRep.nombre[0],
-
-        // dirección / sucursal del cliente
-        direccion_cliente: values.sucursal,
-
-        // representante de venta y bodega
-        representante_de_venta: values.representante_de_venta,
-        codigo_bodega: selectedBodega,
-        es_demo: true,
-
-        // fechas en snake_case
-        fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
-        fecha_fin: values.fechaFin.format("YYYY-MM-DD"),
-
-        // plazo para pago
-        plazo_para_pago: plazoParaPago,
-        plazo_pago_facturas: plazoParaPago
-          ? values.plazoPagoFacturas
-          : undefined,
-
-        // tiempo de gracia
-        tiempo_de_gracia: enableGraceTime
-          ? {
-              meses: values.tiempoDeGracia[0],
-              porcentaje: values.tiempoDeGracia[1],
-            }
-          : undefined,
-
-        // renovación
-        es_renovable: isRenovable,
-        se_renueva_automaticamente: isRenovable ? autoRenew : false,
-
-        // objetivos
-        objetivo_reactivos_cantidad: enableReactivos
-          ? values.objetivoReactivosCantidad
-          : undefined,
-
-      },
-      instrumentos: selectedInstrumentos,
-    };
-
+    // 1. POST comodato
+    setLoadingStage("comodato");
     try {
+      const payload = {
+        comodato: {
+          numero_comodato: values.numero_comodato,
+          rut_cliente: clientId,
+          nombre_representante_cliente: values.nombre_representante_cliente,
+          rut_representante_cliente: values.rut_representante_cliente,
+          rut_representante_alatheia: values.rut_representante_alatheia,
+          codigo_representante: selectedRep!.codigo,
+          nombre_representante_alatheia: values.nombre_representante_alatheia,
+          direccion_cliente: values.sucursal,
+          representante_de_venta: values.representante_de_venta,
+          codigo_bodega: selectedBodega,
+          es_demo: true,
+          fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
+          fecha_fin: values.fechaFin ? values.fechaFin.format("YYYY-MM-DD") : undefined,
+          plazo_para_pago: plazoParaPago,
+          plazo_pago_facturas: plazoParaPago ? values.plazoPagoFacturas : undefined,
+          tiempo_de_gracia: enableGraceTime
+            ? { meses: values.tiempoDeGracia[0], porcentaje: values.tiempoDeGracia[1] }
+            : undefined,
+          es_renovable: isRenovable,
+          se_renueva_automaticamente: isRenovable ? autoRenew : false,
+          objetivo_reactivos_cantidad: enableReactivos ? values.objetivoReactivosCantidad : undefined,
+          objetivo_dinero_cantidad: enableDinero ? values.objetivoDineroCantidad : undefined,
+        },
+        instrumentos: selectedInstrumentos,
+      };
+
       const response = await axiosInstance.post("/comodatos/", payload);
-      if (response.status === 201) {
-        message.success("Comodato creado exitosamente");
-        navigate("/comodatos");
-      } else {
-        message.error("Error al crear el comodato");
+      if (response.status !== 201) {
+        throw new Error("Status code != 201");
       }
+      const createdId = response.data.id_comodato;
+      message.success("Comodato creado exitosamente");
+
+      // 2. POST contrato (si hay archivo)
+      setLoadingStage("contrato");
+      if (contractFile) {
+        const formData = new FormData();
+        formData.append("comodato", createdId.toString());
+        // nombre único con fecha y hora
+        const timestamp = dayjs().format("YYYYMMDD_HHmmss");
+        formData.append("nombre_archivo", `contrato_${timestamp}`);
+        formData.append("archivo", contractFile);
+
+        await axiosInstance.post("/comodatos/contratos/", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        message.success("Contrato subido exitosamente");
+      } else {
+        message.info("No se seleccionó ningún contrato, se omitió la subida de archivo.");
+      }
+
+      // 3. Navegar al listado
+      navigate("/comodatos");
     } catch (error) {
       console.error(error);
-      message.error("Ocurrió un error inesperado");
+      message.error(
+        loadingStage === "comodato"
+          ? "Error al crear el comodato"
+          : "Error al subir el contrato"
+      );
     } finally {
-      setLoading(false);
+      setLoadingStage(null);
     }
   };
 
@@ -137,8 +134,10 @@ const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
   };
 
   const handleSelectClient = (rut: string) => {
-    setClientId(parseInt(rut));
+    console.log("Selected client:", rut);
+    setClientId((rut));
   };
+
 
   return (
     <motion.div
@@ -194,6 +193,28 @@ const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   showSelectedClient={true}
                 />
               </Form.Item>
+
+                              <Form.Item
+                  label="Código de Representante Alatheia"
+                  required
+                  rules={[
+                    {
+                      validator: () =>
+                        selectedRep
+                          ? Promise.resolve()
+                          : Promise.reject("Seleccione un representante"),
+                    },
+                  ]}
+                >
+                  <RepresentanteSelector
+                    value={selectedRep?.codigo}
+                    onChange={setSelectedRep}
+                    placeholder="Seleccione un representante de venta"
+                  />
+                </Form.Item>
+              
+              <Divider/>
+
               <label className="font-semibold text-primary-700">
                 Representante del Cliente
               </label>
@@ -251,24 +272,19 @@ const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 Representante de Alatheia
               </label>
               <div className="grid grid-cols-2 gap-4">
+
                 <Form.Item
-                  label="Representante de venta"
-                  required
-                  rules={[
-                    {
-                      validator: () =>
-                        selectedRep
-                          ? Promise.resolve()
-                          : Promise.reject("Seleccione un representante"),
-                    },
-                  ]}
-                >
-                  <RepresentanteSelector
-                    value={selectedRep?.codigo}
-                    onChange={setSelectedRep}
-                    placeholder="Seleccione un representante de venta"
-                  />
-                </Form.Item>
+                label="Nombre del representante"
+                name="nombre_representante_alatheia"
+                rules={[
+                  {
+                    required: true,
+                    message: "Porfavor ingrese el nombre representante alatheia",
+                  },
+                ]}
+              >
+                <Input placeholder="Ingrese el nombre" />
+              </Form.Item>
 
                 <Form.Item
                   className="w-full"
@@ -300,6 +316,19 @@ const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                     placeholder="Seleccione una bodega"
                   />
                 </Form.Item>
+
+
+
+                {/* AQUÍ LA SUBIDA DE ARCHIVO DEL CONTRATRO */}
+
+              <Form.Item label="Contrato (archivo)" required>
+                <input
+                  type="file"
+                  accept="*"
+                  onChange={e => setContractFile(e.target.files?.[0] || null)}
+                />
+              </Form.Item>
+
               </div>
             </div>
 
@@ -322,12 +351,7 @@ const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
               <Form.Item
                 label="Fecha de Fin"
                 name="fechaFin"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor seleccione la fecha de fin",
-                  },
-                ]}
+       
               >
                 <DatePicker className="w-full" />
               </Form.Item>
@@ -491,7 +515,39 @@ const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   </div>
 
                   {/* Dinero Objective */}
-
+                  <div className="flex flex-col gap-2">
+                    <Checkbox
+                      checked={enableDinero}
+                      onChange={(e) => setEnableDinero(e.target.checked)}
+                    >
+                      <span className="text-gray-500">Objetivo de Dinero</span>
+                    </Checkbox>
+                    {enableDinero && (
+                      <Form.Item
+                        name="objetivoDineroCantidad"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Ingrese la cantidad de dinero",
+                          },
+                        ]}
+                      >
+                        <div className="flex flex-wrap md:flex-nowrap items-center gap-4">
+                          {/* <div className="w-28">
+                            <Select placeholder="Moneda" className="w-full">
+                              <Select.Option value="CLP">CLP</Select.Option>
+                              <Select.Option value="UF">UF</Select.Option>
+                            </Select>
+                          </div> */}
+                          <InputNumber
+                            min={1}
+                            className="w-full"
+                            placeholder="Cantidad de Dinero"
+                          />
+                        </div>
+                      </Form.Item>
+                    )}
+                  </div>
                 </Form.Item>
                 {/* <Form.Item label="Agregar Instrumento" className="w-full">
                 <InstrumentoSelector />
@@ -508,7 +564,6 @@ const CrearDemo: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
             <Button
               type="primary"
               htmlType="submit"
-              loading={loading}
               className="w-full"
             >
               Crear Comodato
