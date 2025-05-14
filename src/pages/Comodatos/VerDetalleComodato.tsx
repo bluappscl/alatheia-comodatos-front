@@ -20,6 +20,7 @@ import {
 } from "antd";
 import { FileText } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
+import TextArea from "antd/es/input/TextArea";
 
 const { Title, Text } = Typography;
 
@@ -88,6 +89,12 @@ const VerDetalleComodato: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [contractUrl, setContractUrl] = useState<string | null>(null);
   const [loadingContract, setLoadingContract] = useState(false);
+
+    // Observaciones edit
+  const [isEditingObservaciones, setIsEditingObservaciones] = useState(false);
+  const [observacionesText, setObservacionesText] = useState<string>("");
+  const [loadingObservaciones, setLoadingObservaciones] = useState(false);
+
 
   /* Peticiones */
   const fetchData = useCallback(async () => {
@@ -168,6 +175,28 @@ const VerDetalleComodato: React.FC = () => {
     );
   }
   if (!comodato) return null;
+
+
+  /* Handlers Observaciones */
+  const startEditObservaciones = () => {
+    setObservacionesText(comodato?.observaciones || "");
+    setIsEditingObservaciones(true);
+  };
+  const cancelEditObservaciones = () => setIsEditingObservaciones(false);
+  const saveObservaciones = async () => {
+    setLoadingObservaciones(true);
+    try {
+      await axiosInstance.patch(`/comodatos/${id}/observacion/`, { observaciones: observacionesText });
+      setComodato(prev => prev ? { ...prev, observaciones: observacionesText } : prev);
+      message.success("Observaciones actualizadas.");
+      setIsEditingObservaciones(false);
+    } catch (err) {
+      console.error(err);
+      message.error("Error al guardar observaciones.");
+    } finally {
+      setLoadingObservaciones(false);
+    }
+  };
 
   return (
     <div className="container mx-auto p-4 max-w-7xl">
@@ -268,7 +297,24 @@ const VerDetalleComodato: React.FC = () => {
 
           <Card className="mb-6">
             <Title level={5}>Observaciones</Title>
-            <p>{comodato.observaciones || "no presenta observaciones" }</p>
+            {isEditingObservaciones ? (
+              <>
+                <TextArea
+                  rows={4}
+                  value={observacionesText}
+                  onChange={e => setObservacionesText(e.target.value)}
+                />
+                <div className="mt-2 flex gap-2">
+                  <Button type="primary" loading={loadingObservaciones} onClick={saveObservaciones}>Guardar</Button>
+                  <Button onClick={cancelEditObservaciones}>Cancelar</Button>
+                </div>
+              </>
+            ) : (
+              <div className="flex justify-between items-start">
+                <p>{comodato.observaciones || "No presenta observaciones."}</p>
+                <Button type="link" onClick={startEditObservaciones}>Editar</Button>
+              </div>
+            )}
           </Card>
 
           {/* Pagos */}
