@@ -21,7 +21,8 @@ import RepresentanteSelector, {
 import BodegasSelector from "../../components/BodegasSelect";
 import { useNavigate } from "react-router-dom";
 import { format as formatRut } from "rut.js";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import TextArea from "antd/es/input/TextArea";
 
 const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
   CambiarSeleccionButton,
@@ -38,12 +39,13 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
   const [selectedBodega, setSelectedBodega] = useState<string>("");
   const [selectedRep, setSelectedRep] = useState<Representante | null>(null);
 
-    // Estados de carga por etapa
-  const [loadingStage, setLoadingStage] = useState<"comodato" | "contrato" | null>(null);
+  // Estados de carga por etapa
+  const [loadingStage, setLoadingStage] = useState<
+    "comodato" | "contrato" | null
+  >(null);
 
-    // Archivo de contrato
+  // Archivo de contrato
   const [contractFile, setContractFile] = useState<File | null>(null);
-
 
   const [selectedInstrumentos, setSelectedInstrumentos] = useState<any[]>([]);
 
@@ -63,18 +65,30 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
           direccion_cliente: values.sucursal,
           representante_de_venta: values.representante_de_venta,
           codigo_bodega: selectedBodega,
+          observaciones: values.observaciones,
           es_demo: false,
           fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
-          fecha_fin: values.fechaFin ? values.fechaFin.format("YYYY-MM-DD") : undefined,
+          fecha_fin: values.fechaFin
+            ? values.fechaFin.format("YYYY-MM-DD")
+            : undefined,
           plazo_para_pago: plazoParaPago,
-          plazo_pago_facturas: plazoParaPago ? values.plazoPagoFacturas : undefined,
+          plazo_pago_facturas: plazoParaPago
+            ? values.plazoPagoFacturas
+            : undefined,
           tiempo_de_gracia: enableGraceTime
-            ? { meses: values.tiempoDeGracia[0], porcentaje: values.tiempoDeGracia[1] }
+            ? {
+                meses: values.tiempoDeGracia[0],
+                porcentaje: values.tiempoDeGracia[1],
+              }
             : undefined,
           es_renovable: isRenovable,
           se_renueva_automaticamente: isRenovable ? autoRenew : false,
-          objetivo_reactivos_cantidad: enableReactivos ? values.objetivoReactivosCantidad : undefined,
-          objetivo_dinero_cantidad: enableDinero ? values.objetivoDineroCantidad : undefined,
+          objetivo_reactivos_cantidad: enableReactivos
+            ? values.objetivoReactivosCantidad
+            : undefined,
+          objetivo_dinero_cantidad: enableDinero
+            ? values.objetivoDineroCantidad
+            : undefined,
         },
         instrumentos: selectedInstrumentos,
       };
@@ -101,7 +115,9 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
         });
         message.success("Contrato subido exitosamente");
       } else {
-        message.info("No se seleccionó ningún contrato, se omitió la subida de archivo.");
+        message.info(
+          "No se seleccionó ningún contrato, se omitió la subida de archivo."
+        );
       }
 
       // 3. Navegar al listado
@@ -135,9 +151,8 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
 
   const handleSelectClient = (rut: string) => {
     console.log("Selected client:", rut);
-    setClientId((rut));
+    setClientId(rut);
   };
-
 
   return (
     <motion.div
@@ -178,7 +193,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 </Form.Item>
               </div>
 
-
               <Form.Item
                 label="Cliente"
                 rules={[
@@ -194,26 +208,26 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 />
               </Form.Item>
 
-                              <Form.Item
-                  label="Código de Representante Alatheia"
-                  required
-                  rules={[
-                    {
-                      validator: () =>
-                        selectedRep
-                          ? Promise.resolve()
-                          : Promise.reject("Seleccione un representante"),
-                    },
-                  ]}
-                >
-                  <RepresentanteSelector
-                    value={selectedRep?.codigo}
-                    onChange={setSelectedRep}
-                    placeholder="Seleccione un representante de venta"
-                  />
-                </Form.Item>
-              
-              <Divider/>
+              <Form.Item
+                label="Código de Representante Alatheia"
+                required
+                rules={[
+                  {
+                    validator: () =>
+                      selectedRep
+                        ? Promise.resolve()
+                        : Promise.reject("Seleccione un representante"),
+                  },
+                ]}
+              >
+                <RepresentanteSelector
+                  value={selectedRep?.codigo}
+                  onChange={setSelectedRep}
+                  placeholder="Seleccione un representante de venta"
+                />
+              </Form.Item>
+
+              <Divider />
 
               <label className="font-semibold text-primary-700">
                 Representante del Cliente
@@ -272,19 +286,19 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 Representante de Alatheia
               </label>
               <div className="grid grid-cols-2 gap-4">
-
                 <Form.Item
-                label="Nombre del representante"
-                name="nombre_representante_alatheia"
-                rules={[
-                  {
-                    required: true,
-                    message: "Porfavor ingrese el nombre representante alatheia",
-                  },
-                ]}
-              >
-                <Input placeholder="Ingrese el nombre" />
-              </Form.Item>
+                  label="Nombre del representante"
+                  name="nombre_representante_alatheia"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "Porfavor ingrese el nombre representante alatheia",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Ingrese el nombre" />
+                </Form.Item>
 
                 <Form.Item
                   className="w-full"
@@ -317,18 +331,17 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   />
                 </Form.Item>
 
-
-
                 {/* AQUÍ LA SUBIDA DE ARCHIVO DEL CONTRATRO */}
 
-              <Form.Item label="Contrato (archivo)" required>
-                <input
-                  type="file"
-                  accept="*"
-                  onChange={e => setContractFile(e.target.files?.[0] || null)}
-                />
-              </Form.Item>
-
+                <Form.Item label="Contrato (archivo)" required>
+                  <input
+                    type="file"
+                    accept="*"
+                    onChange={(e) =>
+                      setContractFile(e.target.files?.[0] || null)
+                    }
+                  />
+                </Form.Item>
               </div>
             </div>
 
@@ -348,11 +361,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 <DatePicker className="w-full" />
               </Form.Item>
 
-              <Form.Item
-                label="Fecha de Fin"
-                name="fechaFin"
-       
-              >
+              <Form.Item label="Fecha de Fin" name="fechaFin">
                 <DatePicker className="w-full" />
               </Form.Item>
 
@@ -424,7 +433,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                         },
                       ]}
                     >
-                        <div className="flex flex-row items-center gap-4">
+                      <div className="flex flex-row items-center gap-4">
                         <InputNumber
                           min={1}
                           className="w-full"
@@ -440,7 +449,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                           keyboard={false}
                           type="number"
                         />
-                        </div>
+                      </div>
                     </Form.Item>
                   )}
                 </div>
@@ -549,6 +558,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                     )}
                   </div>
                 </Form.Item>
+
                 {/* <Form.Item label="Agregar Instrumento" className="w-full">
                 <InstrumentoSelector />
                 </Form.Item> */}
@@ -556,16 +566,30 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
             </div>
           </div>
 
+          <div className="flex flex-col gap-2">
+            <span className="text-gray-500">Observaciones</span>
+            <Form.Item
+              name="observaciones"
+              rules={[
+                {
+                  required: true,
+                  message: "Ingrese la observación",
+                },
+              ]}
+            >
+              <TextArea
+                className="w-full"
+                placeholder="Ingrese la observación"
+              />
+            </Form.Item>
+          </div>
+
           <div className="flex flex-col my-10">
             <InstrumentSelectorTable onChange={setSelectedInstrumentos} />
           </div>
 
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="w-full"
-            >
+            <Button type="primary" htmlType="submit" className="w-full">
               Crear Comodato
             </Button>
           </Form.Item>
