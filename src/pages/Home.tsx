@@ -1,16 +1,68 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
 // import Dashboard from "../components/Dashboard/Dashboard";
 import logo from '../media/logos/alatheia-logo-dark.svg';
 import { motion } from "motion/react";
+import { useUserDataStore } from "../stores/UserData.store";
+import { useLocation } from "react-router-dom";
+import axiosInstance from "../api/axiosInstance";
+
+interface UserInfo {
+  role?: string;
+  name?: string;
+  email?: string;
+  cod_representante?: string;
+}
 
 const Home: React.FC = () => {
+
+  
   const setBreadcrumbs = useBreadcrumbContext((state) => state.setBreadcrumbs);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  console.log('userInfo', userInfo)
 
   useEffect(() => {
     setBreadcrumbs([{ title: "Home", path: "/" }]);
   }, [setBreadcrumbs]);
 
+    const { token, setToken, setUserInfo: setStoreUserInfo, clearStorage } = useUserDataStore();
+  const location = useLocation();
+
+
+    useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tokenParam = searchParams.get("token");
+
+    if (tokenParam) {
+      setToken(tokenParam);
+      console.log("Token captured:", tokenParam);
+    } else {
+      clearStorage();
+      console.log("Storage cleared on component mount (no token present)");
+    }
+  }, [location, setToken, clearStorage]);
+
+    useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (token) {
+ 
+        try {
+          const response = await axiosInstance.get("/usuarios/users/info/");
+          setUserInfo(response.data);
+          setStoreUserInfo(response.data);
+          
+        } catch (err) {
+          console.error("Error fetching user info:", err);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [token, setStoreUserInfo]);
+
+
+
+  
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -30,10 +82,6 @@ const Home: React.FC = () => {
       </div>
     </div>
 
-      
-
-
-      {/* <Dashboard /> */}
     </motion.div>
   );
 };
