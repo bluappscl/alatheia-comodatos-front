@@ -65,7 +65,8 @@ const InstrumentSelectorModal: React.FC<Props> = ({
       open={visible}
       onCancel={onClose}
       footer={null}
-      width={1200}
+      width={1100}
+      height={200}
     >
       {/* Buscador */}
       <Input

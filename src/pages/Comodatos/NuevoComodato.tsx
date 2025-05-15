@@ -20,7 +20,7 @@ import RepresentanteSelector, {
 } from "../../components/RepresentantesSelect";
 import BodegasSelector from "../../components/BodegasSelect";
 import { useNavigate } from "react-router-dom";
-import { format as formatRut } from "rut.js";
+import { format as formatRut, validate } from "rut.js";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 
@@ -53,6 +53,15 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
     // 1. POST comodato
     setLoadingStage("comodato");
     try {
+      // Reemplazar codigo_ubicacion vacío por "no se sabe"
+      const instrumentosProcesados = selectedInstrumentos.map((inst) => ({
+        ...inst,
+        codigo_ubicacion:
+          !inst.codigo_ubicacion || inst.codigo_ubicacion.trim() === ""
+        ? "no se sabe"
+        : inst.codigo_ubicacion,
+      }));
+
       const payload = {
         comodato: {
           numero_comodato: values.numero_comodato,
@@ -69,28 +78,28 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
           es_demo: false,
           fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
           fecha_fin: values.fechaFin
-            ? values.fechaFin.format("YYYY-MM-DD")
-            : undefined,
+        ? values.fechaFin.format("YYYY-MM-DD")
+        : undefined,
           plazo_para_pago: plazoParaPago,
           plazo_pago_facturas: plazoParaPago
-            ? values.plazoPagoFacturas
-            : undefined,
+        ? values.plazoPagoFacturas
+        : undefined,
           tiempo_de_gracia: enableGraceTime
-            ? {
-                meses: values.tiempoDeGracia[0],
-                porcentaje: values.tiempoDeGracia[1],
-              }
-            : undefined,
+        ? {
+            meses: values.tiempoDeGracia[0],
+            porcentaje: values.tiempoDeGracia[1],
+          }
+        : undefined,
           es_renovable: isRenovable,
           se_renueva_automaticamente: isRenovable ? autoRenew : false,
           objetivo_reactivos_cantidad: enableReactivos
-            ? values.objetivoReactivosCantidad
-            : undefined,
+        ? values.objetivoReactivosCantidad
+        : undefined,
           objetivo_dinero_cantidad: enableDinero
-            ? values.objetivoDineroCantidad
-            : undefined,
+        ? values.objetivoDineroCantidad
+        : undefined,
         },
-        instrumentos: selectedInstrumentos,
+        instrumentos: instrumentosProcesados,
       };
 
       const response = await axiosInstance.post("/comodatos/", payload);
@@ -255,6 +264,12 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                       required: true,
                       message: "Por favor ingrese el rut del cliente",
                     },
+                    {
+                      validator: (_, value) =>
+                        value && !validate(value)
+                          ? Promise.reject("RUT inválido")
+                          : Promise.resolve(),
+                    },
                   ]}
                   getValueFromEvent={(e) => {
                     // cada vez que teclean, formatea el valor
@@ -314,6 +329,12 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                       required: true,
                       message: "Ingrese el rut del representante",
                     },
+                    {
+                      validator: (_, value) =>
+                        value && !validate(value)
+                          ? Promise.reject("RUT inválido")
+                          : Promise.resolve(),
+                    },
                   ]}
                 >
                   <Input placeholder="Ingrese el rut del representante" />
@@ -333,7 +354,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
 
                 {/* AQUÍ LA SUBIDA DE ARCHIVO DEL CONTRATRO */}
 
-                <Form.Item label="Contrato (archivo)" required>
+                <Form.Item label="Contrato (archivo)">
                   <input
                     type="file"
                     accept="*"

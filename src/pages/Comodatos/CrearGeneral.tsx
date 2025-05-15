@@ -29,7 +29,8 @@ export const CrearGeneral = () => {
         title="¿Qué deseas registrar?"
         visible={isModalVisible}
         footer={null}
-        closable={false}
+        closable={true}
+        onCancel={() => setIsModalVisible(false)} // Permite cerrar el modal
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           <Button type="primary" block onClick={() => handleSelection("comodato")}>

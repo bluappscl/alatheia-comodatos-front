@@ -1,4 +1,4 @@
-import { Button, Input, message, Select, Table } from "antd";
+import { Button, Input, InputNumber, message, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
@@ -59,7 +59,7 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
   const handleAddInstrumento = (instrumento: InstrumentoInterface) => {
     setAddedInstrumentos(prev => {
       if (prev.some(item => item.codigo === instrumento.codigo)) {
-        message.warning("El instrumento ya está en la tabla");
+        message.warning(`El instrumento "${instrumento.descripcion}" ya está en la tabla`);
         return prev;
       }
       const next = [
@@ -69,11 +69,11 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
           codigo_ubicacion: "",
           valor_neto: 0,
           moneda: "CLP",
-          secuencia: "", // Inicializar secuencia
-          serie: "",     // Inicializar serie
+          secuencia: "",
+          serie: "",
         },
       ];
-      message.success("Instrumento agregado a la tabla");
+      message.success(`Instrumento "${instrumento.descripcion}" agregado a la tabla`);
       notifyParent(next);
       return next;
     });
@@ -119,6 +119,7 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
           onChange={e =>
             handleCellChange("codigo_ubicacion", e.target.value, record)
           }
+          
         />
       ),
     },
@@ -127,14 +128,19 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       dataIndex: "valor_neto",
       key: "valor_neto",
       render: (value: number, record) => (
-        <Input
-          type="number"
-          placeholder="valor neto"
+        <InputNumber
+          min={0}
+          placeholder="Valor neto"
           value={value}
-          onChange={e =>
-            handleCellChange("valor_neto", parseFloat(e.target.value) || 0, record)
-          }
           className="w-24"
+          onChange={val => {
+            if (val === null || val < 0) {
+              message.error("El valor debe ser positivo");
+              handleCellChange("valor_neto", 0, record);
+            } else {
+              handleCellChange("valor_neto", val, record);
+            }
+          }}
         />
       ),
     },

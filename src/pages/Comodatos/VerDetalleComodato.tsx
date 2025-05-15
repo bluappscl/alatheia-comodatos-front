@@ -90,7 +90,7 @@ const VerDetalleComodato: React.FC = () => {
   const [contractUrl, setContractUrl] = useState<string | null>(null);
   const [loadingContract, setLoadingContract] = useState(false);
 
-    // Observaciones edit
+  // Observaciones edit
   const [isEditingObservaciones, setIsEditingObservaciones] = useState(false);
   const [observacionesText, setObservacionesText] = useState<string>("");
   const [loadingObservaciones, setLoadingObservaciones] = useState(false);
@@ -259,6 +259,25 @@ const VerDetalleComodato: React.FC = () => {
             </Row>
           </Card>
 
+          {/* Representante Cliente */}
+          <Card className="mb-6">
+            <Title level={5}>Representante del Cliente</Title>
+            <Row gutter={16}>
+              <Col xs={24} md={12}>
+                <Text className="font-semibold text-purple-900 block">
+                  Nombre
+                </Text>
+                <Text>{comodato.nombre_representante_cliente}</Text>
+              </Col>
+              <Col xs={24} md={12}>
+                <Text className="font-semibold text-purple-900 block">
+                  Rut
+                </Text>
+                <Text>{comodato.rut_representante_cliente || "N/A"}</Text>
+              </Col>
+            </Row>
+          </Card>
+
           {/* Representante Alatheia */}
           <Card className="mb-6">
             <Title level={5}>Representante de Alatheia</Title>
@@ -276,24 +295,10 @@ const VerDetalleComodato: React.FC = () => {
             </Row>
           </Card>
 
-          {/* Representante Cliente */}
-          <Card className="mb-6">
-            <Title level={5}>Representante del Cliente</Title>
-            <Row gutter={16}>
-              <Col xs={24} md={12}>
-                <Text className="font-semibold text-purple-900 block">
-                  Nombre
-                </Text>
-                <Text>{comodato.nombre_representante_cliente}</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text className="font-semibold text-purple-900 block">
-                  Código
-                </Text>
-                <Text>{comodato.codigo_representante || "N/A"}</Text>
-              </Col>
-            </Row>
-          </Card>
+
+
+
+
 
           <Card className="mb-6">
             <Title level={5}>Observaciones</Title>
@@ -397,6 +402,15 @@ const VerDetalleComodato: React.FC = () => {
               <div>
                 <Text className="font-semibold block">Fecha Fin</Text>
                 <Text>{formatDate(comodato.fecha_fin)}</Text>
+              </div>
+            </Space>
+          </Card>
+
+          <Card className="mb-6 mt-10">
+            <Title level={5}>Codigo Representante de Venta</Title>
+            <Space direction="vertical" size="middle">
+              <div>
+                <Text className="font-semibold block">{comodato.codigo_representante || "N/A"} </Text>
               </div>
             </Space>
           </Card>
