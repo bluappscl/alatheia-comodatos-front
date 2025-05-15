@@ -29,18 +29,22 @@ const Home: React.FC = () => {
   const location = useLocation();
 
 
-    useEffect(() => {
+  useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const tokenParam = searchParams.get("token");
 
     if (tokenParam) {
+      // Si viene por URL, lo guardo (o actualizo)
       setToken(tokenParam);
       console.log("Token captured:", tokenParam);
-    } else {
+    } else if (!token) {
+      // SIEMPRE compruebo si ya había un token en el store;
+      // sólo limpio si no lo hay en ningún sitio
       clearStorage();
-      console.log("Storage cleared on component mount (no token present)");
+      console.log("Storage cleared on component mount (no token present anywhere)");
     }
-  }, [location, setToken, clearStorage]);
+  }, [location.search, token, setToken, clearStorage]);
+
 
     useEffect(() => {
     const fetchUserInfo = async () => {
