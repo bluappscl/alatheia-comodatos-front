@@ -4,14 +4,16 @@ import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 import axiosInstance from "../../api/axiosInstance";
 import type { ColumnsType } from "antd/es/table";
+import BodegasSelector from "../BodegasSelect";
 
 // Ampliamos InstrumentoInterface con campos extra
 interface SelectedInstrumento extends InstrumentoInterface {
   codigo_ubicacion: string;
   valor_neto: number;
   moneda: string;
-  secuencia: string; // Nueva propiedad
-  serie: string;     // Nueva propiedad
+  monto_objetivo: string;
+  serie: string;
+  bodega: string;  // Add this line
 }
 
 interface ProductoComodato {
@@ -69,8 +71,9 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
           codigo_ubicacion: "",
           valor_neto: 0,
           moneda: "CLP",
-          secuencia: "",
+          monto_objetivo: "",
           serie: "",
+          bodega: "",
         },
       ];
       message.success(`Instrumento "${instrumento.descripcion}" agregado a la tabla`);
@@ -103,36 +106,76 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
   };
 
   const columns: ColumnsType<SelectedInstrumento> = [
-    { title: "Código", dataIndex: "codigo", key: "codigo" },
-    { title: "ADN", dataIndex: "adn", key: "adn" },
-    { title: "Descripción", dataIndex: "descripcion", key: "descripcion" },
-    { title: "Tipo", dataIndex: "tipo", key: "tipo" },
-    { title: "Marca", dataIndex: "marca", key: "marca" },
+    { 
+      title: "Código", 
+      dataIndex: "codigo", 
+      key: "codigo",
+      width: 120 
+    },
+    { 
+      title: "ADN", 
+      dataIndex: "adn", 
+      key: "adn",
+      width: 120 
+    },
+    { 
+      title: "Descripción", 
+      dataIndex: "descripcion", 
+      key: "descripcion",
+      width: 200 
+    },
+    { 
+      title: "Tipo", 
+      dataIndex: "tipo", 
+      key: "tipo",
+      width: 120 
+    },
+    { 
+      title: "Marca", 
+      dataIndex: "marca", 
+      key: "marca",
+      width: 150 
+    },
+    {
+      title: "Bodega",
+      dataIndex: "bodega",
+      key: "bodega",
+      width: 200,
+      render: (value: string, record) => (
+        <div className="min-w-[180px]">
+          <BodegasSelector
+            value={value}
+            onChange={(newValue) => handleCellChange("bodega", newValue, record)}
+            placeholder="Seleccione bodega"
+          />
+        </div>
+      ),
+    },
     {
       title: "Ubicación",
       dataIndex: "codigo_ubicacion",
       key: "codigo_ubicacion",
+      width: 200,
       render: (value: string, record) => (
         <Input
           placeholder="Ubicación"
           value={value}
-          onChange={e =>
-            handleCellChange("codigo_ubicacion", e.target.value, record)
-          }
-          
+          className="min-w-[180px]"
+          onChange={e => handleCellChange("codigo_ubicacion", e.target.value, record)}
         />
       ),
     },
     {
-      title: "Valor",
+      title: "Valor Equipo",
       dataIndex: "valor_neto",
       key: "valor_neto",
+      width: 150,
       render: (value: number, record) => (
         <InputNumber
           min={0}
           placeholder="Valor neto"
           value={value}
-          className="w-24"
+          className="w-32"
           onChange={val => {
             if (val === null || val < 0) {
               message.error("El valor debe ser positivo");
@@ -148,11 +191,12 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       title: "Moneda",
       dataIndex: "moneda",
       key: "moneda",
+      width: 100,
       render: (value: string, record) => (
         <Select
           value={value}
           onChange={val => handleCellChange("moneda", val, record)}
-          style={{ width: 80 }}
+          className="w-24"
         >
           <Option value="CLP">CLP</Option>
           <Option value="UF">UF</Option>
@@ -160,16 +204,24 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       ),
     },
     {
-      title: "Secuencia",
-      dataIndex: "secuencia",
-      key: "secuencia",
-      render: (value: string, record) => (
-        <Input
-          placeholder="Secuencia"
+      title: "Monto Objetivo",
+      dataIndex: "monto_objetivo",
+      key: "monto_objetivo",
+      width: 150,
+      render: (value: number, record) => (
+        <InputNumber
+          min={0}
+          placeholder="Monto objetivo"
           value={value}
-          onChange={e =>
-            handleCellChange("secuencia", e.target.value, record)
-          }
+          className="w-32"
+          onChange={val => {
+            if (val === null || val < 0) {
+              message.error("El valor debe ser positivo");
+              handleCellChange("monto_objetivo", 0, record);
+            } else {
+              handleCellChange("monto_objetivo", val, record);
+            }
+          }}
         />
       ),
     },
@@ -177,19 +229,21 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       title: "Serie",
       dataIndex: "serie",
       key: "serie",
+      width: 200,
       render: (value: string, record) => (
         <Input
           placeholder="Serie"
           value={value}
-          onChange={e =>
-            handleCellChange("serie", e.target.value, record)
-          }
+          className="min-w-[180px]"
+          onChange={e => handleCellChange("serie", e.target.value, record)}
         />
       ),
     },
     {
       title: "Acciones",
       key: "acciones",
+      width: 100,
+      fixed: 'right',
       render: (_, record) => (
         <Button
           type="link"
@@ -224,7 +278,7 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
         )}
         columns={columns}
         rowKey="codigo"
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1800 }} // Increased scroll width
         className="rounded-xl"
       />
 

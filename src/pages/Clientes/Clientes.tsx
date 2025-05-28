@@ -53,16 +53,7 @@ const Clientes: React.FC = () => {
       dataIndex: "direccion",
       key: "direccion",
     },
-    {
-      title: "Comuna",
-      dataIndex: "nombre_comuna",
-      key: "nombre_comuna",
-    },
-    {
-      title: "Código Comuna",
-      dataIndex: "codigo_comuna",
-      key: "codigo_comuna",
-    },
+  
     {
       title: "Detalle",
       key: "detalle",
