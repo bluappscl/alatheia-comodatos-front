@@ -26,7 +26,7 @@ const Clientes: React.FC = () => {
     const fetchClientes = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.get<{ clientes: Cliente[] }>("/comodatos/clientes/");
+        const response = await axiosInstance.get<{ clientes: Cliente[] }>("/comodatos/clientes/con-comodatos/");
         setClientes(response.data.clientes);
       } catch (error) {
         console.error("Error fetching clientes:", error);
