@@ -1,51 +1,53 @@
-import logo_blanco from "../media/logos/alatheia-logo-blanco.svg";
-import React, { useState } from "react";
+// src/layouts/LayoutBack.tsx
+import React from "react";
 import { Layout, Menu, theme } from "antd";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+
+import logo_blanco from "../media/logos/alatheia-logo-blanco.svg";
 import { items } from "../router/menuItems";
 
-const { Content, Sider } = Layout;
+const { Header, Content } = Layout;
 
 const LayoutBack: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
+  // Ant Design tokens que ya usabas para el fondo del contenedor
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="my-8 mx-4 p-4">
-          <img src={logo_blanco} className="w-auto" />
-        </div>
+  // Resalta el item del menú según la ruta actual (opcional)
+  const selectedKeys = [location.pathname];
 
+  return (
+    <Layout className="min-h-screen">
+      {/* ---------- NAVBAR / TOPBAR ---------- */}
+      <Header className="fixed inset-x-0 top-0 z-50 flex items-center gap-6 bg-[#001529] px-14 py-2">
+        {/* Logo */}
+        <img src={logo_blanco} alt="Alatheia" className="h-8 w-auto select-none" />
+
+        {/* Menú horizontal */}
+        
         <Menu
           theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
+          mode="horizontal"
           items={items}
+          selectedKeys={selectedKeys}
+          className="bg-transparent flex-1"
         />
-      </Sider>
-      <Layout>
-        <Content>
-          <div
-            className="h-full overflow-auto"
-            style={{
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            <div className="p-10">
-              <Outlet />
-            </div>
-            {/* <img src={footerimg} /> */}
+      </Header>
+
+      {/* ---------- CONTENIDO ---------- */}
+      <Content className="pt-16">
+        <div
+          style={{ background: colorBgContainer, borderRadius: borderRadiusLG }}
+          className="h-full overflow-auto"
+        >
+          <div className="p-10">
+            <Outlet />
           </div>
-        </Content>
-      </Layout>
+        </div>
+      </Content>
     </Layout>
   );
 };

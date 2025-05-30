@@ -1,101 +1,71 @@
-import alatheia_logo from "../assets/alatheia-logo.svg";
-import React, { useState } from "react";
+// src/layouts/GeneralLayout.tsx
+import React from "react";
 import { Layout, Menu, Tooltip } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
+import {
+  LogoutOutlined,
+} from "@ant-design/icons";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+
+import alatheia_logo from "../assets/alatheia-logo.svg";
 import { items } from "../router/menuItems";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
 
-import { LogoutOutlined } from "@ant-design/icons";
-
-const { Content, Sider } = Layout;
+const { Header, Content } = Layout;
 
 const GeneralLayout: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-  // const [themeState, setThemeState] = useState("light");
-
   const navigate = useNavigate();
-  const handleLogout = () => {
-    navigate("/login");
-  };
+  const location = useLocation();
 
-  const siderWidth = collapsed ? 80 : 200;
+  /*  Si las claves de tus <Menu.Item> son rutas completas
+      (por ejemplo "/dashboard", "/usuarios"), esto resaltará
+      automáticamente el elemento correspondiente.              */
+  const selectedKeys = [location.pathname];
 
-  // Get breadcrumbs from context
+  const handleLogout = () => navigate("/login");
+
+  //  Si usas el contexto de breadcrumb en otras vistas,
+  //  lo conservamos para no romper dependencias.
   const breadCrumItems = useBreadcrumbContext((state) => state.items);
-  console.log(breadCrumItems);
-  // Map route paths to menu keys
-  // const pathToKeyMap: Record<string, string> = {
-  //   "/": "1",
-  //   "/clientes": "2",
-  //   "/nuevo-comodato": "4",
-  // };
-
-  // Find the last breadcrumb's path and map it to a key
-  // const activeKey = breadCrumItems.length
-  //   ? pathToKeyMap[breadCrumItems[breadCrumItems.length - 1]?.path ?? "/"]
-  //   : "1"; // Default to home if no breadcrumbs
+  console.debug("Breadcrumb:", breadCrumItems);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        breakpoint="lg"
-        collapsedWidth={isMobile ? 0 : 80}
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-        onBreakpoint={(broken) => setIsMobile(broken)}
-        theme="light"
-        width={siderWidth}
-        style={{
-          position: "fixed",
-          height: "100vh",
-          borderRight: "1px gray",
-          zIndex: isMobile ? 100 : "auto",
-        }}
-        className="bg-blue-400"
-      >
-        <div className="flex flex-col items-center p-4">
-          <img className="h-12 w-fit" src={alatheia_logo} alt="Logo" />
+    <Layout className="min-h-screen">
+      {/* --- TOP BAR --- */}
+      <Header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between bg-blue-400 px-4 md:px-6">
+        {/* Logo + Menú */}
+        <div className="flex items-center gap-4">
+          <img
+            src={alatheia_logo}
+            alt="Alatheia"
+            className="h-8 w-auto select-none"
+          />
+
+          {/* Navegación principal */}
+          <Menu
+            mode="horizontal"
+            selectedKeys={selectedKeys}
+            items={items}
+            className="bg-transparent text-white font-medium"
+          />
         </div>
-        <hr className="my-2 mt-2.5" />
-        <Menu
-          theme="light"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-          className="bg-blue-400"
-        />
-      </Sider>
-      <Layout
-        className="bg-blue-50"
-        style={{
-          marginLeft: isMobile ? 0 : siderWidth,
-          transition: "margin-left 0.2s",
-        }}
-      >
-        <div className="flex mb-4 bg-blue-400 p-6 items-center justify-between border-b-2 border-white">
-          <div></div>
-          <Tooltip title="Cerrar Sesion">
-            <div className="flex items-center justify-center rounded-full bg-white hover:bg-gray-300 cursor-pointer">
-              <LogoutOutlined
-                className="text-3xl m-1.5 text-error-500"
-                onClick={() => handleLogout()}
-              />
-            </div>
-          </Tooltip>
+
+        {/* Botón de logout */}
+        <Tooltip title="Cerrar sesión">
+          <button
+            onClick={handleLogout}
+            className="grid h-9 w-9 place-items-center rounded-full bg-white transition-colors hover:bg-gray-200"
+          >
+            <LogoutOutlined className="text-error-500 text-lg" />
+          </button>
+        </Tooltip>
+      </Header>
+
+      {/* --- CONTENIDO --- */}
+      <Content className="pt-16 bg-blue-50">
+        <div className="mx-auto max-w-screen-xl px-4 py-6">
+          <Outlet />
         </div>
-        {/* {collapsed && (  */}
-        <Content
-          className={`bg-blue-50 rounded-lg h-max p-6`}
-          style={{ paddingTop: 64 }}
-        >
-          <div className="-mt-12">
-            <Outlet />
-          </div>
-        </Content>
-        {/* )} */}
-      </Layout>
+      </Content>
     </Layout>
   );
 };

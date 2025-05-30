@@ -115,6 +115,7 @@ const Clientes: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      className="max-w-6xl mx-auto px-4 py-6"
     >
       <HeaderDescripcion
         title="Clientes"
