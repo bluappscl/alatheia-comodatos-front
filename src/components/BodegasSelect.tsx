@@ -21,6 +21,8 @@ const BodegasSelector: React.FC<BodegasSelectorProps> = ({
   const [bodegas, setBodegas] = useState<Bodega[]>([]);
   const [loading, setLoading] = useState(false);
 
+  console.log('bodegas', bodegas)
+
   useEffect(() => {
     setLoading(true);
     axiosInstance

@@ -11,7 +11,12 @@ export const items: MenuProps["items"] = [
   {
     key: "1",
     icon: <UserOutlined />,
-    label: <Link to="/">Home</Link>,
+    label: <Link to="/">Inicio</Link>,
+  },
+  {
+    key: "4",
+    icon: <LaptopOutlined />,
+    label: <Link to="/clientes">Clientes</Link>,
   },
   {
     key: "sub1",
@@ -32,11 +37,6 @@ export const items: MenuProps["items"] = [
       },
  
     ],
-  },
-  {
-    key: "4",
-    icon: <LaptopOutlined />,
-    label: <Link to="/clientes">Clientes</Link>,
   },
 
   // {

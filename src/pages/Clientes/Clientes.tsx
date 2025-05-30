@@ -5,28 +5,33 @@ import { motion } from "motion/react";
 import axiosInstance from "../../api/axiosInstance";
 import { Table, TableColumnsType, Input, Button, Tooltip } from "antd";
 import { useNavigate } from "react-router-dom";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 interface Cliente {
   rut: string;
   nombre: string;
-  direccion: string;
-  nombre_comuna: string;
-  codigo_comuna: string;
+  numero_instrumentos: number;
+  consumo_esperado: number;
+  consumo_realizado: number;
 }
 
 const Clientes: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchClientes = async () => {
+      setLoading(true);
       try {
         const response = await axiosInstance.get<{ clientes: Cliente[] }>("/comodatos/clientes/con-comodatos/");
         setClientes(response.data.clientes);
       } catch (error) {
         console.error("Error fetching clientes:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -34,7 +39,7 @@ const Clientes: React.FC = () => {
   }, []);
 
   const filteredClientes = clientes.filter((cliente) =>
-    cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    cliente?.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false
   );
 
   const columns: TableColumnsType<Cliente> = [
@@ -42,36 +47,61 @@ const Clientes: React.FC = () => {
       title: "RUT",
       dataIndex: "rut",
       key: "rut",
+      width: 120,
     },
     {
       title: "Nombre",
       dataIndex: "nombre",
       key: "nombre",
+      width: 200,
     },
     {
-      title: "Dirección",
-      dataIndex: "direccion",
-      key: "direccion",
+      title: "N° Instrumentos",
+      dataIndex: "numero_instrumentos",
+      key: "numero_instrumentos",
+      width: 120,
+      align: 'center',
     },
     {
-      title: "Comuna",
-      dataIndex: "nombre_comuna",
-      key: "nombre_comuna",
+      title: "Consumo Esperado",
+      dataIndex: "consumo_esperado",
+      key: "consumo_esperado",
+      width: 150,
+      align: 'right',
+      render: (value: number) => value ? formatCurrency(value, 'CLP') : formatCurrency(0, 'CLP'),
     },
     {
-      title: "Código Comuna",
-      dataIndex: "codigo_comuna",
-      key: "codigo_comuna",
+      title: "Consumo Realizado",
+      dataIndex: "consumo_realizado",
+      key: "consumo_realizado",
+      width: 150,
+      align: 'right',
+      render: (value: number) => value ? formatCurrency(value, 'CLP') : formatCurrency(0, 'CLP'),
     },
+    // {
+    //   title: "% Cumplimiento",
+    //   key: "cumplimiento",
+    //   width: 120,
+    //   align: 'center',
+    //   render: (_, record) => {
+    //     const esperado = record.consumo_esperado || 0;
+    //     const realizado = record.consumo_realizado || 0;
+    //     const porcentaje = esperado === 0 ? 0 : (realizado / esperado) * 100;
+    //     return (
+    //       <span className={porcentaje >= 100 ? "text-green-600" : "text-red-600"}>
+    //         {porcentaje.toFixed(1)}%
+    //       </span>
+    //     );
+    //   },
+    // },
     {
       title: "Detalle",
       key: "detalle",
+      width: 100,
       render: (_, record) => (
         <Tooltip title="Ver detalle del cliente">
           <Button
-            onClick={() => {
-              navigate(`/clientes/${record.rut}`);
-            }}
+            onClick={() => navigate(`/clientes/${record.rut}`)}
           >
             Ver Detalle
           </Button>
@@ -100,6 +130,7 @@ const Clientes: React.FC = () => {
       />
 
       <Table
+        loading={loading}
         columns={columns}
         dataSource={filteredClientes}
         rowKey={(record) => record.rut}

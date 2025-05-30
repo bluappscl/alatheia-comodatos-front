@@ -18,7 +18,8 @@ import axiosInstance from "../../api/axiosInstance";
 import RepresentanteSelector, {
   Representante,
 } from "../../components/RepresentantesSelect";
-import BodegasSelector from "../../components/BodegasSelect";
+// import BodegasSelector from "../../components/BodegasSelect";
+import MarcasSelector from "../../components/MarcasSelector";
 import { useNavigate } from "react-router-dom";
 import { format as formatRut, validate } from "rut.js";
 import dayjs from "dayjs";
@@ -36,8 +37,10 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
   const [enableDinero, setEnableDinero] = useState(false);
   const [enableGraceTime, setEnableGraceTime] = useState(false);
   const [plazoParaPago, setPlazoParaPago] = useState(false);
-  const [selectedBodega, setSelectedBodega] = useState<string>("");
   const [selectedRep, setSelectedRep] = useState<Representante | null>(null);
+  const [selectedMarca, setSelectedMarca] = useState<any>(null);
+
+  console.log('selectedMarca en padre', selectedMarca)
 
   // Estados de carga por etapa
   const [loadingStage, setLoadingStage] = useState<
@@ -73,7 +76,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
           nombre_representante_alatheia: values.nombre_representante_alatheia,
           direccion_cliente: values.sucursal,
           representante_de_venta: values.representante_de_venta,
-          codigo_bodega: selectedBodega,
+          marca: selectedMarca,
           observaciones: values.observaciones,
           es_demo: false,
           fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
@@ -178,7 +181,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
       <div className="flex items-center justify-end">
         {CambiarSeleccionButton}
       </div>
-      <div className="p-6 max-w-4xl h-full mx-auto bg-white rounded-md">
+      <div className="p-6 max-w-5xl h-full mx-auto bg-white rounded-md">
         <Form
           layout="vertical"
           onFinish={onFinish}
@@ -186,21 +189,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
         >
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             <div>
-              <div>
-                <Form.Item
-                  className="w-full"
-                  label="Número de Comodato"
-                  name="numero_comodato"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Por favor ingrese el número de comodato",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Ingrese el número del comodato" />
-                </Form.Item>
-              </div>
+    
 
               <Form.Item
                 label="Cliente"
@@ -218,8 +207,24 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
               </Form.Item>
 
               <Form.Item
-                label="Código de Representante Alatheia"
-                required
+                label="Marca"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor seleccione una marca",
+                  },
+                ]}
+              >
+                <MarcasSelector
+                  value={selectedMarca?.id}
+                  onChange={setSelectedMarca}
+                  placeholder="Seleccione una marca"
+                />
+              </Form.Item>
+
+              <Divider></Divider>
+              <Form.Item
+                label="Código de Representante Alatheia - (opcional)"
                 rules={[
                   {
                     validator: () =>
@@ -248,7 +253,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   name="nombre_representante_cliente"
                   rules={[
                     {
-                      required: true,
                       message: "Por favor ingrese el nombre del cliente",
                     },
                   ]}
@@ -261,7 +265,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   name="rut_representante_cliente"
                   rules={[
                     {
-                      required: true,
                       message: "Por favor ingrese el rut del cliente",
                     },
                     {
@@ -286,7 +289,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                 name="sucursal"
                 rules={[
                   {
-                    required: true,
                     message: "Porfavor ingrese la direccion del cliente",
                   },
                 ]}
@@ -306,7 +308,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   name="nombre_representante_alatheia"
                   rules={[
                     {
-                      required: true,
                       message:
                         "Porfavor ingrese el nombre representante alatheia",
                     },
@@ -326,7 +327,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   }}
                   rules={[
                     {
-                      required: true,
                       message: "Ingrese el rut del representante",
                     },
                     {
@@ -340,17 +340,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
                   <Input placeholder="Ingrese el rut del representante" />
                 </Form.Item>
 
-                <Form.Item
-                  label="Código de Bodega"
-                  required
-                  rules={[{ required: true, message: "Seleccione una bodega" }]}
-                >
-                  <BodegasSelector
-                    value={selectedBodega}
-                    onChange={setSelectedBodega}
-                    placeholder="Seleccione una bodega"
-                  />
-                </Form.Item>
+
 
                 {/* AQUÍ LA SUBIDA DE ARCHIVO DEL CONTRATRO */}
 
@@ -606,7 +596,10 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
           </div>
 
           <div className="flex flex-col my-10">
-            <InstrumentSelectorTable onChange={setSelectedInstrumentos} />
+            <InstrumentSelectorTable 
+              onChange={setSelectedInstrumentos}
+              selectedMarca={selectedMarca} // Add this prop
+            />
           </div>
 
           <Form.Item>
