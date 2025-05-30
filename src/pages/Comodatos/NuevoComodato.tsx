@@ -596,7 +596,10 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
           </div>
 
           <div className="flex flex-col my-10">
-            <InstrumentSelectorTable onChange={setSelectedInstrumentos} />
+            <InstrumentSelectorTable 
+              onChange={setSelectedInstrumentos}
+              selectedMarca={selectedMarca} // Add this prop
+            />
           </div>
 
           <Form.Item>

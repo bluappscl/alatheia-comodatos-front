@@ -26,12 +26,14 @@ interface ProductoComodato {
 
 interface InstrumentSelectorTableProps {
   onChange?: (instruments: SelectedInstrumento[]) => void;
+  selectedMarca?: string; // Add this prop
 }
 
 const { Option } = Select;
 
 const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
   onChange,
+  selectedMarca,
 }) => {
   const [addedInstrumentos, setAddedInstrumentos] = useState<SelectedInstrumento[]>([]);
   const [productosComodato, setProductosComodato] = useState<ProductoComodato[]>([]);
@@ -273,20 +275,23 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       <Table
         dataSource={addedInstrumentos.filter(
           item =>
-            item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.descripcion.toLowerCase().includes(searchText.toLowerCase())
+            (selectedMarca ? item.marca === selectedMarca : true) && // Add marca filter
+            (item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.descripcion.toLowerCase().includes(searchText.toLowerCase()))
         )}
         columns={columns}
         rowKey="codigo"
         scroll={{ x: 1800 }} // Increased scroll width
         className="rounded-xl"
       />
-
+      
       <InstrumentSelectorModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onAddInstrumento={handleAddInstrumento}
-        productosComodato={productosComodato}
+        productosComodato={productosComodato.filter(p => 
+          selectedMarca ? p.marca === selectedMarca : true
+        )} // Filter productos by marca
       />
     </>
   );
