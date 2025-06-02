@@ -143,7 +143,7 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       title: "Bodega",
       dataIndex: "bodega",
       key: "bodega",
-      width: 200,
+      width: 300,
       render: (value: string, record) => (
         <div className="min-w-[180px]">
           <BodegasSelector

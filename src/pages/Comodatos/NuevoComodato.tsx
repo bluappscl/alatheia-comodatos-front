@@ -18,8 +18,7 @@ import axiosInstance from "../../api/axiosInstance";
 import RepresentanteSelector, {
   Representante,
 } from "../../components/RepresentantesSelect";
-// import BodegasSelector from "../../components/BodegasSelect";
-import MarcasSelector from "../../components/MarcasSelector";
+import MarcasSelector from "../../components/MarcasSelector"; 
 import { useNavigate } from "react-router-dom";
 import { format as formatRut, validate } from "rut.js";
 import dayjs from "dayjs";
@@ -56,14 +55,7 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
     // 1. POST comodato
     setLoadingStage("comodato");
     try {
-      // Reemplazar codigo_ubicacion vacío por "no se sabe"
-      const instrumentosProcesados = selectedInstrumentos.map((inst) => ({
-        ...inst,
-        codigo_ubicacion:
-          !inst.codigo_ubicacion || inst.codigo_ubicacion.trim() === ""
-        ? "no se sabe"
-        : inst.codigo_ubicacion,
-      }));
+
 
       const payload = {
         comodato: {
@@ -102,7 +94,17 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
         ? values.objetivoDineroCantidad
         : undefined,
         },
-        instrumentos: instrumentosProcesados,
+        instrumentos:  selectedInstrumentos.map((inst) => ({
+          codigo: inst.codigo,
+          descripcion: inst.descripcion,
+          adn: inst.adn,
+          tipo: inst.tipo,
+          marca: inst.marca,
+          serie: inst.serie,
+          monto_objetivo: inst.monto_objetivo || 0,
+          bodega: inst.bodega,
+          codigo_ubicacion: inst.codigo_ubicacion || 0,
+        })),
       };
 
       const response = await axiosInstance.post("/comodatos/", payload);
@@ -581,12 +583,6 @@ const CrearComodato: React.FC<{ CambiarSeleccionButton?: React.ReactNode }> = ({
             <span className="text-gray-500">Observaciones</span>
             <Form.Item
               name="observaciones"
-              rules={[
-                {
-                  required: true,
-                  message: "Ingrese la observación",
-                },
-              ]}
             >
               <TextArea
                 className="w-full"

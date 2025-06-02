@@ -5,6 +5,8 @@ import axiosInstance from "../api/axiosInstance";
 
 export interface Bodega {
   codigo: string;
+  descripcion: string;
+  direccion: string;
 }
 
 interface BodegasSelectorProps {
@@ -44,15 +46,20 @@ const BodegasSelector: React.FC<BodegasSelectorProps> = ({
       style={{ width: "100%" }}
       onChange={onChange}
       filterOption={(input, option) =>
-        (option?.value as string).toLowerCase().includes(input.toLowerCase())
+        (option?.value as string).toLowerCase().includes(input.toLowerCase()) ||
+        (option?.label as string).toLowerCase().includes(input.toLowerCase())
       }
-    >
-      {bodegas.map(b => (
-        <Select.Option key={b.codigo} value={b.codigo}>
-          {b.codigo}
-        </Select.Option>
-      ))}
-    </Select>
+      options={bodegas.map(b => ({
+        value: b.codigo,
+        label: `${b.codigo} - ${b.descripcion}`,
+        dropdownRender: () => (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span><strong>{b.codigo}</strong> - {b.descripcion}</span>
+            <span style={{ fontSize: '12px', color: '#666' }}>{b.direccion}</span>
+          </div>
+        )
+      }))}
+    />
   );
 };
 
