@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react"
+import { useParams } from "react-router-dom"
 import {
   Card,
   Row,
@@ -11,7 +11,9 @@ import {
   Typography,
   message,
   Tooltip,
-} from "antd";
+  Button,
+  Modal,
+} from "antd"
 import {
   Package,
   TrendingUp,
@@ -19,7 +21,7 @@ import {
   DollarSign,
   Calendar as CalendarIcon,
   Target,
-} from "lucide-react";
+} from "lucide-react"
 import {
   Chart,
   BarElement,
@@ -28,124 +30,133 @@ import {
   Tooltip as ChartTooltip,
   Legend,
   ArcElement,
-} from "chart.js";
-import { Bar, Pie } from "react-chartjs-2";
-import axiosInstance from "../../api/axiosInstance";
+} from "chart.js"
+import { Bar, Pie } from "react-chartjs-2"
+import axiosInstance from "../../api/axiosInstance"
+import InstrumentosGestion from "./VerInstrumentosDetalle"
 
-Chart.register(
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  ChartTooltip,
-  Legend,
-  ArcElement
-);
+Chart.register(BarElement, CategoryScale, LinearScale, ChartTooltip, Legend, ArcElement)
 
-const { Title, Text } = Typography;
+const { Title, Text } = Typography
 
-// ---------------- Utils ------------------
+/* ---------- Utilidades ---------- */
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("es-CL", {
     style: "currency",
     currency: "CLP",
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amount)
 
 const getPerformanceColor = (expected: number, realized: number) => {
-  const pct = expected ? (realized / expected) * 100 : 0;
-  if (pct >= 100) return "text-green-600";
-  if (pct >= 75) return "text-yellow-600";
-  return "text-red-600";
-};
+  const pct = expected ? (realized / expected) * 100 : 0
+  if (pct >= 100) return "text-green-600"
+  if (pct >= 75) return "text-yellow-600"
+  return "text-red-600"
+}
 
 const PerformanceTag: React.FC<{ expected: number; realized: number }> = ({
   expected,
   realized,
 }) => {
-  const pct = expected ? (realized / expected) * 100 : 0;
+  const pct = expected ? (realized / expected) * 100 : 0
   if (pct >= 100)
     return (
       <Tooltip title="Se logró el 100% o más de lo esperado">
         <Tag color="green">Excelente</Tag>
       </Tooltip>
-    );
+    )
   if (pct >= 75)
     return (
       <Tooltip title="Se logró entre el 75% y el 99% de lo esperado">
         <Tag color="gold">Bueno</Tag>
       </Tooltip>
-    );
+    )
   return (
     <Tooltip title="Se logró menos del 75% de lo esperado">
       <Tag color="red">Bajo rendimiento</Tag>
     </Tooltip>
-  );
-};
+  )
+}
 
-// ---------------- Types ------------------
+/* ---------- Tipos ---------- */
 
 interface Instrumento {
-  codigo: string;
-  monto_esperado_mensual: number;
-  monto_realizado_mensual: number;
-  monto_esperado_anual: number;
-  monto_realizado_anual: number;
+  codigo: string
+  monto_esperado_mensual: number
+  monto_realizado_mensual: number
+  monto_esperado_anual: number
+  monto_realizado_anual: number
 }
 
 interface Marca {
-  marca: string;
-  numero_instrumentos: number;
-  monto_esperado_mensual: number;
-  monto_realizado_mensual: number;
-  monto_esperado_anual: number;
-  monto_realizado_anual: number;
-  instrumentos: Instrumento[];
+  comodato_id: number          // ⬅️ campo usado para abrir el modal
+  marca: string
+  numero_instrumentos: number
+  monto_esperado_mensual: number
+  monto_realizado_mensual: number
+  monto_esperado_anual: number
+  monto_realizado_anual: number
+  instrumentos: Instrumento[]
 }
 
 interface ClienteResumen {
-  numero_instrumentos: number;
-  monto_esperado_mensual: number;
-  monto_realizado_mensual: number;
-  monto_esperado_anual: number;
-  monto_realizado_anual: number;
-  marcas: Marca[];
+  numero_instrumentos: number
+  rut: string
+  nombre: string
+  monto_esperado_mensual: number
+  monto_realizado_mensual: number
+  monto_esperado_anual: number
+  monto_realizado_anual: number
+  marcas: Marca[]
 }
 
 interface APIResponse {
-  cliente: ClienteResumen;
+  cliente: ClienteResumen
 }
 
-// --------------- Component ---------------
+/* ---------- Componente principal ---------- */
 
 const ClienteDetalle: React.FC = () => {
-  const { rut } = useParams<{ rut: string }>();
-  const [data, setData] = useState<ClienteResumen | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { rut } = useParams<{ rut: string }>()
+  const [data, setData] = useState<ClienteResumen | null>(null)
+  const [loading, setLoading] = useState(true)
 
+  /* Estado para el modal de instrumentos */
+  const [modalVisible, setModalVisible] = useState(false)
+  const [comodatoId, setComodatoId] = useState<number | null>(null)
+
+  const openModal = (id: number) => {
+    setComodatoId(id)
+    setModalVisible(true)
+  }
+  const closeModal = () => {
+    setModalVisible(false)
+    setComodatoId(null)
+  }
+
+  /* --- Cargar datos del cliente --- */
   useEffect(() => {
-    if (!rut) return;
-    setLoading(true);
+    if (!rut) return
+    setLoading(true)
     axiosInstance
       .get<APIResponse>(`/comodatos/clientes/${rut}/resumen/`)
       .then((res) => setData(res.data.cliente))
-      .catch(() =>
-        message.error("No se pudo cargar la información del cliente")
-      )
-      .finally(() => setLoading(false));
-  }, [rut]);
+      .catch(() => message.error("No se pudo cargar la información del cliente"))
+      .finally(() => setLoading(false))
+  }, [rut])
 
-  // ---------- Chart.js data ----------
+  /* --- Datos para gráficos --- */
   const barData = useMemo(() => {
-    if (!data?.marcas) {
+    if (!data?.marcas)
       return {
         labels: [],
         datasets: [
           { label: "Esperado", backgroundColor: "hsl(210 90% 60%)", data: [] },
           { label: "Realizado", backgroundColor: "hsl(150 90% 45%)", data: [] },
         ],
-      };
-    }
+      }
+
     return {
       labels: data.marcas.map((m) => m.marca),
       datasets: [
@@ -160,26 +171,20 @@ const ClienteDetalle: React.FC = () => {
           data: data.marcas.map((m) => m.monto_realizado_mensual),
         },
       ],
-    };
-  }, [data]);
+    }
+  }, [data])
 
   const pieData = useMemo(() => {
-    if (!data?.marcas) {
-      return { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
-    }
+    if (!data?.marcas)
+      return { labels: [], datasets: [{ data: [], backgroundColor: [] }] }
 
-    // Filtrar marcas con monto esperado > 0
-    const marcasConMonto = data.marcas.filter(
-      (m) => m.monto_esperado_mensual > 0
-    );
+    const marcasConMonto = data.marcas.filter((m) => m.monto_esperado_mensual > 0)
 
-    // Si no hay marcas con monto, mostrar mensaje
-    if (marcasConMonto.length === 0) {
+    if (marcasConMonto.length === 0)
       return {
         labels: ["Sin datos"],
         datasets: [{ data: [1], backgroundColor: ["#e0e0e0"] }],
-      };
-    }
+      }
 
     return {
       labels: marcasConMonto.map((m) => m.marca),
@@ -196,32 +201,35 @@ const ClienteDetalle: React.FC = () => {
           ],
         },
       ],
-    };
-  }, [data]);
+    }
+  }, [data])
 
-  // ------------- Loading --------------
-  if (loading) {
+  /* --- Loading --- */
+  if (loading)
     return (
       <div className="w-full h-96 flex items-center justify-center">
         <Spin size="large" />
       </div>
-    );
-  }
-  if (!data) return null;
+    )
+  if (!data) return null
 
   const monthlyPct =
-    (data.monto_realizado_mensual / data.monto_esperado_mensual) * 100;
+    (data.monto_realizado_mensual / data.monto_esperado_mensual) * 100
   const annualPct =
-    (data.monto_realizado_anual / data.monto_esperado_anual) * 100;
+    (data.monto_realizado_anual / data.monto_esperado_anual) * 100
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <Title level={2} className="!mb-6 text-center">
-        Información del Cliente
+      {/* ---------- Encabezado ---------- */}
+      <p className="text-center text-sm">Información del Cliente</p>
+      <Title level={3} className="text-center">
+        {data.nombre}
       </Title>
+      <p className="text-center text-sm !mb-6">{data.rut}</p>
 
-      {/* -------- Resumen general -------- */}
+      {/* ---------- Resumen general ---------- */}
       <Row gutter={[16, 16]} className="mb-8">
+        {/* Total instrumentos */}
         <Col xs={24} md={6}>
           <Card className="shadow">
             <Row justify="space-between" align="middle">
@@ -233,6 +241,7 @@ const ClienteDetalle: React.FC = () => {
           </Card>
         </Col>
 
+        {/* Rendimiento mensual */}
         <Col xs={24} md={6}>
           <Card className="shadow">
             <Row justify="space-between" align="middle">
@@ -256,21 +265,21 @@ const ClienteDetalle: React.FC = () => {
           </Card>
         </Col>
 
+        {/* Monto mensual */}
         <Col xs={24} md={6}>
           <Card className="shadow">
             <Row justify="space-between" align="middle">
               <Text>Monto mensual</Text>
               <DollarSign className="w-4 h-4 text-green-600" />
             </Row>
-            <Title level={3}>
-              {formatCurrency(data.monto_realizado_mensual)}
-            </Title>
+            <Title level={3}>{formatCurrency(data.monto_realizado_mensual)}</Title>
             <Text type="secondary">
               de {formatCurrency(data.monto_esperado_mensual)}
             </Text>
           </Card>
         </Col>
 
+        {/* Rendimiento anual */}
         <Col xs={24} md={6}>
           <Card className="shadow">
             <Row justify="space-between" align="middle">
@@ -294,10 +303,11 @@ const ClienteDetalle: React.FC = () => {
         </Col>
       </Row>
 
-      {/* -------- Detalle por marcas -------- */}
+      {/* ---------- Detalle por marcas ---------- */}
       <Title level={3} className="!mb-4">
         Detalle por marcas
       </Title>
+
       {data.marcas.map((marca) => (
         <Card key={marca.marca} className="mb-6 shadow">
           <Row justify="space-between" align="middle">
@@ -308,7 +318,13 @@ const ClienteDetalle: React.FC = () => {
               <Text type="secondary">
                 {marca.numero_instrumentos} instrumentos
               </Text>
+
+              {/* Botón para abrir el modal */}
+              <Button type="link" onClick={() => openModal(marca.comodato_id)}>
+                Ver detalle
+              </Button>
             </div>
+
             <PerformanceTag
               expected={marca.monto_esperado_mensual}
               realized={marca.monto_realizado_mensual}
@@ -361,7 +377,7 @@ const ClienteDetalle: React.FC = () => {
             const instPct = inst.monto_esperado_mensual
               ? (inst.monto_realizado_mensual / inst.monto_esperado_mensual) *
                 100
-              : 0;
+              : 0
             return (
               <Card key={inst.codigo} size="small" className="mb-2 bg-slate-50">
                 <Row justify="space-between" align="middle">
@@ -406,12 +422,12 @@ const ClienteDetalle: React.FC = () => {
                   </Row>
                 </Row>
               </Card>
-            );
+            )
           })}
         </Card>
       ))}
 
-      {/* --------------- Gráficos --------------- */}
+      {/* ---------- Gráficos ---------- */}
       <Row gutter={[16, 16]} className="mb-12">
         <Col xs={24} lg={12}>
           <Card title="Comparación por marca (mensual)" className="shadow">
@@ -453,10 +469,7 @@ const ClienteDetalle: React.FC = () => {
                   plugins: {
                     legend: {
                       position: "bottom",
-                      labels: {
-                        padding: 20,
-                        usePointStyle: true,
-                      },
+                      labels: { padding: 20, usePointStyle: true },
                     },
                     tooltip: {
                       callbacks: {
@@ -475,8 +488,20 @@ const ClienteDetalle: React.FC = () => {
           </Card>
         </Col>
       </Row>
-    </div>
-  );
-};
 
-export default ClienteDetalle;
+      {/* ---------- Modal Instrumentos ---------- */}
+      <Modal
+        title="Instrumentos del comodato"
+        open={modalVisible}
+        width={960}
+        footer={null}
+        onCancel={closeModal}
+        destroyOnClose
+      >
+        {comodatoId && <InstrumentosGestion id={comodatoId} />}
+      </Modal>
+    </div>
+  )
+}
+
+export default ClienteDetalle
