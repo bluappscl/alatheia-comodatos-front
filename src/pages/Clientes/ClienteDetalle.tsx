@@ -13,6 +13,7 @@ import {
   Tooltip,
   Button,
   Modal,
+  Collapse,
 } from "antd"
 import {
   Package,
@@ -241,6 +242,10 @@ const ClienteDetalle: React.FC = () => {
           </Card>
         </Col>
 
+
+    
+
+
         {/* Rendimiento mensual */}
         <Col xs={24} md={6}>
           <Card className="shadow">
@@ -372,58 +377,46 @@ const ClienteDetalle: React.FC = () => {
 
           <Divider />
 
-          <Title level={5}>Instrumentos</Title>
-          {marca.instrumentos.map((inst) => {
-            const instPct = inst.monto_esperado_mensual
-              ? (inst.monto_realizado_mensual / inst.monto_esperado_mensual) *
-                100
-              : 0
-            return (
+            <Collapse className="bg-transparent border-none" ghost>
+            <Collapse.Panel header="Ver instrumentos" key="1">
+              {marca.instrumentos.map((inst) => (
               <Card key={inst.codigo} size="small" className="mb-2 bg-slate-50">
                 <Row justify="space-between" align="middle">
-                  <div className="flex items-center gap-2">
-                    <Target className="w-4 h-4 text-slate-500" />
-                    <Text strong>{inst.codigo}</Text>
+                <div className="flex items-center gap-2">
+                  <Target className="w-4 h-4 text-slate-500" />
+                  <Text strong>{inst.codigo}</Text>
+                </div>
+                <Row gutter={[24, 0]} align="middle" className="mr-4">
+                  <Col className="min-w-[100px]">
+                  <Text type="secondary">Mensual</Text>
+                  <div
+                    className={`font-semibold ${getPerformanceColor(
+                    inst.monto_esperado_mensual,
+                    inst.monto_realizado_mensual
+                    )}`}
+                  >
+                    {formatCurrency(inst.monto_realizado_mensual)}
                   </div>
-                  <Row gutter={[24, 0]} align="middle" className="mr-4">
-                    <Col className="min-w-[100px]">
-                      <Text type="secondary">Mensual</Text>
-                      <div
-                        className={`font-semibold ${getPerformanceColor(
-                          inst.monto_esperado_mensual,
-                          inst.monto_realizado_mensual
-                        )}`}
-                      >
-                        {formatCurrency(inst.monto_realizado_mensual)}
-                      </div>
-                    </Col>
-                    <Col className="min-w-[100px]">
-                      <Text type="secondary">Anual</Text>
-                      <div
-                        className={`font-semibold ${getPerformanceColor(
-                          inst.monto_esperado_anual,
-                          inst.monto_realizado_anual
-                        )}`}
-                      >
-                        {formatCurrency(inst.monto_realizado_anual)}
-                      </div>
-                    </Col>
-                    <Col className="min-w-[60px]">
-                      <Text type="secondary">Rend.</Text>
-                      <div
-                        className={`font-semibold ${getPerformanceColor(
-                          inst.monto_esperado_mensual,
-                          inst.monto_realizado_mensual
-                        )}`}
-                      >
-                        {instPct.toFixed(1)}%
-                      </div>
-                    </Col>
-                  </Row>
+                  </Col>
+                  <Col className="min-w-[100px]">
+                  <Text type="secondary">Anual</Text>
+                  <div
+                    className={`font-semibold ${getPerformanceColor(
+                    inst.monto_esperado_anual,
+                    inst.monto_realizado_anual
+                    )}`}
+                  >
+                    {formatCurrency(inst.monto_realizado_anual)}
+                  </div>
+                  </Col>
+                </Row>
                 </Row>
               </Card>
-            )
-          })}
+              ))}
+            </Collapse.Panel>
+            </Collapse>
+
+          
         </Card>
       ))}
 
