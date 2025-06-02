@@ -5,15 +5,16 @@ import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 import axiosInstance from "../../api/axiosInstance";
 import type { ColumnsType } from "antd/es/table";
 import BodegasSelector from "../BodegasSelect";
+import UbicacionesSelector from "../UbicacionesSelector";
 
 // Ampliamos InstrumentoInterface con campos extra
 interface SelectedInstrumento extends InstrumentoInterface {
-  codigo_ubicacion: string;
+  codigo_ubicacion: number; // Cambiado a number
   valor_neto: number;
   moneda: string;
   monto_objetivo: string;
   serie: string;
-  bodega: string;  // Add this line
+  bodega: string;
 }
 
 interface ProductoComodato {
@@ -70,7 +71,7 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
         ...prev,
         {
           ...instrumento,
-          codigo_ubicacion: "",
+          codigo_ubicacion: 0,
           valor_neto: 0,
           moneda: "CLP",
           monto_objetivo: "",
@@ -158,12 +159,11 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       dataIndex: "codigo_ubicacion",
       key: "codigo_ubicacion",
       width: 200,
-      render: (value: string, record) => (
-        <Input
-          placeholder="Ubicación"
+      render: (value: number, record) => (
+        <UbicacionesSelector
           value={value}
-          className="min-w-[180px]"
-          onChange={e => handleCellChange("codigo_ubicacion", e.target.value, record)}
+          onChange={(newValue) => handleCellChange("codigo_ubicacion", newValue, record)}
+          placeholder="Seleccione una ubicación"
         />
       ),
     },

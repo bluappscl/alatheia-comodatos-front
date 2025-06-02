@@ -18,10 +18,9 @@ const BodegasSelector: React.FC<BodegasSelectorProps> = ({
   onChange,
   placeholder = "Seleccione una bodega",
 }) => {
+  
   const [bodegas, setBodegas] = useState<Bodega[]>([]);
   const [loading, setLoading] = useState(false);
-
-  console.log('bodegas', bodegas)
 
   useEffect(() => {
     setLoading(true);

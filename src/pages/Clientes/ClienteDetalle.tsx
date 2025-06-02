@@ -325,7 +325,7 @@ const ClienteDetalle: React.FC = () => {
               </Button>
             </div>
 
-            <PerformanceTag
+            <PerformanceTag  
               expected={marca.monto_esperado_mensual}
               realized={marca.monto_realizado_mensual}
             />
