@@ -8,8 +8,6 @@ import {
   Checkbox,
   InputNumber,
   Divider,
-  Upload,
-  UploadProps,
 } from "antd";
 import ClientSelectionModal from "../../components/NuevoComodato/ClienteSelector";
 import InstrumentSelectorTable from "../../components/Instrumentos/InstrumentSelectorTable";
@@ -20,12 +18,11 @@ import axiosInstance from "../../api/axiosInstance";
 import RepresentanteSelector, {
   Representante,
 } from "../../components/RepresentantesSelect";
-import MarcasSelector from "../../components/MarcasSelector";
+import MarcasSelector from "../../components/MarcasSelector"; 
 import { useNavigate } from "react-router-dom";
 import { format as formatRut, validate } from "rut.js";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
-import { UploadOutlined } from "@ant-design/icons";
 
 const CrearComodato: React.FC<{}> = () => {
   const navigate = useNavigate();
@@ -41,7 +38,7 @@ const CrearComodato: React.FC<{}> = () => {
   const [selectedMarca, setSelectedMarca] = useState<any>(null);
   const [isDemo, setIsDemo] = useState(false); // Nuevo estado para demo
 
-  console.log("selectedMarca en padre", selectedMarca);
+  console.log('selectedMarca en padre', selectedMarca)
 
   // Estados de carga por etapa
   const [loadingStage, setLoadingStage] = useState<
@@ -57,6 +54,8 @@ const CrearComodato: React.FC<{}> = () => {
     // 1. POST comodato
     setLoadingStage("comodato");
     try {
+
+
       const payload = {
         comodato: {
           numero_comodato: values.numero_comodato,
@@ -73,28 +72,28 @@ const CrearComodato: React.FC<{}> = () => {
           es_demo: isDemo, // Incluir estado de demo
           fecha_inicio: values.fechaInicio.format("YYYY-MM-DD"),
           fecha_fin: values.fechaFin
-            ? values.fechaFin.format("YYYY-MM-DD")
-            : undefined,
+        ? values.fechaFin.format("YYYY-MM-DD")
+        : undefined,
           plazo_para_pago: plazoParaPago,
           plazo_pago_facturas: plazoParaPago
-            ? values.plazoPagoFacturas
-            : undefined,
+        ? values.plazoPagoFacturas
+        : undefined,
           tiempo_de_gracia: enableGraceTime
-            ? {
-                meses: values.tiempoDeGracia[0],
-                porcentaje: values.tiempoDeGracia[1],
-              }
-            : undefined,
+        ? {
+            meses: values.tiempoDeGracia[0],
+            porcentaje: values.tiempoDeGracia[1],
+          }
+        : undefined,
           es_renovable: isRenovable,
           se_renueva_automaticamente: isRenovable ? autoRenew : false,
           objetivo_reactivos_cantidad: enableReactivos
-            ? values.objetivoReactivosCantidad
-            : undefined,
+        ? values.objetivoReactivosCantidad
+        : undefined,
           objetivo_dinero_cantidad: enableDinero
-            ? values.objetivoDineroCantidad
-            : undefined,
+        ? values.objetivoDineroCantidad
+        : undefined,
         },
-        instrumentos: selectedInstrumentos.map((inst) => ({
+        instrumentos:  selectedInstrumentos.map((inst) => ({
           codigo: inst.codigo,
           descripcion: inst.descripcion,
           adn: inst.adn,
@@ -115,8 +114,8 @@ const CrearComodato: React.FC<{}> = () => {
       message.success("Comodato creado exitosamente");
 
       // 2. POST contrato (si hay archivo)
+      setLoadingStage("contrato");
       if (contractFile) {
-        setLoadingStage("contrato");
         const formData = new FormData();
         formData.append("comodato", createdId.toString());
         // nombre único con fecha y hora
@@ -128,6 +127,10 @@ const CrearComodato: React.FC<{}> = () => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         message.success("Contrato subido exitosamente");
+      } else {
+        message.info(
+          "No se seleccionó ningún contrato, se omitió la subida de archivo."
+        );
       }
 
       // 3. Navegar al listado
@@ -164,18 +167,6 @@ const CrearComodato: React.FC<{}> = () => {
     setClientId(rut);
   };
 
-  const uploadProps: UploadProps = {
-    beforeUpload: (file: any) => {
-      setContractFile(file);
-      return false;
-    },
-    onRemove: () => {
-      setContractFile(null);
-    },
-    maxCount: 1,
-    accept: ".pdf,.doc,.docx,.jpg,.jpeg,.png",
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -188,6 +179,7 @@ const CrearComodato: React.FC<{}> = () => {
         photo_path={comodato_photo}
       />
 
+
       <div className="p-6 max-w-5xl h-full mx-auto bg-white rounded-md">
         <Form
           layout="vertical"
@@ -196,6 +188,8 @@ const CrearComodato: React.FC<{}> = () => {
         >
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             <div>
+    
+
               <Form.Item
                 label="Cliente"
                 rules={[
@@ -344,6 +338,10 @@ const CrearComodato: React.FC<{}> = () => {
                 >
                   <Input placeholder="Ingrese el rut del representante" />
                 </Form.Item>
+
+
+
+                {/* AQUÍ LA SUBIDA DE ARCHIVO DEL CONTRATRO */}
 
                 <Form.Item label="Contrato (archivo)">
                   <input
@@ -598,7 +596,9 @@ const CrearComodato: React.FC<{}> = () => {
 
           <div className="flex flex-col gap-2">
             <span className="text-gray-500">Observaciones</span>
-            <Form.Item name="observaciones">
+            <Form.Item
+              name="observaciones"
+            >
               <TextArea
                 className="w-full"
                 placeholder="Ingrese la observación"
@@ -607,22 +607,10 @@ const CrearComodato: React.FC<{}> = () => {
           </div>
 
           <div className="flex flex-col my-10">
-            <InstrumentSelectorTable
+            <InstrumentSelectorTable 
               onChange={setSelectedInstrumentos}
               selectedMarca={selectedMarca} // Add this prop
             />
-          </div>
-
-          <div className="flex flex-col gap-2 my-6">
-            <span className="text-gray-500">Contrato (opcional)</span>
-            <Upload {...uploadProps}>
-              <Button icon={<UploadOutlined />}>Subir contrato</Button>
-            </Upload>
-            {contractFile && (
-              <span className="text-sm text-gray-500">
-                Archivo seleccionado: {contractFile.name}
-              </span>
-            )}
           </div>
 
           <Form.Item>

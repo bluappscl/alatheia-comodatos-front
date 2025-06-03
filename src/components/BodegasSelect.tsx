@@ -1,5 +1,5 @@
 // src/components/NuevoComodato/BodegasSelector.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Select, Spin, Typography } from "antd";
 import axiosInstance from "../api/axiosInstance";
 
@@ -20,7 +20,6 @@ const BodegasSelector: React.FC<BodegasSelectorProps> = ({
   onChange,
   placeholder = "Seleccione una bodega",
 }) => {
-  
   const [bodegas, setBodegas] = useState<Bodega[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +30,11 @@ const BodegasSelector: React.FC<BodegasSelectorProps> = ({
       .then(res => setBodegas(res.data.bodegas))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, []); // Sin dependencias, solo cargar una vez
+
+  const handleChange = useCallback((newValue: string) => {
+    onChange(newValue);
+  }, [onChange]);
 
   if (loading) return <Spin />;
   if (!bodegas.length)
@@ -41,25 +44,23 @@ const BodegasSelector: React.FC<BodegasSelectorProps> = ({
     <Select<string>
       showSearch
       placeholder={placeholder}
-      optionFilterProp="children"
       value={value}
       style={{ width: "100%" }}
-      onChange={onChange}
-      filterOption={(input, option) =>
-        (option?.value as string).toLowerCase().includes(input.toLowerCase()) ||
-        (option?.label as string).toLowerCase().includes(input.toLowerCase())
-      }
-      options={bodegas.map(b => ({
-        value: b.codigo,
-        label: `${b.codigo} - ${b.descripcion}`,
-        dropdownRender: () => (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span><strong>{b.codigo}</strong> - {b.descripcion}</span>
-            <span style={{ fontSize: '12px', color: '#666' }}>{b.direccion}</span>
-          </div>
-        )
-      }))}
-    />
+      onChange={handleChange}
+      filterOption={(input, option) => {
+        const searchValue = input.toLowerCase();
+        const optionValue = (option?.value as string)?.toLowerCase() || '';
+        const optionLabel = String(option?.children || '').toLowerCase();
+        
+        return optionValue.includes(searchValue) || optionLabel.includes(searchValue);
+      }}
+    >
+      {bodegas.map(b => (
+        <Select.Option key={b.codigo} value={b.codigo}>
+          {b.codigo} - {b.descripcion}
+        </Select.Option>
+      ))}
+    </Select>
   );
 };
 

@@ -1,52 +1,22 @@
-import { Modal, Button, Space } from "antd";
-import CrearComodato from "./NuevoComodato";
-import CrearDEMO from "./CrearDemo";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import comodato_photo from "../../media/temporal/comodato_photo.png";
+import { motion } from "framer-motion";
+import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
+import ComodatoForm from "./core/ComodatoForm"; // Cambiar de vuelta a mayúsculas
 
-export const CrearGeneral = () => {
-  const [isModalVisible, setIsModalVisible] = useState(true);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-
-  const handleSelection = (type: string) => {
-    setSelectedType(type);
-    setIsModalVisible(false);
-  };
-
-  const resetSelection = () => {
-    setSelectedType(null);
-    setIsModalVisible(true);
-  };
-
-  const ChangeSelectionButton = (
-    <Button className="mb-4" onClick={resetSelection}>
-      Cambiar selección
-    </Button>
-  );
+export default function CrearGeneral() {
+  const nav = useNavigate();
 
   return (
-    <div className="p-4">
-      <Modal
-        title="¿Qué deseas registrar?"
-        visible={isModalVisible}
-        footer={null}
-        closable={true}
-        onCancel={() => setIsModalVisible(false)} // Permite cerrar el modal
-      >
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Button type="primary" block onClick={() => handleSelection("comodato")}>
-            Registrar Comodato
-          </Button>
-          <Button type="primary" block onClick={() => handleSelection("demo")}>
-            Registrar Demo
-          </Button>
-        </Space>
-      </Modal>
-
-      {selectedType && (
-        <div>
-          {selectedType === "comodato" ? <CrearComodato CambiarSeleccionButton={ChangeSelectionButton} /> : <CrearDEMO CambiarSeleccionButton={ChangeSelectionButton} />}
-        </div>
-      )}
-    </div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <HeaderDescripcion
+        title="Registrar Comodato"
+        description="Aquí puedes crear un nuevo comodato"
+        photo_path={comodato_photo}
+      />
+      <div className="p-6 max-w-5xl mx-auto bg-white rounded-md">
+        <ComodatoForm onCompleted={() => nav("/comodatos")} />
+      </div>
+    </motion.div>
   );
-};
+}

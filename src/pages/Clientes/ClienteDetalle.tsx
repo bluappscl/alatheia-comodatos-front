@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import {
   Card,
   Row,
@@ -328,6 +328,10 @@ const ClienteDetalle: React.FC = () => {
               <Button type="link" onClick={() => openModal(marca.comodato_id)}>
                 Ver detalle
               </Button>
+
+              <Link to={`/comodato/editar/${marca.comodato_id}`} className="ml-4"> 
+              editar
+              </Link>
             </div>
 
             <PerformanceTag  

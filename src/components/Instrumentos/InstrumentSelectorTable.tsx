@@ -2,17 +2,22 @@ import { Button, Input, InputNumber, message, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
-import axiosInstance from "../../api/axiosInstance";
 import type { ColumnsType } from "antd/es/table";
 import BodegasSelector from "../BodegasSelect";
 import UbicacionesSelector from "../UbicacionesSelector";
+import axiosInstance from "../../api/axiosInstance";
 
-// Ampliamos InstrumentoInterface con campos extra
-interface SelectedInstrumento extends InstrumentoInterface {
-  codigo_ubicacion: number; // Cambiado a number
+const { Option } = Select;
+
+/* -------------------------------------------------------------------------- */
+/*                           Tipos auxiliares                                 */
+/* -------------------------------------------------------------------------- */
+export interface SelectedInstrumento extends Omit<InstrumentoInterface, 'id'> {
+  id?: number; // Para instrumentos existentes en edición
+  codigo_ubicacion: number;
   valor_neto: number;
   moneda: string;
-  monto_objetivo: string;
+  monto_objetivo: number;
   serie: string;
   bodega: string;
 }
@@ -25,131 +30,153 @@ interface ProductoComodato {
   marca: string;
 }
 
-interface InstrumentSelectorTableProps {
+interface Props {
   onChange?: (instruments: SelectedInstrumento[]) => void;
-  selectedMarca?: string; // Add this prop
+  selectedMarca?: string;
+  /** lista inicial de instrumentos (modo edición) */
+  defaultInstruments?: SelectedInstrumento[];
 }
 
-const { Option } = Select;
-
-const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
+/* -------------------------------------------------------------------------- */
+/*                    Componente InstrumentSelectorTable                      */
+/* -------------------------------------------------------------------------- */
+const InstrumentSelectorTable: React.FC<Props> = ({
   onChange,
   selectedMarca,
+  defaultInstruments = [],
 }) => {
-  const [addedInstrumentos, setAddedInstrumentos] = useState<SelectedInstrumento[]>([]);
+  const [addedInstrumentos, setAddedInstrumentos] = useState<SelectedInstrumento[]>(
+    []
+  );
+
   const [productosComodato, setProductosComodato] = useState<ProductoComodato[]>([]);
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loadingInstruments, setLoadingInstruments] = useState(false);
 
-  // Notifica al padre siempre que cambie la lista
-  const notifyParent = (nextList: SelectedInstrumento[]) => {
-    if (onChange) {
-      onChange(nextList);
-    }
-  };
+  console.log('defaultInstruments', defaultInstruments);
 
+  /* ---------------- Fetch instrumentos de la API ------------------------- */
   useEffect(() => {
-    const loadProductosComodato = async () => {
+    const fetchInstruments = async () => {
+      setLoadingInstruments(true);
       try {
-        const { data } = await axiosInstance.get("/comodatos/productos/");
-        setProductosComodato(data.productos);
-      } catch {
-        message.error("Error al cargar productos de comodatos");
+        // Hacer GET a todos los instrumentos sin filtro de marca
+        const response = await axiosInstance.get(`/comodatos/productos/`);
+        if (response.data && Array.isArray(response.data.productos)) {
+          setProductosComodato(response.data.productos);
+        }
+      } catch (error) {
+        console.error('Error fetching instruments:', error);
+        message.error('Error al cargar instrumentos');
+      } finally {
+        setLoadingInstruments(false);
       }
     };
 
-    loadProductosComodato();
-  }, []);
+    fetchInstruments();
+  }, []); // Solo ejecutar una vez al montar el componente
 
+  /* ---------------- Notifica cambios al padre ---------------------------- */
+  const notifyParent = (next: SelectedInstrumento[]) => {
+    onChange?.(next);
+  };
+
+  /* ------------- Cuando llega la prop defaultInstruments ----------------- */
+  useEffect(() => {
+    if (defaultInstruments?.length > 0) {
+      const processedInstruments = defaultInstruments.map(inst => ({
+        ...inst,
+        id: inst.id || undefined, // Mantener ID si existe
+        valor_neto: Number(inst.valor_neto) || 0,
+        monto_objetivo: Number(inst.monto_objetivo) || 0,
+        codigo_ubicacion: Number(inst.codigo_ubicacion) || 0,
+        moneda: inst.moneda || "CLP",
+        serie: inst.serie || "",
+        bodega: inst.bodega || "",
+        tipo: inst.tipo || "",
+      }));
+      
+      setAddedInstrumentos(processedInstruments);
+    }
+  }, [defaultInstruments.length]);
+
+  // Notificar cambios siempre que se modifique la tabla
+  useEffect(() => {
+    notifyParent(addedInstrumentos);
+  }, [addedInstrumentos]);
+
+  /* ---------------------- Acciones de tabla ------------------------------ */
   const handleAddInstrumento = (instrumento: InstrumentoInterface) => {
-    setAddedInstrumentos(prev => {
-      if (prev.some(item => item.codigo === instrumento.codigo)) {
-        message.warning(`El instrumento "${instrumento.descripcion}" ya está en la tabla`);
+    setAddedInstrumentos((prev) => {
+      if (prev.some((item) => item.codigo === instrumento.codigo)) {
+        message.warning(
+          `El instrumento "${instrumento.descripcion}" ya está agregado`
+        );
         return prev;
       }
       const next = [
         ...prev,
         {
           ...instrumento,
+          // No incluir ID para nuevos instrumentos
+          id: undefined,
           codigo_ubicacion: 0,
           valor_neto: 0,
           moneda: "CLP",
-          monto_objetivo: "",
+          monto_objetivo: 0,
           serie: "",
           bodega: "",
         },
       ];
-      message.success(`Instrumento "${instrumento.descripcion}" agregado a la tabla`);
-      notifyParent(next);
       return next;
     });
   };
 
   const handleRemoveInstrumento = (codigo: string) => {
-    setAddedInstrumentos(prev => {
-      const next = prev.filter(item => item.codigo !== codigo);
-      message.success("Instrumento quitado");
-      notifyParent(next);
+    setAddedInstrumentos((prev) => {
+      const next = prev.filter((i) => i.codigo !== codigo);
       return next;
     });
   };
 
-  const handleCellChange = (
-    key: keyof Omit<SelectedInstrumento, keyof InstrumentoInterface>,
-    value: any,
+  const handleCellChange = <
+    K extends keyof Omit<SelectedInstrumento, keyof InstrumentoInterface>
+  >(
+    key: K,
+    value: SelectedInstrumento[K],
     record: SelectedInstrumento
   ) => {
-    setAddedInstrumentos(prev => {
-      const next = prev.map(item =>
-        item.codigo === record.codigo ? { ...item, [key]: value } : item
+    setAddedInstrumentos((prev) => {
+      const next = prev.map((i) =>
+        i.codigo === record.codigo ? { ...i, [key]: value } : i
       );
-      notifyParent(next);
       return next;
     });
   };
 
+  /* ------------------------ Columnas ------------------------------------- */
   const columns: ColumnsType<SelectedInstrumento> = [
-    { 
-      title: "Código", 
-      dataIndex: "codigo", 
-      key: "codigo",
-      width: 120 
-    },
-    { 
-      title: "ADN", 
-      dataIndex: "adn", 
-      key: "adn",
-      width: 120 
-    },
-    { 
-      title: "Descripción", 
-      dataIndex: "descripcion", 
+    { title: "Código", dataIndex: "codigo", key: "codigo", width: 120 },
+    { title: "ADN", dataIndex: "adn", key: "adn", width: 120 },
+    {
+      title: "Descripción",
+      dataIndex: "descripcion",
       key: "descripcion",
-      width: 200 
+      width: 200,
     },
-    { 
-      title: "Tipo", 
-      dataIndex: "tipo", 
-      key: "tipo",
-      width: 120 
-    },
-    { 
-      title: "Marca", 
-      dataIndex: "marca", 
-      key: "marca",
-      width: 150 
-    },
+    { title: "Tipo", dataIndex: "tipo", key: "tipo", width: 120 },
+    { title: "Marca", dataIndex: "marca", key: "marca", width: 150 },
     {
       title: "Bodega",
       dataIndex: "bodega",
       key: "bodega",
       width: 300,
-      render: (value: string, record) => (
+      render: (val, rec) => (
         <div className="min-w-[180px]">
           <BodegasSelector
-            value={value}
-            onChange={(newValue) => handleCellChange("bodega", newValue, record)}
-            placeholder="Seleccione bodega"
+            value={val}
+            onChange={(v) => handleCellChange("bodega", v, rec)}
           />
         </div>
       ),
@@ -159,11 +186,10 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       dataIndex: "codigo_ubicacion",
       key: "codigo_ubicacion",
       width: 200,
-      render: (value: number, record) => (
+      render: (val, rec) => (
         <UbicacionesSelector
-          value={value}
-          onChange={(newValue) => handleCellChange("codigo_ubicacion", newValue, record)}
-          placeholder="Seleccione una ubicación"
+          value={val}
+          onChange={(v) => handleCellChange("codigo_ubicacion", v, rec)}
         />
       ),
     },
@@ -172,20 +198,12 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       dataIndex: "valor_neto",
       key: "valor_neto",
       width: 150,
-      render: (value: number, record) => (
+      render: (val: number, rec) => (
         <InputNumber
           min={0}
-          placeholder="Valor neto"
-          value={value}
+          value={val}
           className="w-32"
-          onChange={val => {
-            if (val === null || val < 0) {
-              message.error("El valor debe ser positivo");
-              handleCellChange("valor_neto", 0, record);
-            } else {
-              handleCellChange("valor_neto", val, record);
-            }
-          }}
+          onChange={(v) => handleCellChange("valor_neto", v ?? 0, rec)}
         />
       ),
     },
@@ -194,10 +212,10 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       dataIndex: "moneda",
       key: "moneda",
       width: 100,
-      render: (value: string, record) => (
+      render: (val: string, rec) => (
         <Select
-          value={value}
-          onChange={val => handleCellChange("moneda", val, record)}
+          value={val}
+          onChange={(v) => handleCellChange("moneda", v, rec)}
           className="w-24"
         >
           <Option value="CLP">CLP</Option>
@@ -210,20 +228,12 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       dataIndex: "monto_objetivo",
       key: "monto_objetivo",
       width: 150,
-      render: (value: number, record) => (
+      render: (val: number, rec) => (
         <InputNumber
           min={0}
-          placeholder="Monto objetivo"
-          value={value}
+          value={val}
           className="w-32"
-          onChange={val => {
-            if (val === null || val < 0) {
-              message.error("El valor debe ser positivo");
-              handleCellChange("monto_objetivo", 0, record);
-            } else {
-              handleCellChange("monto_objetivo", val, record);
-            }
-          }}
+          onChange={(v) => handleCellChange("monto_objetivo", v ?? 0, rec)}
         />
       ),
     },
@@ -232,12 +242,11 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       dataIndex: "serie",
       key: "serie",
       width: 200,
-      render: (value: string, record) => (
+      render: (val, rec) => (
         <Input
-          placeholder="Serie"
-          value={value}
+          value={val}
           className="min-w-[180px]"
-          onChange={e => handleCellChange("serie", e.target.value, record)}
+          onChange={(e) => handleCellChange("serie", e.target.value, rec)}
         />
       ),
     },
@@ -245,7 +254,7 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
       title: "Acciones",
       key: "acciones",
       width: 100,
-      fixed: 'right',
+      fixed: "right",
       render: (_, record) => (
         <Button
           type="link"
@@ -258,40 +267,54 @@ const InstrumentSelectorTable: React.FC<InstrumentSelectorTableProps> = ({
     },
   ];
 
+  /* ---------------------------- Render ----------------------------------- */
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
         <Input
           placeholder="Buscar por Código o Descripción"
           value={searchText}
-          onChange={e => setSearchText(e.target.value)}
+          onChange={(e) => setSearchText(e.target.value)}
           className="w-full"
         />
-        <Button type="primary" onClick={() => setIsModalVisible(true)}>
+        <Button 
+          type="primary" 
+          onClick={() => setIsModalVisible(true)}
+          loading={loadingInstruments}
+        >
           Añadir Instrumento
         </Button>
       </div>
 
       <Table
         dataSource={addedInstrumentos.filter(
-          item =>
-            (selectedMarca ? item.marca === selectedMarca : true) && // Add marca filter
-            (item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.descripcion.toLowerCase().includes(searchText.toLowerCase()))
+          (i) => {
+            const matchesSearch = !searchText || 
+              i.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+              i.descripcion.toLowerCase().includes(searchText.toLowerCase());
+            
+            // En modo edición, mostrar todos los instrumentos independientemente de la marca
+            const matchesMarca = !selectedMarca || 
+              defaultInstruments.length > 0 || // Si hay instrumentos por defecto, mostrar todos
+              String(i.marca).toLowerCase() === String(selectedMarca).toLowerCase();
+            
+            return matchesSearch && matchesMarca;
+          }
         )}
         columns={columns}
         rowKey="codigo"
-        scroll={{ x: 1800 }} // Increased scroll width
+        scroll={{ x: 1800 }}
         className="rounded-xl"
       />
-      
+
       <InstrumentSelectorModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onAddInstrumento={handleAddInstrumento}
-        productosComodato={productosComodato.filter(p => 
+        // Filtrar los instrumentos por marca en el frontend antes de pasarlos al modal
+        productosComodato={productosComodato.filter((p) =>
           selectedMarca ? p.marca === selectedMarca : true
-        )} // Filter productos by marca
+        )}
       />
     </>
   );

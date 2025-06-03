@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import axiosInstance from '../api/axiosInstance';
 
+interface Marca {
+  marca: string;
+}
+
 interface MarcasSelectorProps {
   value?: string;
   onChange: (marca: string) => void;
@@ -13,16 +17,14 @@ const MarcasSelector: React.FC<MarcasSelectorProps> = ({
   onChange,
   placeholder = "Seleccione una marca"
 }) => {
-  const [marcas, setMarcas] = useState<string[]>([]);
+  const [marcas, setMarcas] = useState<Marca[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    axiosInstance.get('/bodega/filtros/?v=1')
+    axiosInstance.get<{ marcas: Marca[] }>('/comodatos/marcas/')
       .then(res => {
-        // Ensure we're accessing the 'adn' property and it's an array
-        const marcasArray = Array.isArray(res.data.adn) ? res.data.adn : [];
-        setMarcas(marcasArray.filter((marca: string): boolean => marca !== "."));
+        setMarcas(res.data.marcas);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -38,9 +40,9 @@ const MarcasSelector: React.FC<MarcasSelectorProps> = ({
       showSearch
       optionFilterProp="children"
     >
-      {Array.isArray(marcas) && marcas.map(marca => (
-        <Select.Option key={marca} value={marca}>
-          {marca}
+      {marcas.map(m => (
+        <Select.Option key={m.marca} value={m.marca}>
+          {m.marca}
         </Select.Option>
       ))}
     </Select>

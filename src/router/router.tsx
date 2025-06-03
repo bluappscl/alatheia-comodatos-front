@@ -11,8 +11,9 @@ import LayoutBack from "../layouts/LayoutBack";
 import Login from "../pages/Login";
 import ClienteDetalle from "../pages/Clientes/ClienteDetalle";
 import Clientes from "../pages/Clientes/Clientes";
-import { CrearGeneral } from "../pages/Comodatos/CrearGeneral";
 import VerDetalleComodato from "../pages/Comodatos/VerDetalleComodato";
+import EditarComodato from "../pages/Comodatos/EditarComodato";
+import CrearGeneral from "../pages/Comodatos/CrearGeneral";
 
 const routes = createRoutesFromElements(
   <>
@@ -23,6 +24,7 @@ const routes = createRoutesFromElements(
       <Route path="comodatos" element={<ComodatosPage />} />
       {/* <Route path="comodatos/:id" element={<ComodatoDetalle />} /> */}
       <Route path="comodato/:id" element={<VerDetalleComodato/>} />
+      <Route path="comodato/editar/:id" element={<EditarComodato/>} />
       <Route path="clientes" element={<Clientes />} />
       <Route path="clientes/:rut" element={<ClienteDetalle />} />
     </Route>

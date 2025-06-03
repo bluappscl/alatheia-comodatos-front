@@ -9,11 +9,13 @@ const { Search } = Input;
 interface ClientSelectionModalProps {
   onSelectClient: (rut: string) => void;
   showSelectedClient?: boolean;
+    selectedRut?: string;   
 }
 
 const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   onSelectClient,
   showSelectedClient = true,
+  selectedRut,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clientes, setClientes] = useState<ClienteInterface[]>([]);
@@ -21,6 +23,13 @@ const ClientSelectionModal: React.FC<ClientSelectionModalProps> = ({
   const [loadingClientes, setLoadingClientes] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedClient, setSelectedClient] = useState<ClienteInterface | null>(null);
+
+   useEffect(() => {
+    if (selectedRut && clientes.length) {
+      const c = clientes.find((cl) => cl.rut === selectedRut) || null;
+      setSelectedClient(c);
+    }
+  }, [selectedRut, clientes]);
 
   // Hacer GET directamente aquí
   useEffect(() => {
