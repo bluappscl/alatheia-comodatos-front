@@ -233,8 +233,9 @@ const ClienteDetalle: React.FC = () => {
   if (!data) return null;
 
 
-  const annualPct =
-    (data.monto_realizado_anual / data.monto_esperado_anual) * 100;
+  const annualPct = data.monto_esperado_anual 
+    ? (data.monto_realizado_anual / data.monto_esperado_anual) * 100 
+    : 0;
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
