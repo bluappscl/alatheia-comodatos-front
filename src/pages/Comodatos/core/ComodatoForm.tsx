@@ -608,9 +608,10 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
               </Title>
 
               <InstrumentSelectorTable
-                 selectedMarca={values.marca}  
+                selectedMarca={values.marca}  
                 defaultInstruments={values.instrumentos}
                 onChange={(insts) => setFieldValue("instrumentos", insts)}
+                isEditing={isEditing} // Pasar el prop de edición
               />
             </section>
 

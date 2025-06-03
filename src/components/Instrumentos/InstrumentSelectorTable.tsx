@@ -35,6 +35,8 @@ interface Props {
   selectedMarca?: string;
   /** lista inicial de instrumentos (modo edición) */
   defaultInstruments?: SelectedInstrumento[];
+  /** indica si está en modo edición para deshabilitar campos */
+  isEditing?: boolean;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -44,6 +46,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   onChange,
   selectedMarca,
   defaultInstruments = [],
+  isEditing = false,
 }) => {
   const [addedInstrumentos, setAddedInstrumentos] = useState<SelectedInstrumento[]>(
     []
@@ -247,6 +250,8 @@ const InstrumentSelectorTable: React.FC<Props> = ({
           value={val}
           className="min-w-[180px]"
           onChange={(e) => handleCellChange("serie", e.target.value, rec)}
+          disabled={isEditing && rec.id !== undefined} // Deshabilitar si está editando y tiene ID
+          placeholder={isEditing && rec.id !== undefined ? "No editable" : "Ingrese serie"}
         />
       ),
     },
