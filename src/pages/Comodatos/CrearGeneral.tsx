@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import comodato_photo from "../../media/temporal/comodato_photo.png";
 import { motion } from "framer-motion";
 import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
-import ComodatoForm from "./core/ComodatoForm"; // Cambiar de vuelta a mayúsculas
+import ComodatoForm from "./core/ComodatoForm"; 
 
 export default function CrearGeneral() {
   const nav = useNavigate();

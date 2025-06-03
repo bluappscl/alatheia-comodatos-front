@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   Card,
   Row,
   Col,
-  Progress,
   Tag,
   Divider,
   Spin,
@@ -14,15 +13,14 @@ import {
   Button,
   Modal,
   Collapse,
-} from "antd"
+} from "antd";
 import {
   Package,
-  TrendingUp,
-  TrendingDown,
   DollarSign,
   Calendar as CalendarIcon,
   Target,
-} from "lucide-react"
+  Edit,
+} from "lucide-react";
 import {
   Chart,
   BarElement,
@@ -31,14 +29,21 @@ import {
   Tooltip as ChartTooltip,
   Legend,
   ArcElement,
-} from "chart.js"
-import { Bar, Pie } from "react-chartjs-2"
-import axiosInstance from "../../api/axiosInstance"
-import InstrumentosGestion from "./VerInstrumentosDetalle"
+} from "chart.js";
+import { Bar, Pie } from "react-chartjs-2";
+import axiosInstance from "../../api/axiosInstance";
+import InstrumentosGestion from "./VerInstrumentosDetalle";
 
-Chart.register(BarElement, CategoryScale, LinearScale, ChartTooltip, Legend, ArcElement)
+Chart.register(
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ChartTooltip,
+  Legend,
+  ArcElement
+);
 
-const { Title, Text } = Typography
+const { Title, Text } = Typography;
 
 /* ---------- Utilidades ---------- */
 
@@ -47,105 +52,116 @@ const formatCurrency = (amount: number) =>
     style: "currency",
     currency: "CLP",
     maximumFractionDigits: 0,
-  }).format(amount)
+  }).format(amount);
 
 const getPerformanceColor = (expected: number, realized: number) => {
-  const pct = expected ? (realized / expected) * 100 : 0
-  if (pct >= 100) return "text-green-600"
-  if (pct >= 75) return "text-yellow-600"
-  return "text-red-600"
-}
+  const pct = expected ? (realized / expected) * 100 : 0;
+  if (pct >= 100) return "text-green-600";
+  if (pct >= 75) return "text-yellow-600";
+  return "text-red-600";
+};
 
 const PerformanceTag: React.FC<{ expected: number; realized: number }> = ({
   expected,
   realized,
 }) => {
-  const pct = expected ? (realized / expected) * 100 : 0
+  const pct = expected ? (realized / expected) * 100 : 0;
   if (pct >= 100)
     return (
-      <Tooltip title="Se logró el 100% o más de lo esperado">
+      <Tooltip title="Se logró el 100 % o más de lo esperado">
         <Tag color="green">Excelente</Tag>
       </Tooltip>
-    )
+    );
   if (pct >= 75)
     return (
-      <Tooltip title="Se logró entre el 75% y el 99% de lo esperado">
+      <Tooltip title="Se logró entre el 75 % y el 99 % de lo esperado">
         <Tag color="gold">Bueno</Tag>
       </Tooltip>
-    )
+    );
   return (
-    <Tooltip title="Se logró menos del 75% de lo esperado">
-      <Tag color="red">Bajo rendimiento</Tag>
+    <Tooltip title="Se logró menos del 75 % de lo esperado">
+      <Tag color="red">Bajo</Tag>
     </Tooltip>
-  )
-}
+  );
+};
 
 /* ---------- Tipos ---------- */
 
 interface Instrumento {
-  codigo: string
-  monto_esperado_mensual: number
-  monto_realizado_mensual: number
-  monto_esperado_anual: number
-  monto_realizado_anual: number
+  codigo: string;
+  descripcion: string;
+  adn: string;
+  monto_esperado_mensual: number;
+  monto_realizado_mensual: number;
+  monto_esperado_anual: number;
+  monto_realizado_anual: number;
 }
 
 interface Marca {
-  comodato_id: number          // ⬅️ campo usado para abrir el modal
-  marca: string
-  numero_instrumentos: number
-  monto_esperado_mensual: number
-  monto_realizado_mensual: number
-  monto_esperado_anual: number
-  monto_realizado_anual: number
-  instrumentos: Instrumento[]
+  comodato_id: number;
+  marca: string;
+  numero_instrumentos: number;
+  monto_esperado_mensual: number;
+  monto_realizado_mensual: number;
+  monto_esperado_anual: number;
+  monto_realizado_anual: number;
+  promedio_objetivo_a_la_fecha: number;
+  promedio_realizado_a_la_fecha: number;
+  instrumentos: Instrumento[];
 }
 
 interface ClienteResumen {
-  numero_instrumentos: number
-  rut: string
-  nombre: string
-  monto_esperado_mensual: number
-  monto_realizado_mensual: number
-  monto_esperado_anual: number
-  monto_realizado_anual: number
-  marcas: Marca[]
+  rut: string;
+  nombre: string;
+  direccion: string;
+  codigo_comuna: string;
+  region: string;
+  numero_instrumentos: number;
+  monto_esperado_mensual: number;
+  monto_realizado_mensual: number;
+  monto_esperado_anual: number;
+  monto_realizado_anual: number;
+  promedio_objetivo_a_la_fecha: number;
+  promedio_realizado_a_la_fecha: number;
+  marcas: Marca[];
 }
 
 interface APIResponse {
-  cliente: ClienteResumen
+  cliente: ClienteResumen;
 }
 
 /* ---------- Componente principal ---------- */
 
 const ClienteDetalle: React.FC = () => {
-  const { rut } = useParams<{ rut: string }>()
-  const [data, setData] = useState<ClienteResumen | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { rut } = useParams<{ rut: string }>();
+  const [data, setData] = useState<ClienteResumen | null>(null);
+  const [loading, setLoading] = useState(true);
 
   /* Estado para el modal de instrumentos */
-  const [modalVisible, setModalVisible] = useState(false)
-  const [comodatoId, setComodatoId] = useState<number | null>(null)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [comodatoId, setComodatoId] = useState<number | null>(null);
 
   const openModal = (id: number) => {
-    setComodatoId(id)
-    setModalVisible(true)
-  }
+    setComodatoId(id);
+    setModalVisible(true);
+  };
   const closeModal = () => {
-    setModalVisible(false)
-    setComodatoId(null)
-  }
+    setModalVisible(false);
+    setComodatoId(null);
+  };
 
   /* --- Cargar datos del cliente --- */
   useEffect(() => {
-    if (!rut) return
-    setLoading(true)
+    if (!rut) return;
+    setLoading(true);
     axiosInstance
       .get<APIResponse>(`/comodatos/clientes/${rut}/resumen/`)
       .then((res) => setData(res.data.cliente))
-      .catch(() => message.error("No se pudo cargar la información del cliente"))
-      .finally(() => setLoading(false))
-  }, [rut])
+      .catch(() =>
+        message.error("No se pudo cargar la información del cliente")
+      )
+      .finally(() => setLoading(false));
+  }, [rut]);
 
   /* --- Datos para gráficos --- */
   const barData = useMemo(() => {
@@ -156,7 +172,7 @@ const ClienteDetalle: React.FC = () => {
           { label: "Esperado", backgroundColor: "hsl(210 90% 60%)", data: [] },
           { label: "Realizado", backgroundColor: "hsl(150 90% 45%)", data: [] },
         ],
-      }
+      };
 
     return {
       labels: data.marcas.map((m) => m.marca),
@@ -172,20 +188,22 @@ const ClienteDetalle: React.FC = () => {
           data: data.marcas.map((m) => m.monto_realizado_mensual),
         },
       ],
-    }
-  }, [data])
+    };
+  }, [data]);
 
   const pieData = useMemo(() => {
     if (!data?.marcas)
-      return { labels: [], datasets: [{ data: [], backgroundColor: [] }] }
+      return { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
 
-    const marcasConMonto = data.marcas.filter((m) => m.monto_esperado_mensual > 0)
+    const marcasConMonto = data.marcas.filter(
+      (m) => m.monto_esperado_mensual > 0
+    );
 
     if (marcasConMonto.length === 0)
       return {
         labels: ["Sin datos"],
         datasets: [{ data: [1], backgroundColor: ["#e0e0e0"] }],
-      }
+      };
 
     return {
       labels: marcasConMonto.map((m) => m.marca),
@@ -202,8 +220,8 @@ const ClienteDetalle: React.FC = () => {
           ],
         },
       ],
-    }
-  }, [data])
+    };
+  }, [data]);
 
   /* --- Loading --- */
   if (loading)
@@ -211,13 +229,12 @@ const ClienteDetalle: React.FC = () => {
       <div className="w-full h-96 flex items-center justify-center">
         <Spin size="large" />
       </div>
-    )
-  if (!data) return null
+    );
+  if (!data) return null;
 
-  const monthlyPct =
-    (data.monto_realizado_mensual / data.monto_esperado_mensual) * 100
+
   const annualPct =
-    (data.monto_realizado_anual / data.monto_esperado_anual) * 100
+    (data.monto_realizado_anual / data.monto_esperado_anual) * 100;
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -226,87 +243,110 @@ const ClienteDetalle: React.FC = () => {
       <Title level={3} className="text-center">
         {data.nombre}
       </Title>
-      <p className="text-center text-sm !mb-6">{data.rut}</p>
+      <p className="text-center text-sm !mb-1">{data.rut}</p>
+      <p className="text-center text-xs text-gray-500 mb-6">
+        {data.direccion} • {data.region}
+      </p>
 
       {/* ---------- Resumen general ---------- */}
-      <Row gutter={[16, 16]} className="mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
         {/* Total instrumentos */}
-        <Col xs={24} md={6}>
-          <Card className="shadow">
-            <Row justify="space-between" align="middle">
-              <Text>Total instrumentos</Text>
-              <Package className="w-4 h-4 text-blue-600" />
-            </Row>
-            <Title level={3}>{data.numero_instrumentos}</Title>
-            <Text type="secondary">Instrumentos activos</Text>
-          </Card>
-        </Col>
-
-
-    
-
+        <Card className="shadow">
+          <div className="flex justify-between items-center">
+            <Text>Total instrumentos</Text>
+            <Package className="w-4 h-4 text-blue-600" />
+          </div>
+          <Title level={3}>{data.numero_instrumentos}</Title>
+          <Text type="secondary">Instrumentos activos</Text>
+        </Card>
 
         {/* Rendimiento mensual */}
-        <Col xs={24} md={6}>
-          <Card className="shadow">
-            <Row justify="space-between" align="middle">
-              <Text>Rendimiento mensual</Text>
-              {monthlyPct >= 75 ? (
-                <TrendingUp className="w-4 h-4 text-green-600" />
-              ) : (
-                <TrendingDown className="w-4 h-4 text-red-600" />
-              )}
-            </Row>
-            <Title
-              level={3}
-              className={getPerformanceColor(
-                data.monto_esperado_mensual,
-                data.monto_realizado_mensual
-              )}
-            >
-              {monthlyPct.toFixed(1)}%
-            </Title>
-            <Progress percent={monthlyPct} showInfo={false} />
-          </Card>
-        </Col>
+        {/* <Card className="shadow">
+          <div className="flex justify-between items-center">
+        <Text>Rendimiento mensual</Text>
+        {monthlyPct >= 75 ? (
+          <TrendingUp className="w-4 h-4 text-green-600" />
+        ) : (
+          <TrendingDown className="w-4 h-4 text-red-600" />
+        )}
+          </div>
+          <Title
+        level={3}
+        className={getPerformanceColor(
+          data.monto_esperado_mensual,
+          data.monto_realizado_mensual
+        )}
+          >
+        {monthlyPct.toFixed(1)}%
+          </Title>
+          <Progress percent={monthlyPct} showInfo={false} />
+        </Card> */}
 
         {/* Monto mensual */}
-        <Col xs={24} md={6}>
-          <Card className="shadow">
-            <Row justify="space-between" align="middle">
-              <Text>Monto mensual</Text>
-              <DollarSign className="w-4 h-4 text-green-600" />
-            </Row>
-            <Title level={3}>{formatCurrency(data.monto_realizado_mensual)}</Title>
-            <Text type="secondary">
-              de {formatCurrency(data.monto_esperado_mensual)}
-            </Text>
-          </Card>
-        </Col>
+        <Card className="shadow">
+          <div className="flex justify-between items-center">
+            <Text>Monto mensual</Text>
+            <DollarSign className="w-4 h-4 text-green-600" />
+          </div>
+          <Title level={3}>
+            {formatCurrency(data.monto_realizado_mensual)}
+          </Title>
+          <Text type="secondary">
+            de {formatCurrency(data.monto_esperado_mensual)}
+          </Text>
+        </Card>
 
         {/* Rendimiento anual */}
-        <Col xs={24} md={6}>
-          <Card className="shadow">
-            <Row justify="space-between" align="middle">
-              <Text>Rendimiento anual</Text>
-              <CalendarIcon className="w-4 h-4 text-purple-600" />
-            </Row>
-            <Title
-              level={3}
-              className={getPerformanceColor(
-                data.monto_esperado_anual,
-                data.monto_realizado_anual
-              )}
-            >
-              {annualPct.toFixed(1)}%
-            </Title>
-            <Text type="secondary">
-              {formatCurrency(data.monto_realizado_anual)} /{" "}
-              {formatCurrency(data.monto_esperado_anual)}
-            </Text>
-          </Card>
-        </Col>
-      </Row>
+        <Card className="shadow">
+          <div className="flex justify-between items-center">
+            <Text>Rendimiento anual</Text>
+            <CalendarIcon className="w-4 h-4 text-purple-600" />
+          </div>
+          <Title
+            level={3}
+            className={getPerformanceColor(
+              data.monto_esperado_anual,
+              data.monto_realizado_anual
+            )}
+          >
+            {annualPct.toFixed(1)}%
+          </Title>
+          <Text type="secondary">
+            {formatCurrency(data.monto_realizado_anual)} /{" "}
+            {formatCurrency(data.monto_esperado_anual)}
+          </Text>
+        </Card>
+
+        {/* Promedio objetivo a la fecha */}
+        <Card className="shadow">
+          <div className="flex justify-between items-center">
+            <Text>Promedio objetivo a la fecha</Text>
+            <Target className="w-4 h-4 text-blue-600" />
+          </div>
+          <Title level={3}>
+            {formatCurrency(data.promedio_objetivo_a_la_fecha)}
+          </Title>
+          <Text type="secondary">Objetivo acumulado</Text>
+        </Card>
+
+        {/* Promedio realizado a la fecha */}
+        <Card className="shadow">
+          <div className="flex justify-between items-center">
+            <Text>Promedio realizado a la fecha</Text>
+            <Target className="w-4 h-4 text-green-600" />
+          </div>
+          <Title
+            level={3}
+            className={getPerformanceColor(
+              data.promedio_objetivo_a_la_fecha,
+              data.promedio_realizado_a_la_fecha
+            )}
+          >
+            {formatCurrency(data.promedio_realizado_a_la_fecha)}
+          </Title>
+          <Text type="secondary">Realizado acumulado</Text>
+        </Card>
+      </div>
 
       {/* ---------- Detalle por marcas ---------- */}
       <Title level={3} className="!mb-4">
@@ -325,16 +365,22 @@ const ClienteDetalle: React.FC = () => {
               </Text>
 
               {/* Botón para abrir el modal */}
+              <div className="flex items-center mt-2">
+
               <Button type="link" onClick={() => openModal(marca.comodato_id)}>
                 Ver detalle
               </Button>
 
-              <Link to={`/comodato/editar/${marca.comodato_id}`} className="ml-4"> 
-              editar
+              <Link
+                to={`/comodato/editar/${marca.comodato_id}`}
+                className="ml-4"
+                >
+                <Edit className="w-4 h-4 text-blue-600" />
               </Link>
+                </div>
             </div>
 
-            <PerformanceTag  
+            <PerformanceTag
               expected={marca.monto_esperado_mensual}
               realized={marca.monto_realizado_mensual}
             />
@@ -342,14 +388,14 @@ const ClienteDetalle: React.FC = () => {
 
           <Divider />
 
-          <Row gutter={[16, 16]} className="mb-4">
-            <Col xs={12} md={6}>
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
+            <div>
               <Text type="secondary">Esperado mensual</Text>
               <div className="font-semibold">
                 {formatCurrency(marca.monto_esperado_mensual)}
               </div>
-            </Col>
-            <Col xs={12} md={6}>
+            </div>
+            <div>
               <Text type="secondary">Realizado mensual</Text>
               <div
                 className={`font-semibold ${getPerformanceColor(
@@ -359,14 +405,14 @@ const ClienteDetalle: React.FC = () => {
               >
                 {formatCurrency(marca.monto_realizado_mensual)}
               </div>
-            </Col>
-            <Col xs={12} md={6}>
+            </div>
+            <div>
               <Text type="secondary">Esperado anual</Text>
               <div className="font-semibold">
                 {formatCurrency(marca.monto_esperado_anual)}
               </div>
-            </Col>
-            <Col xs={12} md={6}>
+            </div>
+            <div>
               <Text type="secondary">Realizado anual</Text>
               <div
                 className={`font-semibold ${getPerformanceColor(
@@ -376,51 +422,93 @@ const ClienteDetalle: React.FC = () => {
               >
                 {formatCurrency(marca.monto_realizado_anual)}
               </div>
-            </Col>
-          </Row>
+            </div>
+            {/* ------ Nuevos promedios por marca ------ */}
+            <div>
+              <Text type="secondary">Promedio objetivo a la fecha</Text>
+              <div className="font-semibold">
+                {formatCurrency(marca.promedio_objetivo_a_la_fecha)}
+              </div>
+            </div>
+            <div>
+              <Text type="secondary">Promedio realizado a la fecha</Text>
+              <div
+                className={`font-semibold ${getPerformanceColor(
+                  marca.promedio_objetivo_a_la_fecha,
+                  marca.promedio_realizado_a_la_fecha
+                )}`}
+              >
+                {formatCurrency(marca.promedio_realizado_a_la_fecha)}
+              </div>
+            </div>
+          </div>
 
           <Divider />
 
-            <Collapse className="bg-transparent border-none" ghost>
+          <Collapse className="bg-transparent border-none" ghost>
             <Collapse.Panel header="Ver instrumentos" key="1">
               {marca.instrumentos.map((inst) => (
-              <Card key={inst.codigo} size="small" className="mb-2 bg-slate-50">
-                <Row justify="space-between" align="middle">
-                <div className="flex items-center gap-2">
-                  <Target className="w-4 h-4 text-slate-500" />
-                  <Text strong>{inst.codigo}</Text>
-                </div>
-                <Row gutter={[24, 0]} align="middle" className="mr-4">
-                  <Col className="min-w-[100px]">
-                  <Text type="secondary">Mensual</Text>
-                  <div
-                    className={`font-semibold ${getPerformanceColor(
-                    inst.monto_esperado_mensual,
-                    inst.monto_realizado_mensual
-                    )}`}
-                  >
-                    {formatCurrency(inst.monto_realizado_mensual)}
-                  </div>
-                  </Col>
-                  <Col className="min-w-[100px]">
-                  <Text type="secondary">Anual</Text>
-                  <div
-                    className={`font-semibold ${getPerformanceColor(
-                    inst.monto_esperado_anual,
-                    inst.monto_realizado_anual
-                    )}`}
-                  >
-                    {formatCurrency(inst.monto_realizado_anual)}
-                  </div>
-                  </Col>
-                </Row>
-                </Row>
-              </Card>
+                <Card
+                  key={`${inst.codigo}-${inst.descripcion}`}
+                  size="small"
+                  className="mb-2 bg-slate-50"
+                >
+                  <Row justify="space-between" align="middle">
+                    <div className="flex items-center gap-2">
+                      <Target className="w-4 h-4 text-slate-500" />
+                      <div>
+                        <Text strong>{inst.codigo}</Text>
+                        <p className="text-xs text-gray-500">
+                          {inst.descripcion}
+                        </p>
+                      </div>
+                    </div>
+                    <Row gutter={[24, 0]} align="middle" className="mr-4">
+                      <Col className="min-w-[120px]">
+                        <Text type="secondary">Mensual Esperado</Text>
+                        <div className="font-semibold">
+                          {formatCurrency(inst.monto_esperado_mensual)}
+                        </div>
+                      </Col>
+                      <Col className="min-w-[120px]">
+                        <Text type="secondary">Mensual Realizado</Text>
+                        <div
+                          className={`font-semibold ${getPerformanceColor(
+                            inst.monto_esperado_mensual,
+                            inst.monto_realizado_mensual
+                          )}`}
+                        >
+                          {formatCurrency(inst.monto_realizado_mensual)}
+                        </div>
+                      </Col>
+                      <Col className="min-w-[120px]">
+                        <Text type="secondary">Anual Esperado</Text>
+                        <div className="font-semibold">
+                          {formatCurrency(inst.monto_esperado_anual)}
+                        </div>
+                      </Col>
+                      <Col className="min-w-[120px]">
+                        <Text type="secondary">Anual Realizado</Text>
+                        <div
+                          className={`font-semibold ${getPerformanceColor(
+                            inst.monto_esperado_anual,
+                            inst.monto_realizado_anual
+                          )}`}
+                        >
+                          {formatCurrency(inst.monto_realizado_anual)}
+                        </div>
+                      </Col>
+                    </Row>
+                  </Row>
+                  {inst.adn && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      ADN: {inst.adn}
+                    </p>
+                  )}
+                </Card>
               ))}
             </Collapse.Panel>
-            </Collapse>
-
-          
+          </Collapse>
         </Card>
       ))}
 
@@ -443,7 +531,7 @@ const ClienteDetalle: React.FC = () => {
                 scales: {
                   y: {
                     ticks: {
-                      callback: (val) => `${Number(val) / 1_000_000}M`,
+                      callback: (val) => `${Number(val) / 1_000_000} M`,
                     },
                   },
                 },
@@ -498,7 +586,7 @@ const ClienteDetalle: React.FC = () => {
         {comodatoId && <InstrumentosGestion id={comodatoId} />}
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default ClienteDetalle
+export default ClienteDetalle;
