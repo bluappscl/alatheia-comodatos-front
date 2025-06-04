@@ -36,6 +36,15 @@ function mapApiComodato(api: any, inst: SelectedInstrumento[]) {
         ? c.marca
         : inst[0]?.marca ?? "",
 
+    /* Información del cliente */
+    clienteInfo: {
+      rut: c.rut_cliente,
+      nombre: c.nombre_cliente,
+      direccion: c.direccion_cliente,
+      codigo_comuna: c.codigo_comuna_cliente,
+      nombre_comuna: c.nombre_comuna_cliente,
+    },
+
     /* Representantes */
     nombre_representante_cliente: c.nombre_representante_cliente ?? "",
     rut_representante_cliente: c.rut_representante_cliente ?? "",

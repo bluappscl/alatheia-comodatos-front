@@ -232,9 +232,8 @@ const ClienteDetalle: React.FC = () => {
     );
   if (!data) return null;
 
-
-  const annualPct = data.monto_esperado_anual 
-    ? (data.monto_realizado_anual / data.monto_esperado_anual) * 100 
+  const annualPct = data.monto_esperado_anual
+    ? (data.monto_realizado_anual / data.monto_esperado_anual) * 100
     : 0;
 
   return (
@@ -367,18 +366,20 @@ const ClienteDetalle: React.FC = () => {
 
               {/* Botón para abrir el modal */}
               <div className="flex items-center mt-2">
-
-              <Button type="link" onClick={() => openModal(marca.comodato_id)}>
-                Ver detalle
-              </Button>
-
-              <Link
-                to={`/comodato/editar/${marca.comodato_id}`}
-                className="ml-4"
+                <Button
+                  type="link"
+                  onClick={() => openModal(marca.comodato_id)}
                 >
-                <Edit className="w-4 h-4 text-blue-600" />
-              </Link>
-                </div>
+                  Ver detalle
+                </Button>
+
+                <Link
+                  to={`/comodato/editar/${marca.comodato_id}`}
+                  className="ml-4"
+                >
+                  <Edit className="w-4 h-4 text-blue-600" />
+                </Link>
+              </div>
             </div>
 
             <PerformanceTag

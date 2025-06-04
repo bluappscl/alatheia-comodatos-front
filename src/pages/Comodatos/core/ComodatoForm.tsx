@@ -15,8 +15,10 @@ import {
   Typography,
   Upload,
   UploadProps,
+  Card,
 } from "antd";
 import { Formik, Form as FormikForm, Field } from "formik";
+import { useState } from "react";
 import dayjs from "dayjs";
 import {
   BankOutlined,
@@ -45,7 +47,6 @@ import RepresentanteSelector, {
   Representante,
 } from "../../../components/RepresentantesSelect";
 import { comodatoSchema } from "../schema/comodatoSchema";
-import { useState } from "react";
 
 const { Title, Text } = Typography;
 
@@ -58,6 +59,15 @@ function buildInitialValues() {
     numero_comodato: "",
     rut_cliente: "",
      marca: "",
+
+    /* Información del cliente (para modo edición) */
+    clienteInfo: null as {
+      rut: string;
+      nombre: string;
+      direccion: string;
+      codigo_comuna: string;
+      nombre_comuna?: string;
+    } | null,
 
     /* Representantes */
     nombre_representante_cliente: "",
@@ -171,6 +181,9 @@ interface Props {
 const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing = false }) => {
   const mergedInitials = { ...buildInitialValues(), ...initialValues };
   const [loadingStage, setLoadingStage] = useState<"comodato" | "contrato" | null>(null);
+  
+  // En modo edición, usar la información del cliente que viene en initialValues
+  const clienteInfo = isEditing && mergedInitials.clienteInfo ? mergedInitials.clienteInfo : null;
 
   // Función para descargar contrato actualizada
   const handleDownloadContract = async (contratoExistente: { id: number; nombre_archivo: string; archivo: string } | null) => {
@@ -318,27 +331,63 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                 <BankOutlined /> Cliente y marca
               </Title>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Form.Item
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">                <Form.Item
                   validateStatus={
                     touched.rut_cliente && errors.rut_cliente ? "error" : ""
                   }
                   help={touched.rut_cliente && errors.rut_cliente}
                 >
-                  <ClientSelectionModal
-                    onSelectClient={(rut) => setFieldValue("rut_cliente", rut)}
-                    selectedRut={values.rut_cliente}
-                  />
-                </Form.Item>
-
-                <Form.Item
+                  {isEditing ? (
+                    // Mostrar información del cliente de forma estática en modo edición
+                    <div>
+                      <Text strong className="block mb-2">Cliente (no editable)</Text>
+                      {clienteInfo ? (
+                        <Card className="bg-gray-50">
+                          <Typography.Title level={5}>
+                            {clienteInfo.nombre}
+                          </Typography.Title>
+                          <Typography.Text>RUT: {clienteInfo.rut}</Typography.Text>
+                          <br />
+                          <Typography.Text>
+                            Cód. Comuna: {clienteInfo.codigo_comuna}
+                          </Typography.Text>
+                          <br />
+                          <Typography.Text>
+                            Dirección: {clienteInfo.direccion}
+                          </Typography.Text>
+                        </Card>
+                      ) : (
+                        <Card className="bg-gray-50">
+                          <Typography.Text>
+                            Cargando información del cliente...
+                          </Typography.Text>
+                        </Card>
+                      )}
+                    </div>
+                  ) : (
+                    // Modo creación: mostrar el modal de selección
+                    <ClientSelectionModal
+                      onSelectClient={(rut) => setFieldValue("rut_cliente", rut)}
+                      selectedRut={values.rut_cliente}
+                    />
+                  )}
+                </Form.Item><Form.Item
                   validateStatus={touched.marca && errors.marca ? "error" : ""}
                   help={touched.marca && (errors.marca as string)}
                 >
-                <MarcasSelector
-                  value={values.marca}  // Eliminar el || undefined ya que esperamos un string directo
-                  onChange={(m) => setFieldValue("marca", m)}
-                />
+                {isEditing ? (
+                  <Input
+                    value={values.marca}
+                    disabled
+                    placeholder="Marca (no editable)"
+                    style={{ backgroundColor: '#f5f5f5', color: '#999' }}
+                  />
+                ) : (
+                  <MarcasSelector
+                    value={values.marca}
+                    onChange={(m) => setFieldValue("marca", m)}
+                  />
+                )}
                 </Form.Item>
               </div>
             </section>

@@ -310,16 +310,12 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         rowKey="codigo"
         scroll={{ x: 1800 }}
         className="rounded-xl"
-      />
-
-      <InstrumentSelectorModal
+      />      <InstrumentSelectorModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onAddInstrumento={handleAddInstrumento}
-        // Filtrar los instrumentos por marca en el frontend antes de pasarlos al modal
-        productosComodato={productosComodato.filter((p) =>
-          selectedMarca ? p.marca === selectedMarca : true
-        )}
+        productosComodato={productosComodato}
+        marcaComodato={isEditing ? selectedMarca : undefined} // Solo filtrar por marca en modo edición
       />
     </>
   );

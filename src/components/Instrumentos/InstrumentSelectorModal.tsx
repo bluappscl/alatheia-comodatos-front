@@ -15,6 +15,7 @@ interface Props {
   onClose: () => void;
   onAddInstrumento: (instrumento: InstrumentoInterface) => void;
   productosComodato: ProductoComodato[];
+  marcaComodato?: string; // Nueva prop para filtrar por marca del comodato
 }
 
 const InstrumentSelectorModal: React.FC<Props> = ({
@@ -22,14 +23,23 @@ const InstrumentSelectorModal: React.FC<Props> = ({
   onClose,
   onAddInstrumento,
   productosComodato,
+  marcaComodato,
 }) => {
   const [searchText, setSearchText] = useState("");
 
-  // Filtrar productos según búsqueda
-  const filteredProductos = productosComodato.filter((item) =>
-    item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.descripcion.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // Filtrar productos según búsqueda y marca del comodato
+  const filteredProductos = productosComodato.filter((item) => {
+    const matchesSearch = 
+      item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.descripcion.toLowerCase().includes(searchText.toLowerCase());
+    
+    // Si hay marca del comodato especificada, filtrar solo por esa marca
+    const matchesMarca = marcaComodato 
+      ? item.marca.toLowerCase() === marcaComodato.toLowerCase()
+      : true;
+    
+    return matchesSearch && matchesMarca;
+  });
 
   const productosComodatoColumns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },
@@ -59,9 +69,8 @@ const InstrumentSelectorModal: React.FC<Props> = ({
     },
   ];
 
-  return (
-    <Modal
-      title="Seleccionar Instrumento o Producto"
+  return (    <Modal
+      title={`Seleccionar Instrumento o Producto${marcaComodato ? ` - Marca: ${marcaComodato}` : ''}`}
       open={visible}
       onCancel={onClose}
       footer={null}
