@@ -19,7 +19,8 @@ const routes = createRoutesFromElements(
   <>
     <Route path="/login" element={<Login />} />
     <Route path="/" element={<LayoutBack />}>
-      <Route index element={<Home />} />
+      <Route index element={<Clientes />} />
+      <Route path="home" element={<Home />} />
       <Route path="nuevo-comodato" element={<CrearGeneral />} />
       <Route path="comodatos" element={<ComodatosPage />} />
       {/* <Route path="comodatos/:id" element={<ComodatoDetalle />} /> */}

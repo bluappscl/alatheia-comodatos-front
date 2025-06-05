@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Card,
   Row,
@@ -14,6 +14,7 @@ import {
   Modal,
   Collapse,
 } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import {
   Package,
   DollarSign,
@@ -134,12 +135,17 @@ interface APIResponse {
 
 const ClienteDetalle: React.FC = () => {
   const { rut } = useParams<{ rut: string }>();
+  const navigate = useNavigate();
   const [data, setData] = useState<ClienteResumen | null>(null);
   const [loading, setLoading] = useState(true);
 
   /* Estado para el modal de instrumentos */
   const [modalVisible, setModalVisible] = useState(false);
   const [comodatoId, setComodatoId] = useState<number | null>(null);
+
+  const handleBack = () => {
+    navigate('/clientes');
+  };
 
   const openModal = (id: number) => {
     setComodatoId(id);
@@ -235,9 +241,20 @@ const ClienteDetalle: React.FC = () => {
   const annualPct = data.monto_esperado_anual
     ? (data.monto_realizado_anual / data.monto_esperado_anual) * 100
     : 0;
-
   return (
     <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* ---------- Botón de regreso ---------- */}
+      <div className="mb-6">
+        <Button
+          type="default"
+          icon={<ArrowLeftOutlined />}
+          onClick={handleBack}
+          className="mb-4 hover:shadow-md transition-shadow"
+        >
+          Volver al listado de clientes
+        </Button>
+      </div>
+
       {/* ---------- Encabezado ---------- */}
       <p className="text-center text-sm">Información del Cliente</p>
       <Title level={3} className="text-center">

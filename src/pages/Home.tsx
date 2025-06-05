@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useBreadcrumbContext } from "../contexts/breadCrumbContext";
-// import Dashboard from "../components/Dashboard/Dashboard";
 import logo from '../media/logos/alatheia-logo-dark.svg';
 import { motion } from "motion/react";
 import { useUserDataStore } from "../stores/UserData.store";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
+import { Card } from "antd";
+import { UserOutlined, FileTextOutlined, PlusOutlined } from "@ant-design/icons";
 
 interface UserInfo {
   role?: string;
@@ -15,14 +16,13 @@ interface UserInfo {
 }
 
 const Home: React.FC = () => {
-
-  
   const setBreadcrumbs = useBreadcrumbContext((state) => state.setBreadcrumbs);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const navigate = useNavigate();
   console.log('userInfo', userInfo)
 
   useEffect(() => {
-    setBreadcrumbs([{ title: "Home", path: "/" }]);
+    setBreadcrumbs([{ title: "Home", path: "/home" }]);
   }, [setBreadcrumbs]);
 
     const { token, setToken, setUserInfo: setStoreUserInfo, clearStorage } = useUserDataStore();
@@ -64,9 +64,6 @@ const Home: React.FC = () => {
     fetchUserInfo();
   }, [token, setStoreUserInfo]);
 
-
-
-  
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -83,6 +80,33 @@ const Home: React.FC = () => {
         <p className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
           Dentro de este portal podrás gestionar tus comodatos, ver el estado de tus clientes y mucho más.
         </p>
+        
+        {/* Botones de navegación */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/")}>
+            <div className="text-center p-4">
+              <UserOutlined className="text-4xl text-blue-600 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Clientes</h3>
+              <p className="text-gray-600">Gestiona y visualiza información de tus clientes</p>
+            </div>
+          </Card>
+          
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/comodatos")}>
+            <div className="text-center p-4">
+              <FileTextOutlined className="text-4xl text-green-600 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Comodatos</h3>
+              <p className="text-gray-600">Ve todos los comodatos existentes</p>
+            </div>
+          </Card>
+          
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/nuevo-comodato")}>
+            <div className="text-center p-4">
+              <PlusOutlined className="text-4xl text-purple-600 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Nuevo Comodato</h3>
+              <p className="text-gray-600">Crea un nuevo comodato general</p>
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
 

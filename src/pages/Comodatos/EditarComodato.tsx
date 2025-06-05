@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spin, message } from "antd";
 import dayjs from "dayjs";
+import { motion } from "framer-motion";
 import axiosInstance from "../../api/axiosInstance";
 import { SelectedInstrumento } from "../../components/Instrumentos/InstrumentSelectorTable";
-import ComodatoForm from "./core/ComodatoForm"; // Cambiar de vuelta a mayúsculas
+import ComodatoForm from "./core/ComodatoForm"; 
+import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
+import comodato_photo from "../../media/temporal/comodato_photo.png";
 
 /* ---------- mapper instrumento ---------- */
 function mapApiInstrument(i: any): SelectedInstrumento {
@@ -91,6 +94,10 @@ export default function EditarComodato() {
   const nav = useNavigate();
   const [initial, setInitial] = useState<any | null>(null);
 
+  const handleBack = () => {
+    nav("/clientes"); // Navegar a la lista de clientes
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -146,7 +153,6 @@ export default function EditarComodato() {
     }
     fetchData();
   }, [id]);
-
   if (!initial) {
     return (
       <div className="flex justify-center py-20">
@@ -156,12 +162,21 @@ export default function EditarComodato() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-white rounded-md">
-      <ComodatoForm
-        initialValues={initial}
-        onCompleted={() => nav("/comodatos")}
-        isEditing={true} // Agregar este prop
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <HeaderDescripcion
+        title={`Editar Comodato #${id}`}
+        description="Modifica la información del comodato existente"
+        photo_path={comodato_photo}
+        showBackButton={true}
+        onBack={handleBack}
       />
-    </div>
+      <div className="p-6 max-w-5xl mx-auto bg-white rounded-md shadow-sm">
+        <ComodatoForm
+          initialValues={initial}
+          onCompleted={() => nav("/comodatos")}
+          isEditing={true} // Agregar este prop
+        />
+      </div>
+    </motion.div>
   );
 }
