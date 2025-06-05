@@ -1,13 +1,25 @@
 import * as Yup from "yup";
 
 export const comodatoSchema = Yup.object({
-  rut_cliente: Yup.string().required("Seleccione un cliente"),
+  rut_cliente: Yup.string().required("⚠️ Debe seleccionar un cliente"),
 
-  marca: Yup.mixed().required("Seleccione una marca"),
+  marca: Yup.mixed().required("⚠️ Debe seleccionar una marca"),
 
-  fechaInicio: Yup.date().required("Fecha de inicio requerida"),
+  fechaInicio: Yup.date().required("⚠️ La fecha de inicio es requerida"),
 
-  instrumentos: Yup.array().min(1, "Debes añadir al menos un instrumento"),
+  instrumentos: Yup.array()
+    .min(1, "⚠️ Debe añadir al menos un instrumento")
+    .of(
+      Yup.object({
+        serie: Yup.string().required("⚠️ La serie del instrumento es obligatoria"),
+        codigo: Yup.string().required("⚠️ El código del instrumento es requerido"),
+        descripcion: Yup.string().required("⚠️ La descripción del instrumento es requerida"),
+        bodega: Yup.string().required("⚠️ Debe seleccionar una bodega para el instrumento"),
+        codigo_ubicacion: Yup.number().required("⚠️ Debe seleccionar una ubicación para el instrumento"),
+        valor_neto: Yup.number().min(0, "⚠️ El valor neto debe ser mayor o igual a 0").required("⚠️ El valor neto es requerido"),
+        monto_objetivo: Yup.number().min(0, "⚠️ El monto objetivo debe ser mayor o igual a 0").required("⚠️ El monto objetivo es requerido"),
+      })
+    ),
 
   // Campos opcionales
   fechaFin: Yup.date().nullable(),

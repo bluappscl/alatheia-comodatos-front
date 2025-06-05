@@ -16,6 +16,8 @@ import {
   Upload,
   UploadProps,
   Card,
+  Alert,
+  List,
 } from "antd";
 import { Formik, Form as FormikForm, Field } from "formik";
 import { useState } from "react";
@@ -27,8 +29,7 @@ import {
   ClockCircleOutlined,
   AimOutlined,
   TagOutlined,
-  ToolOutlined,
-  ExperimentOutlined,
+  ToolOutlined,  ExperimentOutlined,
   DollarOutlined,
   ShoppingOutlined,
   UploadOutlined,
@@ -730,8 +731,56 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                     {values.contratoFile.name}
                   </Text>
                 </div>
-              )}
-            </section>
+              )}            </section>            {/* ------------------------------------------------------------------ */}
+            {/* Validación y resumen de errores                                   */}
+            {/* ------------------------------------------------------------------ */}
+            {Object.keys(errors).length > 0 && (
+              <Alert
+                message="⚠️ Faltan campos requeridos para crear el comodato"
+                description={
+                  <div className="mt-2">
+       
+                    
+                    <List
+                      size="small"
+                      dataSource={Object.entries(errors).flatMap(([key, error]) => {
+                        console.log(`Procesando error para ${key}:`, error, typeof error);
+                        
+                        if (key === 'instrumentos') {
+                          if (Array.isArray(error)) {
+                            // Manejar errores de instrumentos específicos (array de errores)
+                            const instrumentErrors = error.flatMap((instError, index) => {
+                              if (typeof instError === 'object' && instError !== null) {
+                                return Object.entries(instError).map(([, fieldError]) => 
+                                  `Instrumento ${index + 1}: ${fieldError}`
+                                );
+                              }
+                              return instError ? [`Instrumentos: ${instError}`] : [];
+                            });
+                            return instrumentErrors;
+                          } else if (typeof error === 'string') {
+                            // Manejar error de validación general de instrumentos (string simple)
+                            console.log('Error de instrumentos es string:', error);
+                            return [error];
+                          }
+                        }
+                        return error ? [String(error)] : [];
+                      })}
+                      renderItem={(item) => (
+                        <List.Item style={{ padding: '4px 0', border: 'none' }}>
+                          <Typography.Text type="danger" style={{ fontSize: '14px' }}>
+                            • {item}
+                          </Typography.Text>
+                        </List.Item>
+                      )}
+                    />
+                  </div>
+                }
+                type="warning"
+                showIcon
+                className="mb-6"
+              />
+            )}
 
             {/* ------------------------------------------------------------------ */}
             {/* Enviar                                                             */}

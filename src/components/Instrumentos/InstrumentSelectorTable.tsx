@@ -109,7 +109,6 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   useEffect(() => {
     notifyParent(addedInstrumentos);
   }, [addedInstrumentos]);
-
   /* ---------------------- Acciones de tabla ------------------------------ */
   const handleAddInstrumento = (instrumento: InstrumentoInterface) => {
     setAddedInstrumentos((prev) => {
@@ -129,12 +128,15 @@ const InstrumentSelectorTable: React.FC<Props> = ({
           valor_neto: 0,
           moneda: "CLP",
           monto_objetivo: 0,
-          serie: "",
-          bodega: "",
+          serie: "", // Inicializar como vacío para que se muestre el error
+          bodega: "", // Inicializar como vacío para que se muestre el error
         },
       ];
       return next;
     });
+    
+    // Mostrar mensaje recordatorio sobre campos requeridos
+    message.info("Recuerda completar todos los campos requeridos: Serie, Bodega, Ubicación, Valor Neto y Monto Objetivo");
   };
 
   const handleRemoveInstrumento = (codigo: string) => {
@@ -170,63 +172,97 @@ const InstrumentSelectorTable: React.FC<Props> = ({
       width: 200,
     },
     { title: "Tipo", dataIndex: "tipo", key: "tipo", width: 120 },
-    { title: "Marca", dataIndex: "marca", key: "marca", width: 150 },
-    {
+    { title: "Marca", dataIndex: "marca", key: "marca", width: 150 },    {
       title: "Bodega",
       dataIndex: "bodega",
       key: "bodega",
       width: 300,
-      render: (val, rec) => (
-        <div className="min-w-[180px]">
-          <BodegasSelector
-            value={val}
-            onChange={(v) => handleCellChange("bodega", v, rec)}
-          />
-        </div>
-      ),
-    },
-    {
+      render: (val, rec) => {
+        const hasError = !val || val.trim() === '';
+        return (
+          <div className="min-w-[180px]">
+            <BodegasSelector
+              value={val}
+              onChange={(v) => handleCellChange("bodega", v, rec)}
+            />
+            {hasError && (
+              <div className="text-red-500 text-xs mt-1">
+                ⚠️ Bodega requerida
+              </div>
+            )}
+          </div>
+        );
+      },
+    },    {
       title: "Ubicación",
       dataIndex: "codigo_ubicacion",
       key: "codigo_ubicacion",
       width: 200,
-      render: (val, rec) => (
-        <UbicacionesSelector
-          value={val}
-          onChange={(v) => handleCellChange("codigo_ubicacion", v, rec)}
-        />
-      ),
-    },
-    {
+      render: (val, rec) => {
+        const hasError = !val || val === 0;
+        return (
+          <div>
+            <UbicacionesSelector
+              value={val}
+              onChange={(v) => handleCellChange("codigo_ubicacion", v, rec)}
+            />
+            {hasError && (
+              <div className="text-red-500 text-xs mt-1">
+                ⚠️ Ubicación requerida
+              </div>
+            )}
+          </div>
+        );
+      },
+    },    {
       title: "Valor Equipo",
       dataIndex: "valor_neto",
       key: "valor_neto",
       width: 150,
-      render: (val: number, rec) => (
-        <InputNumber
-          min={0}
-          value={val}
-          className="w-32"
-          onChange={(v) => handleCellChange("valor_neto", v ?? 0, rec)}
-        />
-      ),
-    },
-
-    {
+      render: (val: number, rec) => {
+        const hasError = !val || val <= 0;
+        return (
+          <div>
+            <InputNumber
+              min={0}
+              value={val}
+              className={`w-32 ${hasError ? 'border-red-500' : ''}`}
+              onChange={(v) => handleCellChange("valor_neto", v ?? 0, rec)}
+              status={hasError ? 'error' : undefined}
+            />
+            {hasError && (
+              <div className="text-red-500 text-xs mt-1">
+                ⚠️ Valor requerido
+              </div>
+            )}
+          </div>
+        );
+      },
+    },    {
       title: "Monto Objetivo",
       dataIndex: "monto_objetivo",
       key: "monto_objetivo",
       width: 150,
-      render: (val: number, rec) => (
-        <InputNumber
-          min={0}
-          value={val}
-          className="w-32"
-          onChange={(v) => handleCellChange("monto_objetivo", v ?? 0, rec)}
-        />
-      ),
-    },
-    {
+      render: (val: number, rec) => {
+        const hasError = !val || val <= 0;
+        return (
+          <div>
+            <InputNumber
+              min={0}
+              value={val}
+              className={`w-32 ${hasError ? 'border-red-500' : ''}`}
+              onChange={(v) => handleCellChange("monto_objetivo", v ?? 0, rec)}
+              status={hasError ? 'error' : undefined}
+            />
+            {hasError && (
+              <div className="text-red-500 text-xs mt-1">
+                ⚠️ Monto requerido
+              </div>
+            )}
+          </div>
+        );
+      },
+    },{
       title: "Serie",
       dataIndex: "serie",
       key: "serie",
@@ -237,13 +273,22 @@ const InstrumentSelectorTable: React.FC<Props> = ({
           return <span className="text-gray-700">{val || "Sin serie"}</span>;
         }
         // Si no está editando o es un nuevo registro, mostrar input editable
+        const hasError = !val || val.trim() === '';
         return (
-          <Input
-            value={val}
-            className="min-w-[180px]"
-            onChange={(e) => handleCellChange("serie", e.target.value, rec)}
-            placeholder="Ingrese serie"
-          />
+          <div>
+            <Input
+              value={val}
+              className={`min-w-[180px] ${hasError ? 'border-red-500' : ''}`}
+              onChange={(e) => handleCellChange("serie", e.target.value, rec)}
+              placeholder="Serie obligatoria"
+              status={hasError ? 'error' : undefined}
+            />
+            {hasError && (
+              <div className="text-red-500 text-xs mt-1">
+                ⚠️ Serie requerida
+              </div>
+            )}
+          </div>
         );
       },
     },
