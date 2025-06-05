@@ -5,12 +5,6 @@ export const comodatoSchema = Yup.object({
 
   marca: Yup.mixed().required("Seleccione una marca"),
 
-  nombre_representante_cliente: Yup.string().required("Campo requerido"),
-
-  nombre_representante_alatheia: Yup.string().required("Campo requerido"),
-
-  direccion_cliente: Yup.string().required("Campo requerido"),
-
   fechaInicio: Yup.date().required("Fecha de inicio requerida"),
 
   instrumentos: Yup.array().min(1, "Debes añadir al menos un instrumento"),

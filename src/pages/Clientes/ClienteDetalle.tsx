@@ -13,6 +13,7 @@ import {
   Button,
   Modal,
   Collapse,
+  Tabs,
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import {
@@ -144,7 +145,7 @@ const ClienteDetalle: React.FC = () => {
   const [comodatoId, setComodatoId] = useState<number | null>(null);
 
   const handleBack = () => {
-    navigate('/clientes');
+    navigate("/clientes");
   };
 
   const openModal = (id: number) => {
@@ -168,54 +169,50 @@ const ClienteDetalle: React.FC = () => {
       )
       .finally(() => setLoading(false));
   }, [rut]);
-
   /* --- Datos para gráficos --- */
-  const barData = useMemo(() => {
-    if (!data?.marcas)
-      return {
-        labels: [],
-        datasets: [
-          { label: "Esperado", backgroundColor: "hsl(210 90% 60%)", data: [] },
-          { label: "Realizado", backgroundColor: "hsl(150 90% 45%)", data: [] },
-        ],
-      };
+  const createBarData = (expectedField: keyof Marca, realizedField: keyof Marca, suffix: string) => {
+    if (!data?.marcas) return {
+      labels: [],
+      datasets: [
+        { label: `Esperado ${suffix}`, backgroundColor: "hsl(210 90% 60%)", data: [] },
+        { label: `Realizado ${suffix}`, backgroundColor: "hsl(150 90% 45%)", data: [] },
+      ],
+    };
 
     return {
       labels: data.marcas.map((m) => m.marca),
       datasets: [
         {
-          label: "Esperado",
+          label: `Esperado ${suffix}`,
           backgroundColor: "hsl(210 90% 60%)",
-          data: data.marcas.map((m) => m.monto_esperado_mensual),
+          data: data.marcas.map((m) => m[expectedField] as number),
         },
         {
-          label: "Realizado",
+          label: `Realizado ${suffix}`,
           backgroundColor: "hsl(150 90% 45%)",
-          data: data.marcas.map((m) => m.monto_realizado_mensual),
+          data: data.marcas.map((m) => m[realizedField] as number),
         },
       ],
     };
-  }, [data]);
+  };
 
-  const pieData = useMemo(() => {
-    if (!data?.marcas)
-      return { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
+  const createPieData = (field: keyof Marca, suffix: string) => {
 
-    const marcasConMonto = data.marcas.filter(
-      (m) => m.monto_esperado_mensual > 0
-    );
+    console.log('suffix', suffix)
+    if (!data?.marcas) return { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
 
-    if (marcasConMonto.length === 0)
-      return {
-        labels: ["Sin datos"],
-        datasets: [{ data: [1], backgroundColor: ["#e0e0e0"] }],
-      };
+    const marcasConMonto = data.marcas.filter((m) => (m[field] as number) > 0);
+
+    if (marcasConMonto.length === 0) return {
+      labels: ["Sin datos"],
+      datasets: [{ data: [1], backgroundColor: ["#e0e0e0"] }],
+    };
 
     return {
       labels: marcasConMonto.map((m) => m.marca),
       datasets: [
         {
-          data: marcasConMonto.map((m) => m.monto_esperado_mensual),
+          data: marcasConMonto.map((m) => m[field] as number),
           backgroundColor: [
             "#0088FE",
             "#00C49F",
@@ -227,7 +224,38 @@ const ClienteDetalle: React.FC = () => {
         },
       ],
     };
-  }, [data]);
+  };
+
+  // Datos para cada pestaña
+  const barDataALaFecha = useMemo(() => 
+    createBarData("promedio_objetivo_a_la_fecha", "promedio_realizado_a_la_fecha", "a la fecha"), 
+    [data]
+  );
+  
+  const pieDataALaFecha = useMemo(() => 
+    createPieData("promedio_objetivo_a_la_fecha", "a la fecha"), 
+    [data]
+  );
+
+  const barDataMensual = useMemo(() => 
+    createBarData("monto_esperado_mensual", "monto_realizado_mensual", "mensual"), 
+    [data]
+  );
+  
+  const pieDataMensual = useMemo(() => 
+    createPieData("monto_esperado_mensual", "mensual"), 
+    [data]
+  );
+
+  const barDataAnual = useMemo(() => 
+    createBarData("monto_esperado_anual", "monto_realizado_anual", "anual"), 
+    [data]
+  );
+  
+  const pieDataAnual = useMemo(() => 
+    createPieData("monto_esperado_anual", "anual"), 
+    [data]
+  );
 
   /* --- Loading --- */
   if (loading)
@@ -361,7 +389,7 @@ const ClienteDetalle: React.FC = () => {
           >
             {formatCurrency(data.promedio_realizado_a_la_fecha)}
           </Title>
-          <Text type="secondary">Realizado acumulado</Text>
+          <Text type="secondary">Venta acumulada</Text>
         </Card>
       </div>
 
@@ -529,69 +557,201 @@ const ClienteDetalle: React.FC = () => {
             </Collapse.Panel>
           </Collapse>
         </Card>
-      ))}
+      ))}      {/* ---------- Gráficos con Pestañas ---------- */}
+      <Title level={3} className="!mb-4">
+        Análisis Gráfico
+      </Title>
+      
+      <Card className="shadow mb-12">
+        <Tabs
+          defaultActiveKey="1"
+          items={[
+            {
+              key: "1",
+              label: "YTD",
+              children: (
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} lg={12}>
+                    <Card title="Comparación por marca (a la fecha)" className="shadow">
+                      <Bar
+                        data={barDataALaFecha}
+                        options={{
+                          responsive: true,
+                          plugins: {
+                            legend: { position: "bottom" },
+                            tooltip: {
+                              callbacks: {
+                                label: (ctx) => formatCurrency(ctx.raw as number),
+                              },
+                            },
+                          },
+                          scales: {
+                            y: {
+                              ticks: {
+                                callback: (val) => `${Number(val) / 1_000_000} M`,
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    </Card>
+                  </Col>
 
-      {/* ---------- Gráficos ---------- */}
-      <Row gutter={[16, 16]} className="mb-12">
-        <Col xs={24} lg={12}>
-          <Card title="Comparación por marca (mensual)" className="shadow">
-            <Bar
-              data={barData}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: { position: "bottom" },
-                  tooltip: {
-                    callbacks: {
-                      label: (ctx) => formatCurrency(ctx.raw as number),
-                    },
-                  },
-                },
-                scales: {
-                  y: {
-                    ticks: {
-                      callback: (val) => `${Number(val) / 1_000_000} M`,
-                    },
-                  },
-                },
-              }}
-            />
-          </Card>
-        </Col>
+                  <Col xs={24} lg={12}>
+                    <Card title="Distribución por marca (objetivo a la fecha)" className="shadow">
+                      <div style={{ height: "410px", position: "relative" }}>
+                        <Pie
+                          data={pieDataALaFecha}
+                          options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                              legend: {
+                                position: "bottom",
+                                labels: { padding: 20, usePointStyle: true },
+                              },
+                              tooltip: {
+                                callbacks: {
+                                  label: (ctx) =>
+                                    ctx.label === "Sin datos"
+                                      ? "No hay datos disponibles"
+                                      : `${ctx.label}: ${formatCurrency(ctx.raw as number)}`,
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                    </Card>
+                  </Col>
+                </Row>
+              ),
+            },
+            {
+              key: "2",
+              label: "Mensual",
+              children: (
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} lg={12}>
+                    <Card title="Comparación por marca (mensual)" className="shadow">
+                      <Bar
+                        data={barDataMensual}
+                        options={{
+                          responsive: true,
+                          plugins: {
+                            legend: { position: "bottom" },
+                            tooltip: {
+                              callbacks: {
+                                label: (ctx) => formatCurrency(ctx.raw as number),
+                              },
+                            },
+                          },
+                          scales: {
+                            y: {
+                              ticks: {
+                                callback: (val) => `${Number(val) / 1_000_000} M`,
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    </Card>
+                  </Col>
 
-        <Col xs={24} lg={12}>
-          <Card
-            title="Distribución por marca (esperado mensual)"
-            className="shadow"
-          >
-            <div style={{ height: "410px", position: "relative" }}>
-              <Pie
-                data={pieData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: "bottom",
-                      labels: { padding: 20, usePointStyle: true },
-                    },
-                    tooltip: {
-                      callbacks: {
-                        label: (ctx) =>
-                          ctx.label === "Sin datos"
-                            ? "No hay datos disponibles"
-                            : `${ctx.label}: ${formatCurrency(
-                                ctx.raw as number
-                              )}`,
-                      },
-                    },
-                  },
-                }}
-              />
-            </div>
-          </Card>
-        </Col>
-      </Row>
+                  <Col xs={24} lg={12}>
+                    <Card title="Distribución por marca (esperado mensual)" className="shadow">
+                      <div style={{ height: "410px", position: "relative" }}>
+                        <Pie
+                          data={pieDataMensual}
+                          options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                              legend: {
+                                position: "bottom",
+                                labels: { padding: 20, usePointStyle: true },
+                              },
+                              tooltip: {
+                                callbacks: {
+                                  label: (ctx) =>
+                                    ctx.label === "Sin datos"
+                                      ? "No hay datos disponibles"
+                                      : `${ctx.label}: ${formatCurrency(ctx.raw as number)}`,
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                    </Card>
+                  </Col>
+                </Row>
+              ),
+            },
+            {
+              key: "3",
+              label: "Anual",
+              children: (
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} lg={12}>
+                    <Card title="Comparación por marca (anual)" className="shadow">
+                      <Bar
+                        data={barDataAnual}
+                        options={{
+                          responsive: true,
+                          plugins: {
+                            legend: { position: "bottom" },
+                            tooltip: {
+                              callbacks: {
+                                label: (ctx) => formatCurrency(ctx.raw as number),
+                              },
+                            },
+                          },
+                          scales: {
+                            y: {
+                              ticks: {
+                                callback: (val) => `${Number(val) / 1_000_000} M`,
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    </Card>
+                  </Col>
+
+                  <Col xs={24} lg={12}>
+                    <Card title="Distribución por marca (esperado anual)" className="shadow">
+                      <div style={{ height: "410px", position: "relative" }}>
+                        <Pie
+                          data={pieDataAnual}
+                          options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                              legend: {
+                                position: "bottom",
+                                labels: { padding: 20, usePointStyle: true },
+                              },
+                              tooltip: {
+                                callbacks: {
+                                  label: (ctx) =>
+                                    ctx.label === "Sin datos"
+                                      ? "No hay datos disponibles"
+                                      : `${ctx.label}: ${formatCurrency(ctx.raw as number)}`,
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                    </Card>
+                  </Col>
+                </Row>
+              ),
+            },
+          ]}
+        />
+      </Card>
 
       {/* ---------- Modal Instrumentos ---------- */}
       <Modal

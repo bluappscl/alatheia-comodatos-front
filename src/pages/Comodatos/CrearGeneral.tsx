@@ -30,9 +30,14 @@ export default function CrearGeneral() {
       />
 
 
-
   <div className="p-6 max-w-5xl mx-auto bg-white rounded-md shadow-sm">
-        <ComodatoForm onCompleted={() => nav("/comodatos")} />
+        <ComodatoForm onCompleted={(rutCliente) => {
+          if (rutCliente) {
+            nav(`/clientes/${rutCliente}`);
+          } else {
+            nav("/comodatos");
+          }
+        }} />
       </div>
     </motion.div>
     </motion.div>

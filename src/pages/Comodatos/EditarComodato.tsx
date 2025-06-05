@@ -169,11 +169,16 @@ export default function EditarComodato() {
         photo_path={comodato_photo}
         showBackButton={true}
         onBack={handleBack}
-      />
-      <div className="p-6 max-w-5xl mx-auto bg-white rounded-md shadow-sm">
+      />      <div className="p-6 max-w-5xl mx-auto bg-white rounded-md shadow-sm">
         <ComodatoForm
           initialValues={initial}
-          onCompleted={() => nav("/comodatos")}
+          onCompleted={(rutCliente) => {
+            if (rutCliente) {
+              nav(`/clientes/${rutCliente}`);
+            } else {
+              nav("/comodatos");
+            }
+          }}
           isEditing={true} // Agregar este prop
         />
       </div>

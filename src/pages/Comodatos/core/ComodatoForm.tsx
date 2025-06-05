@@ -174,7 +174,7 @@ function mapValuesToPayload(
 /* -------------------------------------------------------------------------- */
 interface Props {
   initialValues?: Partial<ReturnType<typeof buildInitialValues>>;
-  onCompleted: () => void;
+  onCompleted: (rutCliente?: string) => void;
   isEditing?: boolean; // Nuevo prop para indicar si es edición
 }
 
@@ -280,11 +280,10 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
               await axiosInstance.post("/comodatos/contratos/", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
               });
-              message.success("Contrato subido exitosamente");
-            }
+              message.success("Contrato subido exitosamente");            }
           }
 
-          onCompleted();
+          onCompleted(values.rut_cliente);
         } catch (error) {
           console.error("Error submitting form:", error);
           message.error(

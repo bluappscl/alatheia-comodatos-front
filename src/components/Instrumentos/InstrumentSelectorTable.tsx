@@ -1,4 +1,4 @@
-import { Button, Input, InputNumber, message, Select, Table } from "antd";
+import { Button, Input, InputNumber, message,  Table } from "antd";
 import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
@@ -7,12 +7,11 @@ import BodegasSelector from "../BodegasSelect";
 import UbicacionesSelector from "../UbicacionesSelector";
 import axiosInstance from "../../api/axiosInstance";
 
-const { Option } = Select;
 
 /* -------------------------------------------------------------------------- */
 /*                           Tipos auxiliares                                 */
 /* -------------------------------------------------------------------------- */
-export interface SelectedInstrumento extends Omit<InstrumentoInterface, 'id'> {
+export interface SelectedInstrumento extends Omit<InstrumentoInterface, "id"> {
   id?: number; // Para instrumentos existentes en edición
   codigo_ubicacion: number;
   valor_neto: number;
@@ -48,16 +47,18 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   defaultInstruments = [],
   isEditing = false,
 }) => {
-  const [addedInstrumentos, setAddedInstrumentos] = useState<SelectedInstrumento[]>(
-    []
-  );
+  const [addedInstrumentos, setAddedInstrumentos] = useState<
+    SelectedInstrumento[]
+  >([]);
 
-  const [productosComodato, setProductosComodato] = useState<ProductoComodato[]>([]);
+  const [productosComodato, setProductosComodato] = useState<
+    ProductoComodato[]
+  >([]);
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loadingInstruments, setLoadingInstruments] = useState(false);
 
-  console.log('defaultInstruments', defaultInstruments);
+  console.log("defaultInstruments", defaultInstruments);
 
   /* ---------------- Fetch instrumentos de la API ------------------------- */
   useEffect(() => {
@@ -70,8 +71,8 @@ const InstrumentSelectorTable: React.FC<Props> = ({
           setProductosComodato(response.data.productos);
         }
       } catch (error) {
-        console.error('Error fetching instruments:', error);
-        message.error('Error al cargar instrumentos');
+        console.error("Error fetching instruments:", error);
+        message.error("Error al cargar instrumentos");
       } finally {
         setLoadingInstruments(false);
       }
@@ -88,7 +89,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   /* ------------- Cuando llega la prop defaultInstruments ----------------- */
   useEffect(() => {
     if (defaultInstruments?.length > 0) {
-      const processedInstruments = defaultInstruments.map(inst => ({
+      const processedInstruments = defaultInstruments.map((inst) => ({
         ...inst,
         id: inst.id || undefined, // Mantener ID si existe
         valor_neto: Number(inst.valor_neto) || 0,
@@ -99,7 +100,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         bodega: inst.bodega || "",
         tipo: inst.tipo || "",
       }));
-      
+
       setAddedInstrumentos(processedInstruments);
     }
   }, [defaultInstruments.length]);
@@ -210,22 +211,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         />
       ),
     },
-    {
-      title: "Moneda",
-      dataIndex: "moneda",
-      key: "moneda",
-      width: 100,
-      render: (val: string, rec) => (
-        <Select
-          value={val}
-          onChange={(v) => handleCellChange("moneda", v, rec)}
-          className="w-24"
-        >
-          <Option value="CLP">CLP</Option>
-          <Option value="UF">UF</Option>
-        </Select>
-      ),
-    },
+
     {
       title: "Monto Objetivo",
       dataIndex: "monto_objetivo",
@@ -245,15 +231,21 @@ const InstrumentSelectorTable: React.FC<Props> = ({
       dataIndex: "serie",
       key: "serie",
       width: 200,
-      render: (val, rec) => (
-        <Input
-          value={val}
-          className="min-w-[180px]"
-          onChange={(e) => handleCellChange("serie", e.target.value, rec)}
-          disabled={isEditing && rec.id !== undefined} // Deshabilitar si está editando y tiene ID
-          placeholder={isEditing && rec.id !== undefined ? "No editable" : "Ingrese serie"}
-        />
-      ),
+      render: (val, rec) => {
+        // Si está editando y el registro tiene ID, mostrar como texto plano
+        if (isEditing && rec.id !== undefined) {
+          return <span className="text-gray-700">{val || "Sin serie"}</span>;
+        }
+        // Si no está editando o es un nuevo registro, mostrar input editable
+        return (
+          <Input
+            value={val}
+            className="min-w-[180px]"
+            onChange={(e) => handleCellChange("serie", e.target.value, rec)}
+            placeholder="Ingrese serie"
+          />
+        );
+      },
     },
     {
       title: "Acciones",
@@ -282,35 +274,36 @@ const InstrumentSelectorTable: React.FC<Props> = ({
           onChange={(e) => setSearchText(e.target.value)}
           className="w-full"
         />
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           onClick={() => setIsModalVisible(true)}
           loading={loadingInstruments}
         >
           Añadir Instrumento
         </Button>
       </div>
-
       <Table
-        dataSource={addedInstrumentos.filter(
-          (i) => {
-            const matchesSearch = !searchText || 
-              i.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
-              i.descripcion.toLowerCase().includes(searchText.toLowerCase());
-            
-            // En modo edición, mostrar todos los instrumentos independientemente de la marca
-            const matchesMarca = !selectedMarca || 
-              defaultInstruments.length > 0 || // Si hay instrumentos por defecto, mostrar todos
-              String(i.marca).toLowerCase() === String(selectedMarca).toLowerCase();
-            
-            return matchesSearch && matchesMarca;
-          }
-        )}
+        dataSource={addedInstrumentos.filter((i) => {
+          const matchesSearch =
+            !searchText ||
+            i.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+            i.descripcion.toLowerCase().includes(searchText.toLowerCase());
+
+          // En modo edición, mostrar todos los instrumentos independientemente de la marca
+          const matchesMarca =
+            !selectedMarca ||
+            defaultInstruments.length > 0 || // Si hay instrumentos por defecto, mostrar todos
+            String(i.marca).toLowerCase() ===
+              String(selectedMarca).toLowerCase();
+
+          return matchesSearch && matchesMarca;
+        })}
         columns={columns}
         rowKey="codigo"
         scroll={{ x: 1800 }}
         className="rounded-xl"
-      />      <InstrumentSelectorModal
+      />{" "}
+      <InstrumentSelectorModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onAddInstrumento={handleAddInstrumento}
