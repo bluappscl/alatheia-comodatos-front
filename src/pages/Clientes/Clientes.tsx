@@ -3,10 +3,10 @@ import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 import clientes_photo from "../../media/temporal/comodato_photo.png";
 import { motion } from "motion/react";
 import axiosInstance from "../../api/axiosInstance";
-import { Table, TableColumnsType, Input, Button, Tooltip, Card, Badge, Row, Col, Statistic } from "antd";
+import { Table, TableColumnsType, Input, Button, Tooltip, Card, Badge, Row, Col, Statistic, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { PlusOutlined, UserOutlined, ToolOutlined, DollarOutlined, ExclamationCircleOutlined, SearchOutlined, FileTextOutlined,  MinusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UserOutlined, ToolOutlined, DollarOutlined, ExclamationCircleOutlined, SearchOutlined, FileTextOutlined, MinusOutlined } from "@ant-design/icons";
 import { TrendingDownIcon, TrendingUp } from "lucide-react";
 
 interface Cliente {
@@ -21,6 +21,7 @@ const Clientes: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [downloadingReport, setDownloadingReport] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,11 +40,48 @@ const Clientes: React.FC = () => {
 
     fetchClientes();
   }, []);
+
   const handleViewDetail = (rut: string) => {
     navigate(`/clientes/${rut}`);
   };
+
   const handleCreateComodato = () => {
     navigate('/comodatos/crear-general');
+  };
+
+  const handleDownloadReport = async () => {
+    setDownloadingReport(true);
+    try {
+      const response = await axiosInstance.get('/comodatos/reportes/excel/marcas/', {
+        responseType: 'blob',
+      });
+
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Get current date for filename
+      const currentDate = new Date().toISOString().split('T')[0];
+      link.setAttribute('download', `reporte_marcas_${currentDate}.xlsx`);
+      
+      // Append to html link element page
+      document.body.appendChild(link);
+      
+      // Start download
+      link.click();
+      
+      // Clean up and remove the link
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      message.success('Reporte descargado exitosamente');
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      message.error('Error al descargar el reporte. Por favor intenta nuevamente.');
+    } finally {
+      setDownloadingReport(false);
+    }
   };
 
   // Calculate statistics
@@ -98,9 +136,7 @@ const Clientes: React.FC = () => {
       key: "numero_instrumentos",
       width: 120,
       align: 'center',
-      render: (value: number) => (
-        <Badge count={value} showZero style={{ backgroundColor: '#52c41a' }} />
-      ),
+  
     },
     {
       title: "Consumo Esperado",
@@ -136,7 +172,7 @@ const Clientes: React.FC = () => {
             onClick={() => handleViewDetail(record.rut)}
             className="flex items-center gap-1"
           >
-            👁️ Ver Detalle
+            Ver Detalle
           </Button>
         </Tooltip>
       ),
@@ -210,14 +246,16 @@ const Clientes: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               prefix={<SearchOutlined />}
               className="max-w-md"
-            /><div className="flex gap-2 w-full sm:w-auto">
+            />            <div className="flex gap-2 w-full sm:w-auto">
                 <Button
                   type="default"
                   size="large"
                   icon={<FileTextOutlined />}
+                  onClick={handleDownloadReport}
+                  loading={downloadingReport}
                   className="flex-1 sm:flex-none"
                 >
-                  Generar Reporte
+                  {downloadingReport ? 'Generando...' : 'Generar Reporte Marcas'}
                 </Button>
                 <Button
                   type="primary"
