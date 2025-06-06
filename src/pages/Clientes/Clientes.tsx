@@ -193,7 +193,7 @@ const Clientes: React.FC = () => {
       align: "center",
     },
     {
-      title: "Promedio Objetivo",
+      title: "Objetivo YTD",
       dataIndex: "promedio_objetivo_a_la_fecha",
       key: "promedio_objetivo_a_la_fecha",
       width: 150,
@@ -202,7 +202,7 @@ const Clientes: React.FC = () => {
         value ? formatCurrency(value, "CLP") : formatCurrency(0, "CLP"),
     },
     {
-      title: "Promedio Realizado",
+      title: "Venta YTD",
       dataIndex: "promedio_realizado_a_la_fecha",
       key: "promedio_realizado_a_la_fecha",
       width: 150,
