@@ -4,9 +4,6 @@ export const comodatoSchema = Yup.object({
   rut_cliente: Yup.string().required("⚠️ Debe seleccionar un cliente"),
 
   marca: Yup.mixed().required("⚠️ Debe seleccionar una marca"),
-
-  fechaInicio: Yup.date().required("⚠️ La fecha de inicio es requerida"),
-
   instrumentos: Yup.array()
     .min(1, "⚠️ Debe añadir al menos un instrumento")
     .of(

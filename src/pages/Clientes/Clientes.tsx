@@ -282,7 +282,7 @@ const Clientes: React.FC = () => {
           </Card>
           <Card>
             <Statistic
-              title="Realizado YTD"
+              title="Venta YTD"
               value={totalPromedioRealizado}
               formatter={(value) => formatCurrency(Number(value), "CLP")}
               prefix={<DollarOutlined style={{ color: "#52c41a" }} />}

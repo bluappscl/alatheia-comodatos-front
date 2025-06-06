@@ -365,7 +365,7 @@ const ClienteDetalle: React.FC = () => {
         {/* Promedio objetivo a la fecha */}
         <Card className="shadow">
           <div className="flex justify-between items-center">
-            <Text>Promedio objetivo a la fecha</Text>
+            <Text>Objetivo YTD</Text>
             <Target className="w-4 h-4 text-blue-600" />
           </div>
           <Title level={3}>
@@ -377,7 +377,7 @@ const ClienteDetalle: React.FC = () => {
         {/* Promedio realizado a la fecha */}
         <Card className="shadow">
           <div className="flex justify-between items-center">
-            <Text>Promedio realizado a la fecha</Text>
+            <Text>Venta YTD</Text>
             <Target className="w-4 h-4 text-green-600" />
           </div>
           <Title
@@ -472,13 +472,13 @@ const ClienteDetalle: React.FC = () => {
             </div>
             {/* ------ Nuevos promedios por marca ------ */}
             <div>
-              <Text type="secondary">Promedio objetivo a la fecha</Text>
+              <Text type="secondary">Objetivo YTD</Text>
               <div className="font-semibold">
                 {formatCurrency(marca.promedio_objetivo_a_la_fecha)}
               </div>
             </div>
             <div>
-              <Text type="secondary">Promedio realizado a la fecha</Text>
+              <Text type="secondary">Venta YTD</Text>
               <div
                 className={`font-semibold ${getPerformanceColor(
                   marca.promedio_objetivo_a_la_fecha,
