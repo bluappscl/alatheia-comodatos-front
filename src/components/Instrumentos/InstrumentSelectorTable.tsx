@@ -58,7 +58,9 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loadingInstruments, setLoadingInstruments] = useState(false);
 
-  console.log("defaultInstruments", defaultInstruments);
+  console.log("InstrumentSelectorTable - selectedMarca:", selectedMarca);
+  console.log("InstrumentSelectorTable - defaultInstruments:", defaultInstruments);
+  console.log("InstrumentSelectorTable - isEditing:", isEditing);
 
   /* ---------------- Fetch instrumentos de la API ------------------------- */
   useEffect(() => {
@@ -347,13 +349,12 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         rowKey="codigo"
         scroll={{ x: 1800 }}
         className="rounded-xl"
-      />{" "}
-      <InstrumentSelectorModal
+      />{" "}      <InstrumentSelectorModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onAddInstrumento={handleAddInstrumento}
         productosComodato={productosComodato}
-        marcaComodato={isEditing ? selectedMarca : undefined} // Solo filtrar por marca en modo edición
+        marcaComodato={selectedMarca} // Filtrar por marca tanto en creación como en edición
       />
     </>
   );

@@ -27,6 +27,10 @@ const InstrumentSelectorModal: React.FC<Props> = ({
 }) => {
   const [searchText, setSearchText] = useState("");
 
+  // Debug: Agregar logs para verificar el filtrado
+  console.log("InstrumentSelectorModal - marcaComodato:", marcaComodato);
+  console.log("InstrumentSelectorModal - productosComodato count:", productosComodato.length);
+
   // Filtrar productos según búsqueda y marca del comodato
   const filteredProductos = productosComodato.filter((item) => {
     const matchesSearch = 
@@ -38,8 +42,12 @@ const InstrumentSelectorModal: React.FC<Props> = ({
       ? item.marca.toLowerCase() === marcaComodato.toLowerCase()
       : true;
     
+    console.log(`Item: ${item.codigo}, Marca: ${item.marca}, marcaComodato: ${marcaComodato}, matchesMarca: ${matchesMarca}`);
+    
     return matchesSearch && matchesMarca;
   });
+
+  console.log("InstrumentSelectorModal - filteredProductos count:", filteredProductos.length);
 
   const productosComodatoColumns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },

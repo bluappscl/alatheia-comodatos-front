@@ -739,13 +739,9 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                 message="⚠️ Faltan campos requeridos para crear el comodato"
                 description={
                   <div className="mt-2">
-       
-                    
                     <List
                       size="small"
                       dataSource={Object.entries(errors).flatMap(([key, error]) => {
-                        console.log(`Procesando error para ${key}:`, error, typeof error);
-                        
                         if (key === 'instrumentos') {
                           if (Array.isArray(error)) {
                             // Manejar errores de instrumentos específicos (array de errores)
@@ -760,7 +756,6 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                             return instrumentErrors;
                           } else if (typeof error === 'string') {
                             // Manejar error de validación general de instrumentos (string simple)
-                            console.log('Error de instrumentos es string:', error);
                             return [error];
                           }
                         }
