@@ -232,11 +232,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
               onChange={(v) => handleCellChange("valor_neto", v ?? 0, rec)}
               status={hasError ? 'error' : undefined}
             />
-            {hasError && (
-              <div className="text-red-500 text-xs mt-1">
-                ⚠️ Valor requerido
-              </div>
-            )}
+
           </div>
         );
       },

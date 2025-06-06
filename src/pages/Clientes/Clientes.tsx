@@ -175,9 +175,7 @@ const Clientes: React.FC = () => {
       dataIndex: "rut_cliente",
       key: "rut_cliente",
       width: 120,
-      render: (rut: string) => (
-        <span style={{ fontFamily: "monospace", fontSize: "13px" }}>{rut}</span>
-      ),
+ 
     },
     {
       title: "Nombre",
