@@ -22,6 +22,7 @@ import {
   Calendar as CalendarIcon,
   Target,
   Edit,
+  BanknoteArrowUp,
 } from "lucide-react";
 import {
   Chart,
@@ -378,7 +379,7 @@ const ClienteDetalle: React.FC = () => {
         <Card className="shadow">
           <div className="flex justify-between items-center">
             <Text>Venta YTD</Text>
-            <Target className="w-4 h-4 text-green-600" />
+            <BanknoteArrowUp className="w-4 h-4 text-green-600" />
           </div>
           <Title
             level={3}
