@@ -77,19 +77,68 @@ export default function InstrumentosGestion({ id }: Props) {
       : "N/A"
 
   const formatDate = (date: string) => new Date(date).toLocaleDateString("es-CL")
-
   /* ---------------- Columnas de la tabla ---------------- */
   const columns = [
-    { title: "ID", dataIndex: "id", sorter: (a: Instrumento, b: Instrumento) => a.id - b.id },
-    { title: "Código", dataIndex: "codigo", render: (v: string | null) => <Tag>{v ?? "No disponible"}</Tag> },
-    { title: "Descripción", dataIndex: "descripcion", render: (v: string | null) => v ?? "No disponible", ellipsis: true },
-    { title: "Marca", dataIndex: "marca", render: (v: string | null) => <Tag color="blue">{v ?? "No disponible"}</Tag> },
-    { title: "ADN", dataIndex: "adn", render: (v: string | null) => v ?? "No disponible" },
-    { title: "Serie", dataIndex: "serie", render: (v: string | null) => v ?? "No disponible" },
-    { title: "Objetivo Monto", dataIndex: "objetivo_monto", render: (v: number | null) => v !== null ? <span className={v > 0 ? "text-green-600 font-semibold" : "text-muted-foreground"}>{formatCurrency(v)}</span> : "No disponible" },
-    { title: "Moneda", dataIndex: "moneda", render: (v: string | null) => v ?? "No disponible" },
-    { title: "Bodega", dataIndex: "codigo_bodega", render: (v: string | null) => <Tag color="purple">{v ?? "No disponible"}</Tag> },
-    { title: "Código Ubicación", dataIndex: "codigo_ubicacion", render: (v: string | null) => v ?? "No disponible" },
+    { 
+      title: "Serie", 
+      dataIndex: "serie", 
+      ellipsis: true,
+      render: (v: string | null) => v ?? "No disponible" 
+    },
+    { 
+      title: "Código", 
+      dataIndex: "codigo", 
+      ellipsis: true,
+      render: (v: string | null) => <Tag>{v ?? "No disponible"}</Tag> 
+    },
+    { 
+      title: "Marca", 
+      dataIndex: "marca", 
+      ellipsis: true,
+      render: (v: string | null) => <Tag color="blue">{v ?? "No disponible"}</Tag> 
+    },
+    { 
+      title: "ADN", 
+      dataIndex: "adn", 
+      ellipsis: true,
+      render: (v: string | null) => v ?? "No disponible" 
+    },
+    { 
+      title: "Bodega", 
+      dataIndex: "codigo_bodega", 
+      ellipsis: true,
+      render: (v: string | null) => <Tag color="purple">{v ?? "No disponible"}</Tag> 
+    },
+    { 
+      title: "Nombre Bodega", 
+      dataIndex: "nombre_bodega", 
+      ellipsis: true,
+      render: (v: string | null) => <Tag color="purple">{v ?? "No disponible"}</Tag> 
+    },
+    { 
+      title: "Nombre Ubicación", 
+      dataIndex: "nombre_ubicacion", 
+      ellipsis: true,
+      render: (v: string | null) => v ?? "No disponible" 
+    },
+    { 
+      title: "Descripción", 
+      dataIndex: "descripcion", 
+      ellipsis: true,
+      render: (v: string | null) => v ?? "No disponible" 
+    },
+    { 
+      title: "Objetivo Monto", 
+      dataIndex: "objetivo_monto", 
+      ellipsis: true,
+      render: (v: number | null) => v !== null ? <span className={v > 0 ? "text-green-600 font-semibold" : "text-muted-foreground"}>{formatCurrency(v)}</span> : "No disponible" 
+    },
+    { 
+      title: "Moneda", 
+      dataIndex: "moneda", 
+      ellipsis: true,
+      render: (v: string | null) => v ?? "No disponible" 
+    },
   ]
 
   /* ---------------- Render ---------------- */
@@ -132,9 +181,7 @@ export default function InstrumentosGestion({ id }: Props) {
             allowClear
           />
         </div>
-      </Card>
-
-      {/* Tabla */}
+      </Card>      {/* Tabla */}
       <div style={{ overflowX: "auto" }}>
         <Table
           loading={loading}
@@ -143,7 +190,8 @@ export default function InstrumentosGestion({ id }: Props) {
           rowKey="id"
           pagination={{ pageSize: 10 }}
           className="bg-white rounded-lg shadow-sm"
-          style={{ minWidth: 1200 }}
+          tableLayout="auto"
+          scroll={{ x: "max-content" }}
         />
       </div>
 

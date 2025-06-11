@@ -13,6 +13,7 @@ import axiosInstance from "../../api/axiosInstance";
 /* -------------------------------------------------------------------------- */
 export interface SelectedInstrumento extends Omit<InstrumentoInterface, "id"> {
   id?: number; // Para instrumentos existentes en edición
+  uniqueId?: string; // Identificador único para la tabla
   codigo_ubicacion: number;
   valor_neto: number;
   moneda: string;
@@ -88,12 +89,13 @@ const InstrumentSelectorTable: React.FC<Props> = ({
     onChange?.(next);
   };
 
-  /* ------------- Cuando llega la prop defaultInstruments ----------------- */
-  useEffect(() => {
+  /* ------------- Cuando llega la prop defaultInstruments ----------------- */  useEffect(() => {
     if (defaultInstruments?.length > 0) {
-      const processedInstruments = defaultInstruments.map((inst) => ({
+      const processedInstruments = defaultInstruments.map((inst, index) => ({
         ...inst,
         id: inst.id || undefined, // Mantener ID si existe
+        // Crear uniqueId para instrumentos existentes si no lo tienen
+        uniqueId: inst.uniqueId || `${inst.codigo}_${inst.id || index}_existing`,
         valor_neto: Number(inst.valor_neto) || 0,
         monto_objetivo: Number(inst.monto_objetivo) || 0,
         codigo_ubicacion: Number(inst.codigo_ubicacion) || 0,
@@ -119,13 +121,14 @@ const InstrumentSelectorTable: React.FC<Props> = ({
           `El instrumento "${instrumento.descripcion}" ya está agregado`
         );
         return prev;
-      }
-      const next = [
+      }      const next = [
         ...prev,
         {
           ...instrumento,
           // No incluir ID para nuevos instrumentos
           id: undefined,
+          // Crear un identificador único para la tabla
+          uniqueId: `${instrumento.codigo}_${Date.now()}_${Math.random()}`,
           codigo_ubicacion: 0,
           valor_neto: 0,
           moneda: "CLP",
@@ -140,14 +143,15 @@ const InstrumentSelectorTable: React.FC<Props> = ({
     // Mostrar mensaje recordatorio sobre campos requeridos
     message.info("Recuerda completar todos los campos requeridos: Serie, Bodega, Ubicación, Valor Neto y Monto Objetivo");
   };
-
-  const handleRemoveInstrumento = (codigo: string) => {
+  const handleRemoveInstrumento = (uniqueId: string) => {
     setAddedInstrumentos((prev) => {
-      const next = prev.filter((i) => i.codigo !== codigo);
+      const next = prev.filter((i) => {
+        const itemId = i.uniqueId || `${i.codigo}_${i.id || 'new'}`;
+        return itemId !== uniqueId;
+      });
       return next;
     });
   };
-
   const handleCellChange = <
     K extends keyof Omit<SelectedInstrumento, keyof InstrumentoInterface>
   >(
@@ -156,9 +160,13 @@ const InstrumentSelectorTable: React.FC<Props> = ({
     record: SelectedInstrumento
   ) => {
     setAddedInstrumentos((prev) => {
-      const next = prev.map((i) =>
-        i.codigo === record.codigo ? { ...i, [key]: value } : i
-      );
+      const next = prev.map((i) => {
+        // Usar uniqueId si existe, sino usar una combinación única
+        const recordId = record.uniqueId || `${record.codigo}_${record.id || 'new'}`;
+        const itemId = i.uniqueId || `${i.codigo}_${i.id || 'new'}`;
+        
+        return itemId === recordId ? { ...i, [key]: value } : i;
+      });
       return next;
     });
   };
@@ -289,8 +297,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
           </div>
         );
       },
-    },
-    {
+    },    {
       title: "Acciones",
       key: "acciones",
       width: 100,
@@ -299,7 +306,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         <Button
           type="link"
           danger
-          onClick={() => handleRemoveInstrumento(record.codigo)}
+          onClick={() => handleRemoveInstrumento(record.uniqueId || `${record.codigo}_${record.id || 'new'}`)}
         >
           Quitar
         </Button>
@@ -340,9 +347,8 @@ const InstrumentSelectorTable: React.FC<Props> = ({
               String(selectedMarca).toLowerCase();
 
           return matchesSearch && matchesMarca;
-        })}
-        columns={columns}
-        rowKey="codigo"
+        })}        columns={columns}
+        rowKey={(record) => record.uniqueId || `${record.codigo}_${record.id || 'new'}`}
         scroll={{ x: 1800 }}
         className="rounded-xl"
       />{" "}      <InstrumentSelectorModal
