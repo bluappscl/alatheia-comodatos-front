@@ -28,10 +28,11 @@ const Home: React.FC = () => {
     const { token, setToken, setUserInfo: setStoreUserInfo, clearStorage } = useUserDataStore();
   const location = useLocation();
 
-
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const tokenParam = searchParams.get("token");
+
+    console.log('tokenParam', tokenParam)
 
     if (tokenParam) {
       // Si viene por URL, lo guardo (o actualizo)

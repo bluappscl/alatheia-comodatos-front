@@ -18,6 +18,8 @@ axiosInstance.interceptors.request.use(
     (config) => {
         // Obtener el token del store de Zustand
         const token = useUserDataStore.getState().token;
+
+        console.log('token', token)
         if (token) {
             config.headers['Authorization'] = `Token ${token}`;
         }

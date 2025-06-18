@@ -3,6 +3,8 @@ import HeaderDescripcion from "../../components/shared/HeaderDescripcion";
 import clientes_photo from "../../media/temporal/comodato_photo.png";
 import { motion } from "motion/react";
 import axiosInstance from "../../api/axiosInstance";
+import { useUserDataStore } from "../../stores/UserData.store";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Table,
   TableColumnsType,
@@ -15,7 +17,6 @@ import {
   message,
   Tag,
 } from "antd";
-import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utils/formatCurrency";
 import {
   PlusOutlined,
@@ -69,6 +70,46 @@ const Clientes: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const { token, setToken, setUserInfo: setStoreUserInfo, clearStorage } =
+    useUserDataStore();
+
+  // Manejo del token similar al componente Home
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tokenParam = searchParams.get("token");
+
+    console.log("tokenParam", tokenParam);
+
+    if (tokenParam) {
+      // Si viene por URL, lo guardo (o actualizo)
+      setToken(tokenParam);
+      console.log("Token captured:", tokenParam);
+    } else if (!token) {
+      // SIEMPRE compruebo si ya había un token en el store;
+      // sólo limpio si no lo hay en ningún sitio
+      clearStorage();
+      console.log(
+        "Storage cleared on component mount (no token present anywhere)"
+      );
+    }
+  }, [location.search, token, setToken, clearStorage]);
+
+  // Obtener información del usuario cuando hay token
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (token) {
+        try {
+          const response = await axiosInstance.get("/usuarios/users/info/");
+          setStoreUserInfo(response.data);
+        } catch (err) {
+          console.error("Error fetching user info:", err);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [token, setStoreUserInfo]);
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -175,7 +216,6 @@ const Clientes: React.FC = () => {
       dataIndex: "rut_cliente",
       key: "rut_cliente",
       width: 120,
- 
     },
     {
       title: "Nombre",
@@ -268,8 +308,7 @@ const Clientes: React.FC = () => {
               prefix={<ToolOutlined style={{ color: "#52c41a" }} />}
               valueStyle={{ color: "#52c41a" }}
             />
-          </Card>
-          <Card>
+          </Card>          <Card>
             <Statistic
               title="Objetivo YTD"
               value={totalPromedioObjetivo}
@@ -277,8 +316,14 @@ const Clientes: React.FC = () => {
               prefix={<DollarOutlined style={{ color: "#faad14" }} />}
               valueStyle={{ color: "#faad14" }}
             />
-          </Card>
-          <Card>
+            {/* <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col justify-end items-end">
+
+              <div className="text-xs text-gray-500 mb-1">Objetivo Anual</div>
+              <div className="text-sm font-medium text-gray-600">
+                {formatCurrency(totalPromedioObjetivo * 12 / new Date().getMonth() + 1, "CLP")}
+              </div>
+            </div> */}
+          </Card>          <Card>
             <Statistic
               title="Venta YTD"
               value={totalPromedioRealizado}
@@ -286,10 +331,16 @@ const Clientes: React.FC = () => {
               prefix={<DollarOutlined style={{ color: "#52c41a" }} />}
               valueStyle={{ color: "#52c41a" }}
             />
+            {/* <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col justify-end items-end">
+              <div className="text-xs text-gray-500 mb-1">Ventas Total</div>
+              <div className="text-sm font-medium text-gray-600">
+                {formatCurrency(totalPromedioRealizado * 12 / (new Date().getMonth() + 1), "CLP")}
+              </div>
+            </div> */}
           </Card>
           <Card>
             <Statistic
-              title="Sin Consumo"
+              title="Clientes Sin Consumo"
               value={clientesSinConsumo}
               prefix={
                 <ExclamationCircleOutlined style={{ color: "#f5222d" }} />
