@@ -57,6 +57,8 @@ interface Cliente {
   rut_cliente: string;
   nombre_cliente: string;
   numero_instrumentos: number;
+  compra_objetivo_anual: number;
+  compra_realizada_anual: number;
   promedio_objetivo_a_la_fecha: number;
   promedio_realizado_a_la_fecha: number;
 }
@@ -180,6 +182,14 @@ const Clientes: React.FC = () => {
     (sum, cliente) => sum + cliente.numero_instrumentos,
     0
   );
+  const totalObjetivoAnual = clientes.reduce(
+    (sum, cliente) => sum + cliente.compra_objetivo_anual,
+    0
+  );
+  const totalCompraRealizadaAnual = clientes.reduce(
+    (sum, cliente) => sum + cliente.compra_realizada_anual,
+    0
+  );
   const totalPromedioObjetivo = clientes.reduce(
     (sum, cliente) => sum + cliente.promedio_objetivo_a_la_fecha,
     0
@@ -295,56 +305,75 @@ const Clientes: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
           <Card>
             <Statistic
-              title="Total Clientes"
+              title={
+          <span className="flex items-center gap-2">
+            <UserOutlined style={{ color: "#1890ff" }} />
+            Total Clientes
+          </span>
+              }
               value={clientes.length}
-              prefix={<UserOutlined style={{ color: "#1890ff" }} />}
               valueStyle={{ color: "#1890ff" }}
             />
           </Card>
           <Card>
             <Statistic
-              title="Total Instrumentos"
+              title={
+          <span className="flex items-center gap-2">
+            <ToolOutlined style={{ color: "#52c41a" }} />
+            Total Instrumentos
+          </span>
+              }
               value={totalInstrumentos}
-              prefix={<ToolOutlined style={{ color: "#52c41a" }} />}
               valueStyle={{ color: "#52c41a" }}
             />
-          </Card>          <Card>
-            <Statistic
-              title="Objetivo YTD"
-              value={totalPromedioObjetivo}
-              formatter={(value) => formatCurrency(Number(value), "CLP")}
-              prefix={<DollarOutlined style={{ color: "#faad14" }} />}
-              valueStyle={{ color: "#faad14" }}
-            />
-            {/* <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col justify-end items-end">
-
-              <div className="text-xs text-gray-500 mb-1">Objetivo Anual</div>
-              <div className="text-sm font-medium text-gray-600">
-                {formatCurrency(totalPromedioObjetivo * 12 / new Date().getMonth() + 1, "CLP")}
-              </div>
-            </div> */}
-          </Card>          <Card>
-            <Statistic
-              title="Venta YTD"
-              value={totalPromedioRealizado}
-              formatter={(value) => formatCurrency(Number(value), "CLP")}
-              prefix={<DollarOutlined style={{ color: "#52c41a" }} />}
-              valueStyle={{ color: "#52c41a" }}
-            />
-            {/* <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col justify-end items-end">
-              <div className="text-xs text-gray-500 mb-1">Ventas Total</div>
-              <div className="text-sm font-medium text-gray-600">
-                {formatCurrency(totalPromedioRealizado * 12 / (new Date().getMonth() + 1), "CLP")}
-              </div>
-            </div> */}
           </Card>
           <Card>
             <Statistic
-              title="Clientes Sin Consumo"
-              value={clientesSinConsumo}
-              prefix={
-                <ExclamationCircleOutlined style={{ color: "#f5222d" }} />
+              title={
+          <span className="flex items-center gap-2">
+            <DollarOutlined style={{ color: "#faad14" }} />
+            Objetivo YTD
+          </span>
               }
+              value={totalPromedioObjetivo}
+              formatter={(value) => formatCurrency(Number(value), "CLP")}
+              valueStyle={{ color: "#faad14" }}
+            />
+            <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col justify-end items-end">
+              <div className="text-xs text-gray-500 mb-1">Objetivo Anual</div>
+              <div className="text-sm font-medium text-gray-600">
+          {formatCurrency(totalObjetivoAnual, "CLP")}
+              </div>
+            </div>
+          </Card>
+          <Card>
+            <Statistic
+              title={
+          <span className="flex items-center gap-2">
+            <DollarOutlined style={{ color: "#52c41a" }} />
+            Venta YTD
+          </span>
+              }
+              value={totalPromedioRealizado}
+              formatter={(value) => formatCurrency(Number(value), "CLP")}
+              valueStyle={{ color: "#52c41a" }}
+            />
+            <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col justify-end items-end">
+              <div className="text-xs text-gray-500 mb-1">Ventas Total</div>
+              <div className="text-sm font-medium text-gray-600">
+          {formatCurrency(totalCompraRealizadaAnual, "CLP")}
+              </div>
+            </div>
+          </Card>
+          <Card>
+            <Statistic
+              title={
+          <span className="flex items-center gap-2">
+            <ExclamationCircleOutlined style={{ color: "#f5222d" }} />
+            Clientes Sin Consumo
+          </span>
+              }
+              value={clientesSinConsumo}
               valueStyle={{ color: "#f5222d" }}
             />
           </Card>
