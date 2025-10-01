@@ -68,6 +68,7 @@ const Clientes: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [downloadingReport, setDownloadingReport] = useState(false);
+  const [downloadingInstrumentReport, setDownloadingInstrumentReport] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -176,6 +177,46 @@ const Clientes: React.FC = () => {
       );
     } finally {
       setDownloadingReport(false);
+    }
+  };
+
+  const handleDownloadInstrumentReport = async () => {
+    setDownloadingInstrumentReport(true);
+    try {
+      const response = await axiosInstance.get(
+        "comodatos/reportes/excel/instrumentos/",
+        {
+          responseType: "blob",
+        }
+      );
+
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Get current date for filename
+      const currentDate = new Date().toISOString().split("T")[0];
+      link.setAttribute("download", `reporte_instrumentos_${currentDate}.xlsx`);
+
+      // Append to html link element page
+      document.body.appendChild(link);
+
+      // Start download
+      link.click();
+
+      // Clean up and remove the link
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      message.success("Reporte de instrumentos descargado exitosamente");
+    } catch (error) {
+      console.error("Error downloading instrument report:", error);
+      message.error(
+        "Error al descargar el reporte de instrumentos. Por favor intenta nuevamente."
+      );
+    } finally {
+      setDownloadingInstrumentReport(false);
     }
   }; // Calculate statistics
   const totalInstrumentos = clientes.reduce(
@@ -402,6 +443,18 @@ const Clientes: React.FC = () => {
                   {downloadingReport
                     ? "Generando..."
                     : "Generar Reporte Marcas"}
+                </Button>
+                <Button
+                  type="default"
+                  size="large"
+                  icon={<FileTextOutlined />}
+                  onClick={handleDownloadInstrumentReport}
+                  loading={downloadingInstrumentReport}
+                  className="flex-1 sm:flex-none"
+                >
+                  {downloadingInstrumentReport
+                    ? "Generando..."
+                    : "Generar Reporte Instrumentos"}
                 </Button>
                 <Button
                   type="primary"
