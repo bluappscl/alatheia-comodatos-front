@@ -494,13 +494,6 @@ const Clientes: React.FC = () => {
                         onClick: handleDownloadInstrumentReport,
                         disabled: downloadingInstrumentReport,
                       },
-                      {
-                        key: 'cartera',
-                        label: 'Reporte de Cartera',
-                        icon: <FileTextOutlined />,
-                        onClick: handleDownloadCarteraReport,
-                        disabled: downloadingCarteraReport,
-                      },
                     ],
                   }}
                   placement="bottomLeft"
@@ -509,10 +502,10 @@ const Clientes: React.FC = () => {
                     type="default"
                     size="large"
                     icon={<FileTextOutlined />}
-                    loading={downloadingReport || downloadingInstrumentReport || downloadingCarteraReport}
+                    loading={downloadingReport || downloadingInstrumentReport}
                     className="flex-1 sm:flex-none"
                   >
-                    {downloadingReport || downloadingInstrumentReport || downloadingCarteraReport
+                    {downloadingReport || downloadingInstrumentReport
                       ? "Generando..."
                       : "Generar Reportes"} <DownOutlined />
                   </Button>
