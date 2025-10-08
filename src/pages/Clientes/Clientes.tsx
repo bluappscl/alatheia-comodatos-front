@@ -16,6 +16,7 @@ import {
   Statistic,
   message,
   Tag,
+  Dropdown,
 } from "antd";
 import { formatCurrency } from "../../utils/formatCurrency";
 import {
@@ -26,6 +27,7 @@ import {
   ExclamationCircleOutlined,
   SearchOutlined,
   FileTextOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 
 // PerformanceTag component to compare expected vs realized values
@@ -69,6 +71,7 @@ const Clientes: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [downloadingReport, setDownloadingReport] = useState(false);
   const [downloadingInstrumentReport, setDownloadingInstrumentReport] = useState(false);
+  const [downloadingCarteraReport, setDownloadingCarteraReport] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -218,7 +221,49 @@ const Clientes: React.FC = () => {
     } finally {
       setDownloadingInstrumentReport(false);
     }
-  }; // Calculate statistics
+  };
+
+  const handleDownloadCarteraReport = async () => {
+    setDownloadingCarteraReport(true);
+    try {
+      const response = await axiosInstance.get(
+        "/comisiones/reportes/cartera/",
+        {
+          responseType: "blob",
+        }
+      );
+
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Get current date for filename
+      const currentDate = new Date().toISOString().split("T")[0];
+      link.setAttribute("download", `reporte_cartera_${currentDate}.xlsx`);
+
+      // Append to html link element page
+      document.body.appendChild(link);
+
+      // Start download
+      link.click();
+
+      // Clean up and remove the link
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      message.success("Reporte de cartera descargado exitosamente");
+    } catch (error) {
+      console.error("Error downloading cartera report:", error);
+      message.error(
+        "Error al descargar el reporte de cartera. Por favor intenta nuevamente."
+      );
+    } finally {
+      setDownloadingCarteraReport(false);
+    }
+  }; 
+  
+  // Calculate statistics
   const totalInstrumentos = clientes.reduce(
     (sum, cliente) => sum + cliente.numero_instrumentos,
     0
@@ -432,30 +477,46 @@ const Clientes: React.FC = () => {
                 className="max-w-md"
               />
               <div className="flex gap-2 w-full sm:w-auto">
-                <Button
-                  type="default"
-                  size="large"
-                  icon={<FileTextOutlined />}
-                  onClick={handleDownloadReport}
-                  loading={downloadingReport}
-                  className="flex-1 sm:flex-none"
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: 'marcas',
+                        label: 'Reporte de Marcas',
+                        icon: <FileTextOutlined />,
+                        onClick: handleDownloadReport,
+                        disabled: downloadingReport,
+                      },
+                      {
+                        key: 'instrumentos',
+                        label: 'Reporte de Instrumentos',
+                        icon: <FileTextOutlined />,
+                        onClick: handleDownloadInstrumentReport,
+                        disabled: downloadingInstrumentReport,
+                      },
+                      {
+                        key: 'cartera',
+                        label: 'Reporte de Cartera',
+                        icon: <FileTextOutlined />,
+                        onClick: handleDownloadCarteraReport,
+                        disabled: downloadingCarteraReport,
+                      },
+                    ],
+                  }}
+                  placement="bottomLeft"
                 >
-                  {downloadingReport
-                    ? "Generando..."
-                    : "Generar Reporte Marcas"}
-                </Button>
-                <Button
-                  type="default"
-                  size="large"
-                  icon={<FileTextOutlined />}
-                  onClick={handleDownloadInstrumentReport}
-                  loading={downloadingInstrumentReport}
-                  className="flex-1 sm:flex-none"
-                >
-                  {downloadingInstrumentReport
-                    ? "Generando..."
-                    : "Generar Reporte Instrumentos"}
-                </Button>
+                  <Button
+                    type="default"
+                    size="large"
+                    icon={<FileTextOutlined />}
+                    loading={downloadingReport || downloadingInstrumentReport || downloadingCarteraReport}
+                    className="flex-1 sm:flex-none"
+                  >
+                    {downloadingReport || downloadingInstrumentReport || downloadingCarteraReport
+                      ? "Generando..."
+                      : "Generar Reportes"} <DownOutlined />
+                  </Button>
+                </Dropdown>
                 <Button
                   type="primary"
                   size="large"
