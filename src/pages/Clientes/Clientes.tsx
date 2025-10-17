@@ -71,7 +71,6 @@ const Clientes: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [downloadingReport, setDownloadingReport] = useState(false);
   const [downloadingInstrumentReport, setDownloadingInstrumentReport] = useState(false);
-  const [downloadingCarteraReport, setDownloadingCarteraReport] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -222,46 +221,6 @@ const Clientes: React.FC = () => {
       setDownloadingInstrumentReport(false);
     }
   };
-
-  const handleDownloadCarteraReport = async () => {
-    setDownloadingCarteraReport(true);
-    try {
-      const response = await axiosInstance.get(
-        "/comisiones/reportes/cartera/",
-        {
-          responseType: "blob",
-        }
-      );
-
-      // Create blob link to download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-
-      // Get current date for filename
-      const currentDate = new Date().toISOString().split("T")[0];
-      link.setAttribute("download", `reporte_cartera_${currentDate}.xlsx`);
-
-      // Append to html link element page
-      document.body.appendChild(link);
-
-      // Start download
-      link.click();
-
-      // Clean up and remove the link
-      link.parentNode?.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      message.success("Reporte de cartera descargado exitosamente");
-    } catch (error) {
-      console.error("Error downloading cartera report:", error);
-      message.error(
-        "Error al descargar el reporte de cartera. Por favor intenta nuevamente."
-      );
-    } finally {
-      setDownloadingCarteraReport(false);
-    }
-  }; 
   
   // Calculate statistics
   const totalInstrumentos = clientes.reduce(
