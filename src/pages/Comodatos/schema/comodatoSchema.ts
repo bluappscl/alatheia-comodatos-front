@@ -5,7 +5,6 @@ export const comodatoSchema = Yup.object({
 
   marca: Yup.mixed().required("⚠️ Debe seleccionar una marca"),
   instrumentos: Yup.array()
-    .min(1, "⚠️ Debe añadir al menos un instrumento")
     .of(
       Yup.object({
         serie: Yup.string().required("⚠️ La serie del instrumento es obligatoria"),

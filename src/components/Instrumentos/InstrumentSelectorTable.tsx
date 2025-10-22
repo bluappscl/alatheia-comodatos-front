@@ -1,4 +1,4 @@
-import { Button, Input, InputNumber, message,  Table } from "antd";
+import { Button, Input, InputNumber, message,  Table, Modal } from "antd";
 import { useEffect, useState } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
@@ -6,6 +6,7 @@ import type { ColumnsType } from "antd/es/table";
 import BodegasSelector from "../BodegasSelect";
 import UbicacionesSelector from "../UbicacionesSelector";
 import axiosInstance from "../../api/axiosInstance";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 
 /* -------------------------------------------------------------------------- */
@@ -144,12 +145,35 @@ const InstrumentSelectorTable: React.FC<Props> = ({
     message.info("Recuerda completar todos los campos requeridos: Serie, Bodega, Ubicación, Valor Neto y Monto Objetivo");
   };
   const handleRemoveInstrumento = (uniqueId: string) => {
-    setAddedInstrumentos((prev) => {
-      const next = prev.filter((i) => {
-        const itemId = i.uniqueId || `${i.codigo}_${i.id || 'new'}`;
-        return itemId !== uniqueId;
-      });
-      return next;
+    // Buscar el instrumento para mostrar su información en la confirmación
+    const instrumento = addedInstrumentos.find(i => {
+      const itemId = i.uniqueId || `${i.codigo}_${i.id || 'new'}`;
+      return itemId === uniqueId;
+    });
+
+    Modal.confirm({
+      title: '¿Estás seguro de quitar este instrumento?',
+      icon: <ExclamationCircleOutlined />,
+      content: instrumento ? (
+        <div>
+          <p><strong>Código:</strong> {instrumento.codigo}</p>
+          <p><strong>Descripción:</strong> {instrumento.descripcion}</p>
+          <p className="mt-2 text-gray-600">Esta acción no se puede deshacer.</p>
+        </div>
+      ) : 'Esta acción no se puede deshacer.',
+      okText: 'Sí, quitar',
+      okType: 'danger',
+      cancelText: 'Cancelar',
+      onOk() {
+        setAddedInstrumentos((prev) => {
+          const next = prev.filter((i) => {
+            const itemId = i.uniqueId || `${i.codigo}_${i.id || 'new'}`;
+            return itemId !== uniqueId;
+          });
+          message.success('Instrumento quitado exitosamente');
+          return next;
+        });
+      },
     });
   };
   const handleCellChange = <

@@ -16,7 +16,7 @@ import {
   message,
   Table,
   TableColumnsType,
-  Modal,
+  // Modal,
 } from "antd";
 import { FileText } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
@@ -86,9 +86,9 @@ const VerDetalleComodato: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // Modal contrato
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [contractUrl, setContractUrl] = useState<string | null>(null);
-  const [loadingContract, setLoadingContract] = useState(false);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
+  // const [contractUrl, setContractUrl] = useState<string | null>(null);
+  // const [loadingContract, setLoadingContract] = useState(false);
 
   // Observaciones edit
   const [isEditingObservaciones, setIsEditingObservaciones] = useState(false);
@@ -123,30 +123,30 @@ const VerDetalleComodato: React.FC = () => {
   }, [fetchData]);
 
   /* Carga del documento contrato vía axios */
-  const loadContract = async () => {
-    setLoadingContract(true);
-    try {
-      // 1️⃣ Pido sólo el JSON con la URL del PDF
-      const { data } = await axiosInstance.get<{ archivo: string }>(
-        `/comodatos/contratos/${id}`
-      );
-      // 2️⃣ Esa URL la uso directamente como src del iframe
-      setContractUrl(data.archivo);
-    } catch (err) {
-      console.error(err);
-      message.error("Error al cargar el contrato.");
-      setContractUrl(null);
-    } finally {
-      setLoadingContract(false);
-    }
-  };
+  // const loadContract = async () => {
+  //   setLoadingContract(true);
+  //   try {
+  //     // 1️⃣ Pido sólo el JSON con la URL del PDF
+  //     const { data } = await axiosInstance.get<{ archivo: string }>(
+  //       `/comodatos/contratos/${id}`
+  //     );
+  //     // 2️⃣ Esa URL la uso directamente como src del iframe
+  //     setContractUrl(data.archivo);
+  //   } catch (err) {
+  //     console.error(err);
+  //     message.error("Error al cargar el contrato.");
+  //     setContractUrl(null);
+  //   } finally {
+  //     setLoadingContract(false);
+  //   }
+  // };
 
   /* Cuando abre modal, cargar contrato */
-  useEffect(() => {
-    if (isModalVisible && !contractUrl) {
-      loadContract();
-    }
-  }, [isModalVisible]);
+  // useEffect(() => {
+  //   if (isModalVisible && !contractUrl) {
+  //     loadContract();
+  //   }
+  // }, [isModalVisible]);
 
   /* Columnas tabla instrumentos */
   const columns: TableColumnsType<Instrumento> = [
@@ -416,7 +416,7 @@ const VerDetalleComodato: React.FC = () => {
           </Card>
 
           {/* Contrato */}
-          <Card>
+          {/* <Card>
             <Row align="middle" justify="space-between">
               <Title level={5} className="!mb-0">
                 Contrato
@@ -429,7 +429,7 @@ const VerDetalleComodato: React.FC = () => {
                 Ver Contrato
               </Button>
             </Row>
-          </Card>
+          </Card> */}
         </Col>
       </Row>
 
@@ -448,7 +448,8 @@ const VerDetalleComodato: React.FC = () => {
         />
       </Card>
 
-      <Modal
+      {/* Modal Contrato */}
+      {/* <Modal
         title="Contrato"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
@@ -474,7 +475,7 @@ const VerDetalleComodato: React.FC = () => {
             No se encontró el contrato.
           </div>
         )}
-      </Modal>
+      </Modal> */}
     </div>
   );
 };
