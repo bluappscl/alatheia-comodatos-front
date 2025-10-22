@@ -9,6 +9,9 @@ import {
   Tag,
   Modal,
   message,
+  Button,
+  Select,
+  Spin,
 } from "antd"
 import {  Search } from "lucide-react"
 import axiosInstance from "../../api/axiosInstance"
@@ -30,6 +33,13 @@ type Instrumento = {
   codigo_ubicacion: string | null
 }
 
+type Comodato = {
+  id: number
+  nombre_cliente: string
+  rut_cliente: string
+  marca: string
+}
+
 interface Props {
   /** ID del comodato que provee el padre */
   id: number | string
@@ -40,6 +50,14 @@ export default function InstrumentosGestion({ id }: Props) {
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedInstrumento, setSelectedInstrumento] = useState<Instrumento | null>(null)
+  
+  // Estados para la transferencia
+  const [isTransferModalVisible, setIsTransferModalVisible] = useState(false)
+  const [comodatos, setComodatos] = useState<Comodato[]>([])
+  const [loadingComodatos, setLoadingComodatos] = useState(false)
+  const [selectedComodatoId, setSelectedComodatoId] = useState<number | null>(null)
+  const [instrumentoToTransfer, setInstrumentoToTransfer] = useState<Instrumento | null>(null)
+  const [transferring, setTransferring] = useState(false)
 
   /* ---------------- Obtener datos desde la API ---------------- */
   useEffect(() => {
@@ -77,6 +95,71 @@ export default function InstrumentosGestion({ id }: Props) {
       : "N/A"
 
   const formatDate = (date: string) => new Date(date).toLocaleDateString("es-CL")
+
+  /* ---------------- Cargar comodatos ---------------- */
+  const fetchComodatos = async (marca: string) => {
+    setLoadingComodatos(true)
+    try {
+      const { data } = await axiosInstance.get(`/comodatos/marcas/comodatos/?marca=${marca}`)
+      setComodatos(data.comodatos ?? [])
+    } catch (err) {
+      console.error(err)
+      message.error("No se pudo cargar la lista de comodatos")
+    } finally {
+      setLoadingComodatos(false)
+    }
+  }
+
+  /* ---------------- Manejar transferencia ---------------- */
+  const handleTransferir = (instrumento: Instrumento) => {
+    setInstrumentoToTransfer(instrumento)
+    setSelectedComodatoId(null)
+    setIsTransferModalVisible(true)
+    fetchComodatos(instrumento.marca)
+  }
+
+  const handleConfirmTransfer = () => {
+    if (!selectedComodatoId) {
+      message.warning("Por favor selecciona un comodato de destino")
+      return
+    }
+
+    if (!instrumentoToTransfer) return
+
+    Modal.confirm({
+      title: '¿Confirmar transferencia?',
+      content: (
+        <div>
+          <p><strong>Instrumento:</strong> {instrumentoToTransfer.codigo} - {instrumentoToTransfer.descripcion}</p>
+          <p><strong>Serie:</strong> {instrumentoToTransfer.serie}</p>
+          <p className="mt-3 text-red-600">Esta acción no se puede deshacer. ¿Estás seguro?</p>
+        </div>
+      ),
+      okText: 'Sí, transferir',
+      okType: 'danger',
+      cancelText: 'Cancelar',
+      async onOk() {
+        setTransferring(true)
+        try {
+          await axiosInstance.patch(
+            `/comodatos/instrumentos/${instrumentoToTransfer.id}/transferir/`,
+            { nuevo_comodato_id: selectedComodatoId }
+          )
+          message.success('Instrumento transferido exitosamente')
+          setIsTransferModalVisible(false)
+          // Recargar la lista de instrumentos
+          const { data } = await axiosInstance.get(`/comodatos/${id}/instrumentos/`)
+          setInstrumentos(data.instrumentos ?? [])
+        } catch (err) {
+          console.error(err)
+          message.error('Error al transferir el instrumento')
+        } finally {
+          setTransferring(false)
+        }
+      },
+    })
+  }
+
   /* ---------------- Columnas de la tabla ---------------- */
   const columns = [
     { 
@@ -139,6 +222,21 @@ export default function InstrumentosGestion({ id }: Props) {
       ellipsis: true,
       render: (v: string | null) => v ?? "No disponible" 
     },
+    {
+      title: "Acciones",
+      key: "acciones",
+      width: 120,
+      fixed: "right" as const,
+      render: (_: any, record: Instrumento) => (
+        <Button
+          type="primary"
+          size="small"
+          onClick={() => handleTransferir(record)}
+        >
+          Transferir
+        </Button>
+      ),
+    },
   ]
 
   /* ---------------- Render ---------------- */
@@ -190,8 +288,7 @@ export default function InstrumentosGestion({ id }: Props) {
           rowKey="id"
           pagination={{ pageSize: 10 }}
           className="bg-white rounded-lg shadow-sm"
-          tableLayout="auto"
-          scroll={{ x: "max-content" }}
+          scroll={{ x: 1500 }}
         />
       </div>
 
@@ -248,6 +345,54 @@ export default function InstrumentosGestion({ id }: Props) {
             <div>
               <label className="text-sm text-muted-foreground">Modificado</label>
               <p>{formatDate(selectedInstrumento.modified_at)}</p>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Modal de Transferencia */}
+      <Modal
+        title="Transferir Instrumento"
+        open={isTransferModalVisible}
+        onCancel={() => setIsTransferModalVisible(false)}
+        onOk={handleConfirmTransfer}
+        okText="Transferir"
+        cancelText="Cancelar"
+        confirmLoading={transferring}
+        width={700}
+      >
+        {instrumentoToTransfer && (
+          <div className="space-y-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="font-semibold mb-2">Instrumento a transferir:</p>
+              <p><strong>Código:</strong> {instrumentoToTransfer.codigo}</p>
+              <p><strong>Serie:</strong> {instrumentoToTransfer.serie}</p>
+              <p><strong>Descripción:</strong> {instrumentoToTransfer.descripcion}</p>
+            </div>
+
+            <div>
+              <p className="font-semibold mb-2">Selecciona el comodato de destino:</p>
+              {loadingComodatos ? (
+                <div className="flex justify-center py-4">
+                  <Spin />
+                </div>
+              ) : (
+                <Select
+                  showSearch
+                  style={{ width: '100%' }}
+                  placeholder="Selecciona un comodato"
+                  value={selectedComodatoId}
+                  onChange={setSelectedComodatoId}
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={comodatos.map(comodato => ({
+                    value: comodato.id,
+                    label: `ID: ${comodato.id} - ${comodato.nombre_cliente} (${comodato.rut_cliente}) - Marca: ${comodato.marca}`,
+                  }))}
+                />
+              )}
             </div>
           </div>
         )}
