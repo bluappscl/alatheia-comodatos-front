@@ -122,12 +122,7 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   /* ---------------------- Acciones de tabla ------------------------------ */
   const handleAddInstrumento = useCallback((instrumento: InstrumentoInterface) => {
     setAddedInstrumentos((prev) => {
-      if (prev.some((item) => item.codigo === instrumento.codigo)) {
-        message.warning(
-          `El instrumento "${instrumento.descripcion}" ya está agregado`
-        );
-        return prev;
-      }      const next = [
+      const next = [
         ...prev,
         {
           ...instrumento,
