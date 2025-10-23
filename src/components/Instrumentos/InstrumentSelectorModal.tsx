@@ -1,5 +1,5 @@
 import { Button, Modal, Table, Input } from "antd";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 
 interface ProductoComodato {
@@ -27,27 +27,22 @@ const InstrumentSelectorModal: React.FC<Props> = ({
 }) => {
   const [searchText, setSearchText] = useState("");
 
-  // Debug: Agregar logs para verificar el filtrado
-  console.log("InstrumentSelectorModal - marcaComodato:", marcaComodato);
-  console.log("InstrumentSelectorModal - productosComodato count:", productosComodato.length);
-
   // Filtrar productos según búsqueda y marca del comodato
-  const filteredProductos = productosComodato.filter((item) => {
-    const matchesSearch = 
-      item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.descripcion.toLowerCase().includes(searchText.toLowerCase());
-    
-    // Si hay marca del comodato especificada, filtrar solo por esa marca
-    const matchesMarca = marcaComodato 
-      ? item.marca.toLowerCase() === marcaComodato.toLowerCase()
-      : true;
-    
-    console.log(`Item: ${item.codigo}, Marca: ${item.marca}, marcaComodato: ${marcaComodato}, matchesMarca: ${matchesMarca}`);
-    
-    return matchesSearch && matchesMarca;
-  });
-
-  console.log("InstrumentSelectorModal - filteredProductos count:", filteredProductos.length);
+  // Usar useMemo para evitar recalcular en cada render
+  const filteredProductos = useMemo(() => {
+    return productosComodato.filter((item) => {
+      const matchesSearch = 
+        item.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.descripcion.toLowerCase().includes(searchText.toLowerCase());
+      
+      // Si hay marca del comodato especificada, filtrar solo por esa marca
+      const matchesMarca = marcaComodato 
+        ? item.marca.toLowerCase() === marcaComodato.toLowerCase()
+        : true;
+      
+      return matchesSearch && matchesMarca;
+    });
+  }, [productosComodato, searchText, marcaComodato]);
 
   const productosComodatoColumns = [
     { title: "Código", dataIndex: "codigo", key: "codigo" },

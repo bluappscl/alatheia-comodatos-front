@@ -3,6 +3,7 @@
    Formulario completo (crear / editar) con Formik + Yup
 --------------------------------------------------------------------------- */
 
+import React from "react";
 import {
   Button,
   Checkbox,
@@ -19,8 +20,8 @@ import {
   Alert,
   List,
 } from "antd";
-import { Formik, Form as FormikForm, Field } from "formik";
-import { useState } from "react";
+import { Formik, Form as FormikForm, FastField } from "formik";
+import { useState, useCallback } from "react";
 import dayjs from "dayjs";
 import {
   BankOutlined,
@@ -50,6 +51,110 @@ import RepresentanteSelector, {
 import { comodatoSchema } from "../schema/comodatoSchema";
 
 const { Title, Text } = Typography;
+
+/* -------------------------------------------------------------------------- */
+/*                        Componente wrapper para evitar re-renders           */
+/* -------------------------------------------------------------------------- */
+interface RepresentanteSelectorWrapperProps {
+  value: string;
+  setFieldValue: (field: string, value: any) => void;
+}
+
+const RepresentanteSelectorWrapper: React.FC<RepresentanteSelectorWrapperProps> = React.memo(({ value, setFieldValue }) => {
+  const handleChange = useCallback((rep: Representante) => {
+    setFieldValue("representanteSeleccionado", rep);
+  }, [setFieldValue]);
+
+  return (
+    <RepresentanteSelector
+      value={value}
+      onChange={handleChange}
+    />
+  );
+});
+
+RepresentanteSelectorWrapper.displayName = 'RepresentanteSelectorWrapper';
+
+/* -------------------------------------------------------------------------- */
+/*                    Wrapper para MarcasSelector                             */
+/* -------------------------------------------------------------------------- */
+interface MarcasSelectorWrapperProps {
+  value: string;
+  setFieldValue: (field: string, value: any) => void;
+}
+
+const MarcasSelectorWrapper: React.FC<MarcasSelectorWrapperProps> = React.memo(({ value, setFieldValue }) => {
+  const handleChange = useCallback((marca: string) => {
+    setFieldValue("marca", marca);
+  }, [setFieldValue]);
+
+  return (
+    <MarcasSelector
+      value={value}
+      onChange={handleChange}
+    />
+  );
+});
+
+MarcasSelectorWrapper.displayName = 'MarcasSelectorWrapper';
+
+/* -------------------------------------------------------------------------- */
+/*                    Wrapper para InstrumentSelectorTable                    */
+/* -------------------------------------------------------------------------- */
+interface InstrumentSelectorWrapperProps {
+  selectedMarca: string;
+  defaultInstruments: SelectedInstrumento[];
+  setFieldValue: (field: string, value: any) => void;
+  isEditing: boolean;
+}
+
+const InstrumentSelectorWrapper: React.FC<InstrumentSelectorWrapperProps> = React.memo(({ 
+  selectedMarca, 
+  defaultInstruments, 
+  setFieldValue,
+  isEditing 
+}) => {
+  const handleChange = useCallback((insts: SelectedInstrumento[]) => {
+    setFieldValue("instrumentos", insts);
+  }, [setFieldValue]);
+
+  return (
+    <InstrumentSelectorTable
+      selectedMarca={selectedMarca}  
+      defaultInstruments={defaultInstruments}
+      onChange={handleChange}
+      isEditing={isEditing}
+    />
+  );
+});
+
+InstrumentSelectorWrapper.displayName = 'InstrumentSelectorWrapper';
+
+/* -------------------------------------------------------------------------- */
+/*                    Wrapper para ClientSelectionModal                       */
+/* -------------------------------------------------------------------------- */
+interface ClientSelectionWrapperProps {
+  selectedRut: string;
+  setFieldValue: (field: string, value: any) => void;
+}
+
+const ClientSelectionWrapper: React.FC<ClientSelectionWrapperProps> = React.memo(({ 
+  selectedRut, 
+  setFieldValue 
+}) => {
+  const handleSelectClient = useCallback((rut: string) => {
+    setFieldValue("rut_cliente", rut);
+  }, [setFieldValue]);
+
+  return (
+    <ClientSelectionModal
+      onSelectClient={handleSelectClient}
+      selectedRut={selectedRut}
+    />
+  );
+});
+
+ClientSelectionWrapper.displayName = 'ClientSelectionWrapper';
 
 /* -------------------------------------------------------------------------- */
 /*                               initial values                               */
@@ -123,11 +228,6 @@ function buildInitialValues() {
 function mapValuesToPayload(
   values: ReturnType<typeof buildInitialValues>
 ): ComodatoPayload {
-  // Debug para ver los valores antes de mapear
-  console.log("Values antes de mapear:", values);
-  console.log("plazo_para_pago:", values.plazo_para_pago);
-  console.log("plazo_pago_facturas:", values.plazo_pago_facturas);
-  
   return {
     comodato: {
       fecha_inicio: values.fechaInicio ? dayjs(values.fechaInicio).format("YYYY-MM-DD") : undefined,
@@ -236,15 +336,7 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
         try {
           setLoadingStage("comodato");
           
-          // Debug para ver los valores en el submit
-          console.log("Values en submit:", values);
-          console.log("objetivoReactivosCantidad:", values.objetivoReactivosCantidad);
-          console.log("objetivoDineroCantidad:", values.objetivoDineroCantidad);
-          
           const payload = mapValuesToPayload(values);
-          
-          // Debug para ver el payload final
-          console.log("Payload final:", payload);
           
           let comodatoId: number;
           
@@ -312,15 +404,6 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
           accept: ".pdf,.doc,.docx,.jpg,.jpeg,.png",
         };
 
-        // Agregar log para debug
-        console.log("Form Errors:", errors);
-        console.log("Form Values:", values);
-        console.log("Form Touched:", touched);
-
-        // Debug logs para verificar los valores
-        console.log("isEditing:", isEditing);
-        console.log("contratoExistente:", values.contratoExistente);
-
         return (
           <FormikForm className="space-y-8">
             {/* ------------------------------------------------------------------ */}
@@ -366,9 +449,9 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                     </div>
                   ) : (
                     // Modo creación: mostrar el modal de selección
-                    <ClientSelectionModal
-                      onSelectClient={(rut) => setFieldValue("rut_cliente", rut)}
+                    <ClientSelectionWrapper
                       selectedRut={values.rut_cliente}
+                      setFieldValue={setFieldValue}
                     />
                   )}
                 </Form.Item><Form.Item
@@ -383,9 +466,9 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                     style={{ backgroundColor: '#f5f5f5', color: '#999' }}
                   />
                 ) : (
-                  <MarcasSelector
+                  <MarcasSelectorWrapper
                     value={values.marca}
-                    onChange={(m) => setFieldValue("marca", m)}
+                    setFieldValue={setFieldValue}
                   />
                 )}
                 </Form.Item>
@@ -405,11 +488,9 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
               {/* Representante Alatheia (selector) */}
               <Form.Item>
                 <Text strong>Representante Alatheia</Text>
-                <RepresentanteSelector
-                   value={values.representanteSeleccionado.codigo}
-                  onChange={(rep) => {
-                    setFieldValue("representanteSeleccionado", rep);
-                  }}
+                <RepresentanteSelectorWrapper
+                  value={values.representanteSeleccionado.codigo}
+                  setFieldValue={setFieldValue}
                 />
               </Form.Item>
 
@@ -420,12 +501,12 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                 <Text strong className="col-span-2">
                   Representante del cliente
                 </Text>
-                <Field
+                <FastField
                   name="nombre_representante_cliente"
                   as={Input}
                   placeholder="Nombre representante cliente"
                 />
-                <Field
+                <FastField
                   name="rut_representante_cliente"
                   as={Input}
                   placeholder="RUT representante cliente"
@@ -434,12 +515,12 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                 <Text strong className="col-span-2">
                   Representante Alatheia (manual)
                 </Text>
-                <Field
+                <FastField
                   name="nombre_representante_alatheia"
                   as={Input}
                   placeholder="Nombre representante Alatheia"
                 />
-                <Field
+                <FastField
                   name="rut_representante_alatheia"
                   as={Input}
                   placeholder="RUT representante Alatheia"
@@ -448,7 +529,7 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                 <Text strong className="col-span-2">
                   Dirección cliente
                 </Text>
-                <Field
+                <FastField
                   name="direccion_cliente"
                   as={Input}
                   placeholder="Dirección cliente"
@@ -656,11 +737,11 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                 <ToolOutlined /> Instrumentos
               </Title>
 
-              <InstrumentSelectorTable
+              <InstrumentSelectorWrapper
                 selectedMarca={values.marca}  
                 defaultInstruments={values.instrumentos}
-                onChange={(insts) => setFieldValue("instrumentos", insts)}
-                isEditing={isEditing} // Pasar el prop de edición
+                setFieldValue={setFieldValue}
+                isEditing={isEditing}
               />
             </section>
 
@@ -673,7 +754,7 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
               <Title level={4} className="mb-2">
                 Observaciones
               </Title>
-              <Field name="observaciones" as={Input.TextArea} rows={3} />
+              <FastField name="observaciones" as={Input.TextArea} rows={3} />
             </section>
 
             {/* ------------------------------------------------------------------ */}

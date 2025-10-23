@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spin, message } from "antd";
 import dayjs from "dayjs";
@@ -94,9 +94,17 @@ export default function EditarComodato() {
   const nav = useNavigate();
   const [initial, setInitial] = useState<any | null>(null);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     nav("/clientes"); // Navegar a la lista de clientes
-  };
+  }, [nav]);
+
+  const handleCompleted = useCallback((rutCliente?: string) => {
+    if (rutCliente) {
+      nav(`/clientes/${rutCliente}`);
+    } else {
+      nav("/comodatos");
+    }
+  }, [nav]);
 
   useEffect(() => {
     async function fetchData() {
@@ -172,13 +180,7 @@ export default function EditarComodato() {
       />      <div className="p-6 max-w-5xl mx-auto bg-white rounded-md shadow-sm">
         <ComodatoForm
           initialValues={initial}
-          onCompleted={(rutCliente) => {
-            if (rutCliente) {
-              nav(`/clientes/${rutCliente}`);
-            } else {
-              nav("/comodatos");
-            }
-          }}
+          onCompleted={handleCompleted}
           isEditing={true} // Agregar este prop
         />
       </div>

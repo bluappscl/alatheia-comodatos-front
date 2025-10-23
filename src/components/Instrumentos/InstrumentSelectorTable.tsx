@@ -1,5 +1,5 @@
 import { Button, Input, InputNumber, message,  Table, Modal } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import InstrumentSelectorModal from "./InstrumentSelectorModal";
 import { InstrumentoInterface } from "../../interfaces/InstrumentoInterface";
 import type { ColumnsType } from "antd/es/table";
@@ -59,10 +59,9 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loadingInstruments, setLoadingInstruments] = useState(false);
-
-  console.log("InstrumentSelectorTable - selectedMarca:", selectedMarca);
-  console.log("InstrumentSelectorTable - defaultInstruments:", defaultInstruments);
-  console.log("InstrumentSelectorTable - isEditing:", isEditing);
+  
+  // Ref para evitar notificar al padre en la inicialización
+  const isInitialMount = useRef(true);
 
   /* ---------------- Fetch instrumentos de la API ------------------------- */
   useEffect(() => {
@@ -86,11 +85,12 @@ const InstrumentSelectorTable: React.FC<Props> = ({
   }, []); // Solo ejecutar una vez al montar el componente
 
   /* ---------------- Notifica cambios al padre ---------------------------- */
-  const notifyParent = (next: SelectedInstrumento[]) => {
+  const notifyParent = useCallback((next: SelectedInstrumento[]) => {
     onChange?.(next);
-  };
+  }, [onChange]);
 
-  /* ------------- Cuando llega la prop defaultInstruments ----------------- */  useEffect(() => {
+  /* ------------- Cuando llega la prop defaultInstruments ----------------- */  
+  useEffect(() => {
     if (defaultInstruments?.length > 0) {
       const processedInstruments = defaultInstruments.map((inst, index) => ({
         ...inst,
@@ -110,12 +110,17 @@ const InstrumentSelectorTable: React.FC<Props> = ({
     }
   }, [defaultInstruments.length]);
 
-  // Notificar cambios siempre que se modifique la tabla
+  // Notificar cambios siempre que se modifique la tabla, excepto en el montaje inicial
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     notifyParent(addedInstrumentos);
-  }, [addedInstrumentos]);
+  }, [addedInstrumentos, notifyParent]);
+
   /* ---------------------- Acciones de tabla ------------------------------ */
-  const handleAddInstrumento = (instrumento: InstrumentoInterface) => {
+  const handleAddInstrumento = useCallback((instrumento: InstrumentoInterface) => {
     setAddedInstrumentos((prev) => {
       if (prev.some((item) => item.codigo === instrumento.codigo)) {
         message.warning(
@@ -143,8 +148,9 @@ const InstrumentSelectorTable: React.FC<Props> = ({
     
     // Mostrar mensaje recordatorio sobre campos requeridos
     message.info("Recuerda completar todos los campos requeridos: Serie, Bodega, Ubicación, Valor Neto y Monto Objetivo");
-  };
-  const handleRemoveInstrumento = (uniqueId: string) => {
+  }, []);
+  
+  const handleRemoveInstrumento = useCallback((uniqueId: string) => {
     // Buscar el instrumento para mostrar su información en la confirmación
     const instrumento = addedInstrumentos.find(i => {
       const itemId = i.uniqueId || `${i.codigo}_${i.id || 'new'}`;
@@ -175,8 +181,9 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         });
       },
     });
-  };
-  const handleCellChange = <
+  }, [addedInstrumentos]);
+  
+  const handleCellChange = useCallback(<
     K extends keyof Omit<SelectedInstrumento, keyof InstrumentoInterface>
   >(
     key: K,
@@ -193,10 +200,10 @@ const InstrumentSelectorTable: React.FC<Props> = ({
       });
       return next;
     });
-  };
+  }, []);
 
   /* ------------------------ Columnas ------------------------------------- */
-  const columns: ColumnsType<SelectedInstrumento> = [
+  const columns: ColumnsType<SelectedInstrumento> = useMemo(() => [
     { title: "Código", dataIndex: "codigo", key: "codigo", width: 120 },
     { title: "ADN", dataIndex: "adn", key: "adn", width: 120 },
     {
@@ -336,7 +343,26 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         </Button>
       ),
     },
-  ];
+  ], [handleCellChange, handleRemoveInstrumento, isEditing]);
+
+  /* ---------------------- Filtrado de datos ------------------------------ */
+  const filteredData = useMemo(() => {
+    return addedInstrumentos.filter((i) => {
+      const matchesSearch =
+        !searchText ||
+        i.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
+        i.descripcion.toLowerCase().includes(searchText.toLowerCase());
+
+      // En modo edición, mostrar todos los instrumentos independientemente de la marca
+      const matchesMarca =
+        !selectedMarca ||
+        defaultInstruments.length > 0 || // Si hay instrumentos por defecto, mostrar todos
+        String(i.marca).toLowerCase() ===
+          String(selectedMarca).toLowerCase();
+
+      return matchesSearch && matchesMarca;
+    });
+  }, [addedInstrumentos, searchText, selectedMarca, defaultInstruments.length]);
 
   /* ---------------------------- Render ----------------------------------- */
   return (
@@ -357,21 +383,8 @@ const InstrumentSelectorTable: React.FC<Props> = ({
         </Button>
       </div>
       <Table
-        dataSource={addedInstrumentos.filter((i) => {
-          const matchesSearch =
-            !searchText ||
-            i.codigo.toLowerCase().includes(searchText.toLowerCase()) ||
-            i.descripcion.toLowerCase().includes(searchText.toLowerCase());
-
-          // En modo edición, mostrar todos los instrumentos independientemente de la marca
-          const matchesMarca =
-            !selectedMarca ||
-            defaultInstruments.length > 0 || // Si hay instrumentos por defecto, mostrar todos
-            String(i.marca).toLowerCase() ===
-              String(selectedMarca).toLowerCase();
-
-          return matchesSearch && matchesMarca;
-        })}        columns={columns}
+        dataSource={filteredData}
+        columns={columns}
         rowKey={(record) => record.uniqueId || `${record.codigo}_${record.id || 'new'}`}
         scroll={{ x: 1800 }}
         className="rounded-xl"
