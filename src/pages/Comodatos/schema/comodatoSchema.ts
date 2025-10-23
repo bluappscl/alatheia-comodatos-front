@@ -11,7 +11,10 @@ export const comodatoSchema = Yup.object({
         codigo: Yup.string().required("⚠️ El código del instrumento es requerido"),
         descripcion: Yup.string().required("⚠️ La descripción del instrumento es requerida"),
         bodega: Yup.string().required("⚠️ Debe seleccionar una bodega para el instrumento"),
-        codigo_ubicacion: Yup.number().required("⚠️ Debe seleccionar una ubicación para el instrumento"),
+        codigo_ubicacion: Yup.number()
+          .required("⚠️ Debe seleccionar una ubicación para el instrumento")
+          .min(1, "⚠️ Debe seleccionar una ubicación válida para el instrumento")
+          .test('not-zero', '⚠️ Debe seleccionar una ubicación válida para el instrumento', value => value !== 0),
         valor_neto: Yup.number().min(0, "⚠️ El valor neto debe ser mayor o igual a 0").required("⚠️ El valor neto es requerido"),
         monto_objetivo: Yup.number().min(0, "⚠️ El monto objetivo debe ser mayor o igual a 0").required("⚠️ El monto objetivo es requerido"),
       })

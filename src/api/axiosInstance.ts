@@ -4,9 +4,9 @@ import { useUserDataStore } from "../stores/UserData.store";
 // Determinar la URL de base desde las variables de entorno o usar el valor predeterminado
 
 
-const baseURL: string = 'https://alatheia-api.gty.cl/'
+// const baseURL: string = 'https://alatheia-api.gty.cl/'
 // const baseURL: string = import.meta.env.VITE_BASE_URL || 'https://alatheia-dev.gty-apis.cl/';
-// const baseURL: string = 'https://alatheia-dev.gty-apis.cl/';
+const baseURL: string = 'https://alatheia-dev.gty-apis.cl/';
 
 // Crear una instancia de Axios con la URL de base
 const axiosInstance: AxiosInstance = axios.create({
