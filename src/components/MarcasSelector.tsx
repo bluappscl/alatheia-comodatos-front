@@ -82,10 +82,15 @@ const MarcasSelector: React.FC<MarcasSelectorProps> = ({
         </Select.Option>
       ))}
     </Select>
-    {loading && (
+    {loading ? (
       <div className="text-sm text-gray-500 mt-1">
         espere mientras obtenemos las marcas
       </div>
+    ):(
+      <div className='text-gray-500 font-semibold mt-4'>
+        <p>Si no visualiza la marca en este listado, es porque ya se encuentra en un comodato creado ✅</p>
+      </div>
+
     )}
     </>
   );
