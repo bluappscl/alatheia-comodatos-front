@@ -17,6 +17,7 @@
     "formik": "^2.4.6",
     "lucide-react": "^0.509.0",
     "motion": "^11.16.4",
+    "rc-virtual-list": "^3.19.2",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-circular-progressbar": "^2.1.0",

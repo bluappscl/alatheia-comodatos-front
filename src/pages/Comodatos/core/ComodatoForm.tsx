@@ -81,9 +81,10 @@ RepresentanteSelectorWrapper.displayName = 'RepresentanteSelectorWrapper';
 interface MarcasSelectorWrapperProps {
   value: string;
   setFieldValue: (field: string, value: any) => void;
+  selectedRut?: string;
 }
 
-const MarcasSelectorWrapper: React.FC<MarcasSelectorWrapperProps> = React.memo(({ value, setFieldValue }) => {
+const MarcasSelectorWrapper: React.FC<MarcasSelectorWrapperProps> = React.memo(({ value, setFieldValue, selectedRut }) => {
   const handleChange = useCallback((marca: string) => {
     setFieldValue("marca", marca);
   }, [setFieldValue]);
@@ -92,6 +93,7 @@ const MarcasSelectorWrapper: React.FC<MarcasSelectorWrapperProps> = React.memo((
     <MarcasSelector
       value={value}
       onChange={handleChange}
+      clientRut={selectedRut}
     />
   );
 });
@@ -469,6 +471,7 @@ const ComodatoForm: React.FC<Props> = ({ initialValues, onCompleted, isEditing =
                   <MarcasSelectorWrapper
                     value={values.marca}
                     setFieldValue={setFieldValue}
+                    selectedRut={values.rut_cliente}
                   />
                 )}
                 </Form.Item>

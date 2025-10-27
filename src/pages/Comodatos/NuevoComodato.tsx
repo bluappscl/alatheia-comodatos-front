@@ -38,10 +38,10 @@ const CrearComodato: React.FC<{}> = () => {
   const [enableGraceTime, setEnableGraceTime] = useState(false);
   const [plazoParaPago, setPlazoParaPago] = useState(false);
   const [selectedRep, setSelectedRep] = useState<Representante | null>(null);
-  const [selectedMarca, setSelectedMarca] = useState<any>(null);
+  const [selectedMarca, setSelectedMarca] = useState<string>("");
   const [isDemo, setIsDemo] = useState(false); // Nuevo estado para demo
 
-  console.log("selectedMarca en padre", selectedMarca);
+  console.log("Estado actual:", { clientId, selectedMarca });
 
   // Estados de carga por etapa
   const [loadingStage, setLoadingStage] = useState<
@@ -160,8 +160,21 @@ const CrearComodato: React.FC<{}> = () => {
   };
 
   const handleSelectClient = (rut: string) => {
-    console.log("Selected client:", rut);
+    console.log("handleSelectClient ejecutado con RUT:", rut);
+    if (!rut) {
+      console.warn("handleSelectClient: RUT es undefined o vacío");
+      return;
+    }
     setClientId(rut);
+    setSelectedMarca(""); // Limpiar marca al cambiar de cliente
+    
+    // Debug para verificar el cambio de estado
+    setTimeout(() => {
+      console.log("Estado después de setClientId:", {
+        clientId: rut,
+        selectedMarca: ""
+      });
+    }, 0);
   };
 
   const uploadProps: UploadProps = {
@@ -206,8 +219,12 @@ const CrearComodato: React.FC<{}> = () => {
                 ]}
               >
                 <ClientSelectionModal
-                  onSelectClient={handleSelectClient}
+                  onSelectClient={(rut) => {
+                    console.log("[NuevoComodato] Cliente seleccionado, RUT:", rut);
+                    handleSelectClient(rut);
+                  }}
                   showSelectedClient={true}
+                  selectedRut={clientId}
                 />
               </Form.Item>
 
@@ -221,10 +238,23 @@ const CrearComodato: React.FC<{}> = () => {
                 ]}
               >
                 <MarcasSelector
-                  value={selectedMarca?.id}
-                  onChange={setSelectedMarca}
+                  value={selectedMarca}
+                  onChange={(marca) => {
+                    console.log("[NuevoComodato] Marca seleccionada:", marca);
+                    setSelectedMarca(marca);
+                  }}
                   placeholder="Seleccione una marca"
+                  clientRut={clientId}
                 />
+                {/* Debug info */}
+                <div style={{display: 'none'}}>
+                  clientId: {clientId || 'no clientId'}, 
+                  selectedMarca: {selectedMarca || 'no marca'}
+                </div>
+                {/* Debug visible */}
+                <div className="text-xs text-gray-400 mt-1">
+                  Debug - RUT actual: {clientId || 'ninguno'}
+                </div>
               </Form.Item>
 
               <Divider></Divider>
