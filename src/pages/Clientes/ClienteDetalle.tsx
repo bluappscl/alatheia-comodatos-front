@@ -23,6 +23,7 @@ import {
   Target,
   Edit,
   BanknoteArrowUp,
+  Trash2,
 } from "lucide-react";
 import {
   Chart,
@@ -35,6 +36,7 @@ import {
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
 import axiosInstance from "../../api/axiosInstance";
+import { useUserDataStore } from "../../stores/UserData.store";
 import InstrumentosGestion from "./VerInstrumentosDetalle";
 
 Chart.register(
@@ -140,6 +142,11 @@ const ClienteDetalle: React.FC = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<ClienteResumen | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Obtener información del usuario del store
+  const { userInfo } = useUserDataStore();
+  const isAdmin = userInfo.role === "ADM";
 
   /* Estado para el modal de instrumentos */
   const [modalVisible, setModalVisible] = useState(false);
@@ -158,16 +165,49 @@ const ClienteDetalle: React.FC = () => {
     setComodatoId(null);
   };
 
+  const handleDeleteComodato = (comodatoId: number, marca: string) => {
+    // Validar que no sea el único comodato
+    if (data && data.marcas.length === 1) {
+      message.warning("No se puede eliminar el único comodato del cliente");
+      return;
+    }
+
+    Modal.confirm({
+      title: "¿Desea eliminar el comodato?",
+      content: `Esta acción eliminará permanentemente el comodato de la marca ${marca}. Esta operación no se puede deshacer.`,
+      okText: "Sí, eliminar",
+      okType: "danger",
+      cancelText: "Cancelar",
+      onOk: async () => {
+        try {
+          await axiosInstance.delete(`/comodatos/${comodatoId}/`);
+          message.success("Comodato eliminado exitosamente");
+          // Navegar a listado de clientes
+          navigate("/clientes");
+        } catch (error) {
+          console.error("Error al eliminar comodato:", error);
+          message.error("No se pudo eliminar el comodato");
+        }
+      },
+    });
+  };
+
   /* --- Cargar datos del cliente --- */
   useEffect(() => {
     if (!rut) return;
     setLoading(true);
+    setError(null);
     axiosInstance
       .get<APIResponse>(`/comodatos/clientes/${rut}/resumen/`)
       .then((res) => setData(res.data.cliente))
-      .catch(() =>
-        message.error("No se pudo cargar la información del cliente")
-      )
+      .catch((err) => {
+        if (err.response?.status === 404 && err.response?.data?.detail) {
+          setError(err.response.data.detail);
+        } else {
+          setError("No se pudo cargar la información del cliente");
+        }
+        message.error("No se pudo cargar la información del cliente");
+      })
       .finally(() => setLoading(false));
   }, [rut]);
   /* --- Datos para gráficos --- */
@@ -265,7 +305,34 @@ const ClienteDetalle: React.FC = () => {
         <Spin size="large" />
       </div>
     );
-  if (!data) return null;
+  
+  /* --- Error 404 o sin datos --- */
+  if (error || !data) {
+    return (
+      <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="mb-6">
+          <Button
+            type="default"
+            icon={<ArrowLeftOutlined />}
+            onClick={handleBack}
+            className="mb-4 hover:shadow-md transition-shadow"
+          >
+            Volver al listado de clientes
+          </Button>
+        </div>
+        <Card className="max-w-2xl mx-auto shadow-lg">
+          <div className="text-center py-8">
+            <Title level={3} className="text-gray-600">
+              {error || "No se encontró información del cliente"}
+            </Title>
+            <Text type="secondary" className="block mt-4">
+              El cliente con RUT {rut} no tiene comodatos registrados o no existe en el sistema.
+            </Text>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   const annualPct = data.monto_esperado_anual
     ? (data.monto_realizado_anual / data.monto_esperado_anual) * 100
@@ -425,6 +492,19 @@ const ClienteDetalle: React.FC = () => {
                 >
                   <Edit className="w-4 h-4 text-blue-600" />
                 </Link>
+
+                {/* Solo mostrar botón eliminar si es ADM */}
+                {isAdmin && (
+                  <Button
+                    type="link"
+                    danger
+                    icon={<Trash2 className="w-4 h-4" />}
+                    onClick={() => handleDeleteComodato(marca.comodato_id, marca.marca)}
+                    className="ml-2"
+                  >
+                    Eliminar
+                  </Button>
+                )}
               </div>
             </div>
 
